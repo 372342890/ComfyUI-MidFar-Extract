@@ -105,6 +105,14 @@ def compile_prompt(plan, layer, key):
     return instruction
 
 
+def nearest_colors(seeds, rgb):
+    distance, labels = cv2.distanceTransformWithLabels(
+        (~seeds).astype(np.uint8), cv2.DIST_L2, 5, labelType=cv2.DIST_LABEL_PIXEL)
+    colors = np.zeros((int(labels.max()) + 1, 3), np.float32)
+    colors[labels[seeds]] = rgb[seeds]
+    return distance, colors[labels]
+
+
 def matte(image, key, softness=0.04, despill=True):
     image = validate_image(image)
     if not 0.0 <= float(softness) <= 0.2:
@@ -119,29 +127,32 @@ def matte(image, key, softness=0.04, despill=True):
         # while guarding dark pixels, rather than forcing a full-intensity key.
         brightness = np.max(rgb, axis=-1)
         direction = rgb/np.maximum(brightness[..., None], 1e-6)
-        screen = (np.linalg.norm(direction-k, axis=-1) <= float(softness)) & (brightness > .3)
+        screen = (np.linalg.norm(direction-k, axis=-1) <= float(softness)*3) & (brightness > .3)
+        screen_key = k
+        if screen.any():
+            # Use observed nearby screen RGB, including brightness and compression
+            # deviations. Assuming neon RGB exactly causes colored outer halos.
+            _, screen_key = nearest_colors(screen, rgb)
+            alpha = np.clip(1-excess/np.maximum(dominance(screen_key, key), .1), 0, 1)
         opaque = (excess <= 0.03) & ~screen
         alpha[screen] = 0
         alpha[opaque] = 1
         if opaque.any():
             # Every opaque pixel is a seed; DIST_LABEL_PIXEL preserves thin features.
-            distance, labels = cv2.distanceTransformWithLabels(
-                (~opaque).astype(np.uint8), cv2.DIST_L2, 5, labelType=cv2.DIST_LABEL_PIXEL)
-            colors = np.zeros((int(labels.max()) + 1, 3), np.float32)
-            colors[labels[opaque]] = rgb[opaque]
-            foreground = colors[labels]
-            vector = foreground-k
+            distance, foreground = nearest_colors(opaque, rgb)
+            vector = foreground-screen_key
             denominator = np.sum(vector*vector, axis=-1)
-            solved = np.sum((rgb-k)*vector, axis=-1)/np.maximum(denominator, 1e-6)
+            solved = np.sum((rgb-screen_key)*vector, axis=-1)/np.maximum(denominator, 1e-6)
             use = ~opaque & ~screen & (distance <= 32) & (denominator > 0.01)
             # Reject distant unrelated colors whose mixing line poorly matches.
-            predicted = solved[..., None]*foreground + (1-solved[..., None])*k
-            use &= np.linalg.norm(predicted-rgb, axis=-1) < 0.14
+            predicted = solved[..., None]*foreground + (1-solved[..., None])*screen_key
+            use &= np.linalg.norm(predicted-rgb, axis=-1) < 0.08
             alpha[use] = np.clip(solved[use], 0, 1)
+        alpha[alpha < .008] = 0
         alpha[screen] = 0
         alpha[opaque] = 1
         if despill:
-            rgb = np.clip((rgb-(1-alpha[..., None])*k)/np.maximum(alpha[..., None], 1e-5), 0, 1)
+            rgb = np.clip((rgb-(1-alpha[..., None])*screen_key)/np.maximum(alpha[..., None], 1e-5), 0, 1)
         if source.shape[-1] == 4:
             alpha *= source[..., 3]
         rgb[alpha < 1e-5] = 0

@@ -88,6 +88,22 @@ class MatteTests(unittest.TestCase):
             rgb = np.repeat((brightness*k)[None], 16, axis=1)
             self.assertEqual(matte(rgb, key, .04, True)[1].max(), 0)
 
+    def test_actual_screen_color_is_used_for_edge_unmixing(self):
+        rgb, truth, color = self.composite()
+        actual_key = np.array([.018, .84, .018], np.float32)
+        rgb = color*truth[..., None] + actual_key*(1-truth[..., None])
+        rgba, mask, _, _ = matte(rgb, "#00FF00", .04, True)
+        np.testing.assert_allclose(mask, truth, atol=.02)
+        np.testing.assert_allclose(rgba[0, 3, 6, :3], color, atol=.03)
+
+    def test_tinted_generated_screen_does_not_leave_outer_halo(self):
+        _, truth, color = self.composite()
+        actual_key = np.array([.06, .91, .03], np.float32)
+        rgb = color*truth[..., None] + actual_key*(1-truth[..., None])
+        rgba, mask, _, _ = matte(rgb, "#00FF00", .04, True)
+        np.testing.assert_allclose(mask, truth, atol=.02)
+        np.testing.assert_allclose(rgba[0, 3, 6, :3], color, atol=.03)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
