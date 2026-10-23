@@ -115,8 +115,11 @@ def matte(image, key, softness=0.04, despill=True):
         rgb = source[..., :3].copy()
         excess = np.clip(dominance(rgb, key), 0, 1)
         alpha = 1 - excess
-        # Small deviations from the requested key are screen, without eroding edges.
-        screen = np.linalg.norm(rgb-k, axis=-1) <= float(softness)
+        # Image editors may vary screen brightness. Compare chromatic direction,
+        # while guarding dark pixels, rather than forcing a full-intensity key.
+        brightness = np.max(rgb, axis=-1)
+        direction = rgb/np.maximum(brightness[..., None], 1e-6)
+        screen = (np.linalg.norm(direction-k, axis=-1) <= float(softness)) & (brightness > .3)
         opaque = (excess <= 0.03) & ~screen
         alpha[screen] = 0
         alpha[opaque] = 1

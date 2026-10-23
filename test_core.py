@@ -81,6 +81,13 @@ class MatteTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 matte(data, key, .04, True)
 
+    def test_generated_screen_brightness_variation_is_transparent(self):
+        for key in ["#00FF00", "#FF00FF", "#0000FF"]:
+            k = np.array([int(key[i:i+2], 16)/255 for i in (1, 3, 5)], np.float32)
+            brightness = np.linspace(.75, 1, 24, dtype=np.float32)[None, :, None]
+            rgb = np.repeat((brightness*k)[None], 16, axis=1)
+            self.assertEqual(matte(rgb, key, .04, True)[1].max(), 0)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
