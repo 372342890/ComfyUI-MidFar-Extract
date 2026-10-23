@@ -137,6 +137,7 @@ def matte(image, key, softness=0.04, despill=True):
         opaque = (excess <= 0.03) & ~screen
         alpha[screen] = 0
         alpha[opaque] = 1
+        residue = np.zeros_like(screen)
         if opaque.any():
             # Every opaque pixel is a seed; DIST_LABEL_PIXEL preserves thin features.
             distance, foreground = nearest_colors(opaque, rgb)
@@ -148,6 +149,10 @@ def matte(image, key, softness=0.04, despill=True):
             predicted = solved[..., None]*foreground + (1-solved[..., None])*screen_key
             use &= np.linalg.norm(predicted-rgb, axis=-1) < 0.08
             alpha[use] = np.clip(solved[use], 0, 1)
+            # Faint near-key streaks far from every opaque feature are screen
+            # residue, not an edge. Keep the neighborhood of thin opaque branches.
+            residue = (alpha <= .25) & (distance > 4) & (excess >= .6)
+            alpha[residue] = 0
         alpha[alpha < .008] = 0
         alpha[screen] = 0
         alpha[opaque] = 1
@@ -165,7 +170,7 @@ def matte(image, key, softness=0.04, despill=True):
         notes.append({"foreground_coverage": round(coverage, 5),
                       "soft_edge_fraction": round(float(np.mean((alpha > .02) & (alpha < .98))), 5),
                       "warning": "Layer almost empty; review extraction." if coverage < .005 else
-                                 "Screen not found; review key color." if float(screen.mean()) < .001 else "",
+                                 "Screen not found; review key color." if float((screen | residue).mean()) < .001 else "",
                       "mask_convention": "1=foreground opaque, 0=background transparent"})
     rgba_batch = np.stack(rgba_batch)
     return rgba_batch, rgba_batch[..., 3].copy(), np.stack(previews), json.dumps(notes, ensure_ascii=False)

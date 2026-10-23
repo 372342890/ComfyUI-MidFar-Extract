@@ -40,6 +40,7 @@ ComfyUI 已提供 PyTorch；本插件不重装 PyTorch。安装后应出现 `BAM
 - `quality`：每张图的主体覆盖率、软边比例和基础告警；不能代替人工分层质量审查。
 - `softness`：纯色底容差，默认 0.04；色底略有偏差可升至 0.06。不做固定腐蚀或膨胀。
 - `despill`：解算并去除混色边缘中的色键颜色，默认开启。
+- 远离不透明主体的低 Alpha 色键残留会被清除，避免深色底上出现透明布纹；不透明细枝及其软边邻域保留。
 
 ## Limits
 
@@ -51,6 +52,6 @@ ComfyUI 已提供 PyTorch；本插件不重装 PyTorch。安装后应出现 `BAM
 python -m unittest test_core -v
 ```
 
-覆盖场景 JSON 验证、动态提示、自动选色、软 Alpha 解算、颜色恢复、细枝保留、批次与输入检查。测试仅需 NumPy / OpenCV；运行节点使用 ComfyUI 的 PyTorch。
+14 项测试覆盖场景 JSON 验证、动态提示、自动选色、软 Alpha 解算、颜色恢复、细枝保留、远离主体的色键残留、质量告警、批次与输入检查。测试仅需 NumPy / OpenCV；运行节点使用 ComfyUI 的 PyTorch。
 
 MIT License. No credentials, service endpoints, private workflows or project assets are included.

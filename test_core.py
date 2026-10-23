@@ -1,3 +1,4 @@
+import json
 import unittest
 import numpy as np
 from core import parse_plan, choose_key, compile_prompt, matte
@@ -103,6 +104,24 @@ class MatteTests(unittest.TestCase):
         rgba, mask, _, _ = matte(rgb, "#00FF00", .04, True)
         np.testing.assert_allclose(mask, truth, atol=.02)
         np.testing.assert_allclose(rgba[0, 3, 6, :3], color, atol=.03)
+
+    def test_low_alpha_key_residue_away_from_subject_is_transparent(self):
+        rgb, truth, _ = self.composite("#FF00FF")
+        # Image editors can leave faint hue streaks in otherwise blank key areas.
+        # These must not turn into white translucent cloth on a dark backdrop.
+        rgb[0, :2, :2] = np.array([.9, .1, 1], np.float32)
+        rgba, mask, _, _ = matte(rgb, "#FF00FF", .04, True)
+        np.testing.assert_allclose(mask[0, :2, :2], 0, atol=1e-6)
+        self.assertEqual(float(mask[0, 1, 9]), 1)
+        np.testing.assert_allclose(mask[0, 3, 6], truth[0, 3, 6], atol=.02)
+
+    def test_residue_cleanup_counts_as_detected_screen(self):
+        rgb = np.empty((1, 64, 64, 3), np.float32)
+        rgb[:] = [.9, .1, 1]
+        rgb[0, 24:40, 24:40] = [.3, .3, .3]
+        _, mask, _, info = matte(rgb, "#FF00FF", .04, True)
+        self.assertEqual(float(mask[0, 0, 0]), 0)
+        self.assertEqual(json.loads(info)[0]["warning"], "")
 
 
 if __name__ == "__main__":
