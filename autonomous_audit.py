@@ -212,19 +212,22 @@ def _numeric(value, rgba=None):
     return report, list(dict.fromkeys(problems))
 
 
-def _comparison(source, raw, rgba):
+def _comparison(source, raw, rgba, guide=None):
     alpha = rgba[0, ..., 3:4]
     yy, xx = np.indices(alpha.shape[:2])
     checker = np.where(((xx//16 + yy//16) % 2)[..., None], .88, .65)
     recovered = rgba[0, ..., :3]*alpha + checker*(1-alpha)
     pictures = (source[0, ..., :3], raw[0, ..., :3], recovered)
     labels = ("SOURCE CROP", "RAW GENERATED", "RECOVERED ALPHA")
+    if guide is not None:
+        pictures = (source[0, ..., :3], guide[0, ..., :3], raw[0, ..., :3], recovered)
+        labels = ("SOURCE CROP", "EDITABLE TARGET GUIDE", "RAW GENERATED", "RECOVERED ALPHA")
     width = max(256, min(768, max(p.shape[1] for p in pictures)))
     height = max(128, min(768, max(p.shape[0] for p in pictures)))
     margin, header = 12, 36
     cell = width + 2*margin
-    sheet = np.full((height + header + 2*margin, 3*cell, 3), .16, np.float32)
-    label_strip = np.full((header, 3*cell, 3), 41, np.uint8)
+    sheet = np.full((height + header + 2*margin, len(pictures)*cell, 3), .16, np.float32)
+    label_strip = np.full((header, len(pictures)*cell, 3), 41, np.uint8)
     panels = []
     for index, (picture, label) in enumerate(zip(pictures, labels)):
         h, w = picture.shape[:2]
@@ -252,7 +255,11 @@ def _review_prompt(plan, target, report):
     return (
         "Review one connected terrain asset against its actual reference crop. "
         "Panels: SOURCE CROP, RAW GENERATED, RECOVERED ALPHA (checker composite). "
-        "Compare all three, not just the cleaned alpha; a diagnostic tensor is not an asset.\n"
+        "An EDITABLE TARGET GUIDE panel, when present, identifies the selected source "
+        "mountain; the source crop includes other-depth neighbors. Do not substitute "
+        "a neighboring upper-left mountain for this identified target. The guide is rough, "
+        "so judge correct visible source geometry but allow stray fragments to be removed "
+        "and hidden bases to be completed. Compare every panel; a diagnostic tensor is not an asset.\n"
         "Target location descriptions refer to the original full scene, not positions "
         "within this cropped panel. Identify the target using the actual source crop and "
         "its appearance and connected parts; do not reinterpret global location as a "
@@ -291,7 +298,8 @@ def _review_prompt(plan, target, report):
     )
 
 
-def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=24):
+def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=24,
+                  target_guide=None):
     """Return comparison RGB, visual-review prompt, candidate RGBA and numeric JSON.
 
     Numeric recovery failures return diagnostic_only:true and valid:false. Invalid
@@ -331,7 +339,11 @@ def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=2
             "soft_edge_pixels": int(((alpha > 0) & (alpha < 1)).sum()),
             "mask_convention": "1=foreground opaque, 0=transparent",
         }
-    sheet, panels = _comparison(reference_crop, image, rgba)
+    if target_guide is not None:
+        target_guide = validate_image(target_guide)
+        if target_guide.shape[0] != 1:
+            raise ValueError("Exactly one current editable target guide is required.")
+    sheet, panels = _comparison(reference_crop, image, rgba, target_guide)
     report = {
         **quality, "schema_version": 1, "asset_id": target["id"], "key_color": key,
         "valid": not problems, "diagnostic_only": bool(problems),
@@ -366,12 +378,13 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "name", "appearance", "occlusion", "connected_parts", "excluded_objects")}
     return (
         f"重新从本次原始局部参考图提取完整目标，背景输出均匀纯色{key}。"
-        "输入是带环境的真实原图裁图，不是上一版成图，也没有必须保留的错误遮罩。"
+        "输入是本次原图产生的可编辑目标参考，不是上一版成图，也没有必须保留的错误遮罩。"
         "根据下方目标结构与审查反馈纠正整个目标轮廓：删除混入的其他深度残片，"
         "恢复真实相连的侧峰岩肩，并补全被树木、前排地形遮挡的自然山脚。"
         "目标自己的峰形、积雪、岩层、颜色和空气透视遵照原图；不增加新峰、"
         "树木、地面托盘或浮空岩基。底部是有体积的短自然岩脚，不是直线平切。\n"
-        "Regenerate exactly this reference target from the actual original reference crop, "
+        "Regenerate exactly this reference target from the editable source-pixel guide "
+        "derived from the actual original reference crop, "
         "with the same "
         "visible peak count, slopes, proportions, viewpoint, color and soft aerial perspective. "
         "Correct the entire target silhouette when the previous localization or upper "

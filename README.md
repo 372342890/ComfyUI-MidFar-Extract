@@ -179,18 +179,19 @@ python -m unittest test_core -v
 
 MIT License. No credentials, service endpoints, private workflows or project assets are included.
 
-## Automatic three-asset workflow with original-crop repairs
+## Automatic three-asset workflow with editable source guides
 
 Import `midfar-three-autonomous.byteartist.json` in ByteArtist, replace the
 reference image, then click global run once. The fixed graph examines candidate
 connections and occlusions, selects three units, and makes a real source crop for
-each target. Every generation and repair uses that same original crop through a
-standard `LoadImage` handoff, never a previous wrong output or frozen polygon.
+each target. A source-coordinate target point is marked automatically before
+precise polygon localization. Every generation and repair uses a fresh source-pixel
+guide through a standard `LoadImage` handoff, never a previous wrong output or frozen mask.
 
 Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
-original source so they can remove unrelated upper fragments, restore connected
+editable source guide so they can remove unrelated upper fragments, restore connected
 side peaks, and complete natural hidden feet. Source fidelity is checked against
-the actual original crop. Global scene locations are not reinterpreted as
+the actual original crop and the identified editable target guide. Global scene locations are not reinterpreted as
 positions within that crop. The deployed graph does not freeze or composite an
 incorrect localization mask into the final generated asset.
 Final selection still requires every numeric and visual gate to pass, including
@@ -198,7 +199,7 @@ all attached parts, a natural complete base, reference style and clean alpha.
 Tiny disconnected key-colored compression noise is recorded separately; real
 detached foreground parts remain blocking defects.
 
-The graph contains 9 image calls and 11 text calls. Generation may fail its
+The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard
@@ -208,8 +209,8 @@ also makes native model references independently inspectable; it does not relax
 the numeric or visual acceptance gates.
 
 A geometric lower-profile check rejects deep unfilled occlusion cutouts even
-if a visual model misses them. Legacy target-guide and foot-completion nodes
-remain available for other graphs; they are not used by this repaired workflow.
+if a visual model misses them. The legacy foot-completion compositor is not
+used; generated pixels are never overwritten with a frozen rough localization.
 
 ## Reference-guided natural terrain assets
 

@@ -7,6 +7,7 @@ from .autonomous_audit import inspect_asset, repair_prompt, choose_asset
 from .target_guide import target_guide
 from .foot_completion import completion_context, complete_foot
 from .image_handoff import native_image_file
+from .localization_view import localization_view
 
 
 def _array(image):
@@ -80,6 +81,21 @@ class BAMidFarAutonomousReference:
         return prompt, torch.from_numpy(crop), key, filename, record
 
 
+class BAMidFarLocalizationView:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {"reference_crop": ("IMAGE",),
+                             "source_record": ("STRING", {"forceInput": True})}}
+    RETURN_TYPES = ("IMAGE", "STRING", "STRING")
+    RETURN_NAMES = ("marked_crop", "localization_prompt", "localization_record")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Autonomous"
+
+    def run(self, reference_crop, source_record):
+        image, prompt, record = localization_view(_array(reference_crop), source_record)
+        return torch.from_numpy(image), prompt, record
+
+
 class BAMidFarAssetInspect:
     @classmethod
     def INPUT_TYPES(cls):
@@ -89,15 +105,16 @@ class BAMidFarAssetInspect:
             "key_color": ("STRING", {"forceInput": True}),
             "softness": ("FLOAT", {"default": .06, "min": 0, "max": .2, "step": .01}),
             "padding": ("INT", {"default": 24, "min": 0, "max": 256}),
-        }}
+        }, "optional": {"target_guide": ("IMAGE",)}}
     RETURN_TYPES = ("IMAGE", "STRING", "IMAGE", "STRING")
     RETURN_NAMES = ("inspection_sheet", "review_prompt", "candidate_rgba", "numeric_report")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
-    def run(self, image, reference_crop, plan, key_color, softness, padding):
+    def run(self, image, reference_crop, plan, key_color, softness, padding, target_guide=None):
         sheet, prompt, rgba, numeric = inspect_asset(
-            _array(image), _array(reference_crop), plan, key_color, softness, padding)
+            _array(image), _array(reference_crop), plan, key_color, softness, padding,
+            None if target_guide is None else _array(target_guide))
         return torch.from_numpy(sheet), prompt, torch.from_numpy(rgba), numeric
 
 

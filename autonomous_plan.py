@@ -486,4 +486,6 @@ def asset_reference(one_plan_JSON, reference_BHWC, filename_prefix, crop_context
               "original_candidates": originals, "connected_parts": target["connected_parts"],
               "excluded_objects": target["excluded_objects"], "key_color": key,
               "output_prefix": prefix, "canvas_safety_margin": .15}
+    if "target_point" in raw:
+        record["target_point"] = raw["target_point"]
     return prompt, crop, key, prefix, _dump(record)

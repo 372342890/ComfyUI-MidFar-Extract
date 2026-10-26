@@ -11,6 +11,19 @@ except ImportError:
 from test_autonomous_audit import plan
 
 class TargetGuideTests(unittest.TestCase):
+    def test_guide_is_editable_and_never_freezes_localization_errors(self):
+        reference = np.full((1, 100, 120, 3), [.2, .4, .6], np.float32)
+        localization = json.dumps({
+            "asset_id": "unit_a",
+            "visible_polygon": [[200, 800], [300, 500], [500, 100], [700, 500], [800, 800]],
+            "description": "central peak and attached shoulder",
+            "hidden_base": "complete own foot",
+        })
+        _, prompt, _ = target_guide(reference, plan(), localization, "#FF00FF")
+        self.assertIn("editable", prompt)
+        self.assertIn("incorrect fragments", prompt)
+        self.assertNotIn("只重绘朱红", prompt)
+
     def test_api_available(self):
         self.assertTrue(callable(target_guide))
 
