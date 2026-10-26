@@ -26,7 +26,7 @@ def parse_objects(text, layer="both", max_objects=8):
         raise ValueError("Expected an objects array of individual mid/far instances.")
     if not isinstance(plan.get("style", ""), str):
         raise ValueError("style must be text.")
-    ids, objects = set(), []
+    ids, objects, rejected = set(), [], []
     for obj in plan["objects"]:
         if not isinstance(obj, dict) or obj.get("is_single", True) is not True:
             raise ValueError("Every entry must represent one individual object, not an entire layer.")
@@ -38,19 +38,38 @@ def parse_objects(text, layer="both", max_objects=8):
         ids.add(obj["id"])
         if obj.get("layer") not in ("midground", "background"):
             raise ValueError("Object layer must be midground or background.")
+        if re.search(r"树丛|树群|树林|森林|天际线|建筑群|群山|山脉|绿化带|地面|草地|草坪|"
+                     r"\b(forest|skyline|grove|mountain range|building cluster|ground plane)\b",
+                     obj["name"], re.IGNORECASE) or obj["name"].strip() in (
+                         "江面", "水面", "湖面", "湖泊", "河流", "天空", "地形", "water", "sky"):
+            rejected.append({"id": obj["id"], "name": obj["name"],
+                             "reason": "Environment surface or group, not an individual object."})
+            continue
         box = obj.get("bbox")
+        normalized = False
+        if isinstance(box, list) and len(box) == 4 and all(
+                isinstance(v, (int, float)) and not isinstance(v, bool) and np.isfinite(v) and
+                0 <= v <= 1000 for v in box) and max(box) > 10:
+            box = [v/1000 if v > 1 else v for v in box]
+            normalized = True
         if not isinstance(box, list) or len(box) != 4 or not all(
                 isinstance(v, (int, float)) and not isinstance(v, bool) and
                 np.isfinite(v) and 0 <= v <= 1 for v in box) or not (
                 box[0] < box[2] and box[1] < box[3]):
             raise ValueError("bbox must be normalized [left, top, right, bottom].")
-        objects.append({**obj, **{f: obj[f].strip() for f in
+        objects.append({**obj, "bbox": box, "bbox_normalized": normalized,
+                        **{f: obj[f].strip() for f in
                                  ("id", "name", "location", "appearance", "occlusion")}})
     selected = [o for o in objects if layer == "both" or o["layer"] == layer]
+    if layer == "both":
+        mid = [o for o in selected if o["layer"] == "midground"]
+        far = [o for o in selected if o["layer"] == "background"]
+        selected = [o for i in range(max(len(mid), len(far))) for group in (mid, far)
+                    for o in group[i:i+1]]
     if not selected:
         raise ValueError("No identifiable individual objects in the selected distance layer.")
     return {"style": plan.get("style", ""), "objects": selected[:max_objects],
-            "all_objects": objects, "total": len(selected),
+            "all_objects": objects, "rejected_objects": rejected, "total": len(selected),
             "truncated": max(0, len(selected) - max_objects)}
 
 

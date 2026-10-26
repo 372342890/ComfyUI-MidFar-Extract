@@ -20,7 +20,7 @@ class ObjectTests(unittest.TestCase):
     def test_individual_instances_survive_filter_and_truncation(self):
         text = "```json\n" + plan_text([instance(1), instance(2), instance(3, "蓝色高楼", "background")]) + "\n```"
         p = parse_objects(text, "both", 2)
-        self.assertEqual([o["id"] for o in p["objects"]], ["o1", "o2"])
+        self.assertEqual([o["id"] for o in p["objects"]], ["o1", "o3"])
         self.assertEqual((p["total"], p["truncated"]), (3, 1))
         self.assertEqual(parse_objects(text, "background")["objects"][0]["id"], "o3")
 
@@ -37,6 +37,19 @@ class ObjectTests(unittest.TestCase):
                       {**instance(1), "appearance": {"execute": "anything"}}]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 parse_objects(plan_text([value]))
+
+    def test_mixed_thousandth_coordinates_are_normalized(self):
+        obj = {**instance(1), "bbox": [.178, .632, 542, .885]}
+        p = parse_objects(plan_text([obj]))
+        self.assertEqual(p["objects"][0]["bbox"], [.178, .632, .542, .885])
+        self.assertTrue(p["objects"][0]["bbox_normalized"])
+
+    def test_invalid_group_and_water_are_logged_without_losing_valid_objects(self):
+        p = parse_objects(plan_text([instance(1), instance(2, "沿江绿化带树丛"),
+                                     instance(3, "江面"), instance(4, "独立山峰", "background")]))
+        self.assertEqual([o["id"] for o in p["objects"]], ["o1", "o4"])
+        self.assertEqual(len(p["rejected_objects"]), 2)
+        self.assertEqual(p["total"], 2)
 
     def test_single_prompt_excludes_neighbor_and_recovers_hidden_base(self):
         p = parse_objects(plan_text([instance(1), instance(2, "钟楼")]))
