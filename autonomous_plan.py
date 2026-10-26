@@ -120,6 +120,15 @@ def _edge(box, margin):
     return box[0] <= margin or box[1] <= margin or box[2] >= 1-margin or box[3] >= 1-margin
 
 
+def _vision_box(values):
+    """Accept one unambiguous integer 0..1000 grid; never guess mixed units."""
+    if (isinstance(values, list) and len(values) == 4 and
+            all(type(v) is int and 0 <= v <= 1000 for v in values) and
+            any(v > 1 for v in values)):
+        values = [v/1000 for v in values]
+    return _box(values)
+
+
 def _id_list(value, name):
     if not isinstance(value, list) or len(value) > 100:
         raise ValueError(f"{name} must be an array of safe candidate identifiers.")
@@ -148,9 +157,10 @@ def _candidate(source, style, margin):
     for field in ("boundary_cut", "suitable", "is_single"):
         if field in obj and type(obj[field]) is not bool:
             raise ValueError(f"{field} must be a real JSON boolean.")
-    box = _box(obj.get("bbox"))
+    box = _vision_box(obj.get("bbox"))
     if _edge(box, margin):
         raise ValueError("Actual bbox touches the source edge safety margin.")
+    obj["bbox"] = box
     if obj.get("boundary_cut", False):
         raise ValueError("Source-cut formation: boundary_cut is true.")
     if obj.get("suitable", True) is False:
@@ -247,7 +257,7 @@ def _contact_sheet(image, originals, rejected_ids):
         tile = {"id": label, "label": label, "accepted": not rejected,
                 "sheet_label_pixels": [x, y, x+cw, y+label_height]}
         try:
-            crop, info = crop_reference(image, obj.get("bbox"), 0)
+            crop, info = crop_reference(image, _vision_box(obj.get("bbox")), 0)
             h, w = crop.shape[1:3]
             scale = min((cw-2*padding)/w, (ch-label_height-32)/h)
             dw, dh = max(1, round(w*scale)), max(1, round(h*scale))
@@ -298,7 +308,7 @@ def candidate_review(plan_text, reference_numpy_BHWC, edge_margin=.01):
 
 
 def _refined_box(box, source_box, margin):
-    box = _box(box)
+    box = _vision_box(box)
     if _edge(box, margin):
         raise ValueError("Refined bbox touches the source edge.")
     a, b = box, source_box

@@ -194,6 +194,32 @@ class CandidateReviewTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             autonomous_plan.candidate_review(text, scene())
 
+    def test_integer_thousand_grid_keeps_raw_evidence_and_exact_source_crop(self):
+        raw = candidate("grid", bbox=[200, 200, 600, 800])
+        sheet, report = self.review([raw, candidate("b"), candidate("c")])
+        self.assertEqual(report["safe_unit_count"], 3)
+        target = next(o for o in report["accepted_candidates"] if o["id"] == "grid")
+        self.assertEqual(target["bbox"], [.2, .2, .6, .8])
+        self.assertEqual(target["original_description"], raw)
+        tile = report["contact_sheet"]["tiles"][0]
+        expected, info = crop_reference(scene(), [.2, .2, .6, .8], 0)
+        self.assertEqual(tile["source_bbox_pixels"], info["source_bbox_pixels"])
+        values = autonomous_plan.split_three(
+            plan([{"id": "grid", "bbox": [210, 210, 610, 790]}, {"id": "b"}, {"id": "c"}]),
+            json.dumps(report))
+        _, crop, _, _, source = autonomous_plan.asset_reference(values[0], scene(), "test", 0)
+        refined, _ = crop_reference(scene(), [.21, .21, .61, .79], 0)
+        np.testing.assert_array_equal(crop, refined)
+        self.assertEqual(json.loads(source)["original_description"], raw)
+
+    def test_thousand_grid_edges_and_mixed_scales_stay_rejected(self):
+        boxes = [[0, 200, 600, 800], [200, 200, 1000, 800],
+                 [.2, .2, 600, 800], [0, 0, 292, .245], [200, 200, 1200, 800]]
+        objects = [candidate("bad_"+str(i), bbox=box) for i, box in enumerate(boxes)]
+        _, report = self.review(objects+[candidate("safe")])
+        self.assertEqual(report["rejected_ids"], [o["id"] for o in objects])
+        self.assertEqual([o["id"] for o in report["accepted_candidates"]], ["safe"])
+
 
 @unittest.skipIf(autonomous_plan is None, "Autonomous planning API unavailable")
 class SplitThreeTests(unittest.TestCase):

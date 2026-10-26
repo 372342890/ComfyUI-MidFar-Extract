@@ -23,6 +23,8 @@
 保留山体自身覆草覆雪。候选接触原图边界或已经裁断会被淘汰，
 不能通过向内缩 bbox 恢复资格。遮挡处只重建该目标自身的短自然山脚。
 所有目标和提示由当前图的原生视觉模型产生，没有按文件名指定素材。
+自动兼容模型的0–1比例框和0–1000整数框，保留原始坐标证据；
+混合单位的错误框仍被拒绝，归一化不会放宽源边界安全检查。
 
 新增节点：`BAMidFarCandidateReview`、`BAMidFarThreePlans`、
 `BAMidFarAutonomousReference`、`BAMidFarAssetInspect`、

@@ -118,7 +118,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "你是游戏中远景山石素材提取的视觉规划师。只观察当前图，先分析深度、遮挡、实际连接、完整外轮廓和短自然山脚，再列出6–9个候选（确实不足时如实输出）。\n候选为rock/hill/mountain，层次midground/background；排除草堆、树林、湖水、天空、地面风景条和最近处的前景挡物。山体自身覆草覆雪保留。保留真的相连峰、侧柱、岩台、共享岩基，作为一份完整资产。前后山体二维重叠和连续雪地不表示连接；不能把独立前排丘体并进后山。不要把完整连体强行拆开以凑数量。\n选择原图边界内能定位完整单元的候选，山脚被别的物体遮挡可以后续推断补全；原图左右边界裁断的大崖壁/山脉不能靠内缩bbox伪装完整。bbox是目标全部可见部件的归一化[左,上,右,下]，不是任选局部。先观察结构再写bbox。\n只输出JSON {\"style\":\"当前图具体画风颜色材质照明透视\",\"objects\":[{\"id\":\"c01\",\"unit_id\":\"u01\",\"name\":\"当前具体单元\",\"kind\":\"mountain\",\"layer\":\"background\",\"location\":\"原图唯一位置\",\"appearance\":\"可见峰柱数量/相对高低/颜色/岩层/连接关系\",\"occlusion\":\"别的深度物体遮挡哪里，排除谁\",\"selection_reason\":\"为什么是完整自然复用单元\",\"bbox\":[0.1,0.1,0.4,0.8],\"asset_unit\":\"connected_formation\",\"connected_parts\":[\"真实相连部件，逐一列出\"],\"excluded_objects\":[\"前后重叠但不相连的物体\"],\"priority\":90,\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}。\nid唯一。真实同一完整单元的候选用相同unit_id；独立物体不要共享unit_id。布尔值必须是JSON真布尔。所有文本与数量取自当前图，不照搬示例。只输出JSON。"
+            "value": "你是游戏中远景山石素材提取的视觉规划师。只观察当前图，先分析深度、遮挡、实际连接、完整外轮廓和短自然山脚，再列出6–9个候选（确实不足时如实输出）。\n候选为rock/hill/mountain，层次midground/background；排除草堆、树林、湖水、天空、地面风景条和最近处的前景挡物。山体自身覆草覆雪保留。保留真的相连峰、侧柱、岩台、共享岩基，作为一份完整资产。前后山体二维重叠和连续雪地不表示连接；不能把独立前排丘体并进后山。不要把完整连体强行拆开以凑数量。\n选择原图边界内能定位完整单元的候选，山脚被别的物体遮挡可以后续推断补全；原图左右边界裁断的大崖壁/山脉不能靠内缩bbox伪装完整。bbox覆盖目标全部可见部件，统一使用0–1000整数坐标[左,上,右,下]，0和1000是原图边界，禁止混用小数比例或像素坐标。先观察结构再写bbox。\n只输出JSON {\"style\":\"当前图具体画风颜色材质照明透视\",\"objects\":[{\"id\":\"c01\",\"unit_id\":\"u01\",\"name\":\"当前具体单元\",\"kind\":\"mountain\",\"layer\":\"background\",\"location\":\"原图唯一位置\",\"appearance\":\"可见峰柱数量/相对高低/颜色/岩层/连接关系\",\"occlusion\":\"别的深度物体遮挡哪里，排除谁\",\"selection_reason\":\"为什么是完整自然复用单元\",\"bbox\":[100,100,400,800],\"asset_unit\":\"connected_formation\",\"connected_parts\":[\"真实相连部件，逐一列出\"],\"excluded_objects\":[\"前后重叠但不相连的物体\"],\"priority\":90,\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}。\nid唯一。真实同一完整单元的候选用相同unit_id；独立物体不要共享unit_id。is_single指一份可复用资产，连体双峰、多峰、峰柱共享岩台也必须为true，不是按峰数量判断；只有多个不相连物体拼在一起才是false。布尔值必须是JSON真布尔。所有文本与数量取自当前图，不照搬示例。只输出JSON。"
           }
         ],
         "outputSlots": [
@@ -300,7 +300,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "选择原图边界内能定位完整单元的候选，山脚被别的物体遮挡可以后续推断补全；原图左右边界裁断的大崖壁/山脉不能靠内缩bbox伪装完整。bbox是目标全部可见部件的归一化[左,上,右,下]，不是任选局部。先观察结构再写bbox。"
+                  "text": "选择原图边界内能定位完整单元的候选，山脚被别的物体遮挡可以后续推断补全；原图左右边界裁断的大崖壁/山脉不能靠内缩bbox伪装完整。bbox覆盖目标全部可见部件，统一使用0–1000整数坐标[左,上,右,下]，0和1000是原图边界，禁止混用小数比例或像素坐标。先观察结构再写bbox。"
                 }
               ]
             },
@@ -308,7 +308,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "只输出JSON {\"style\":\"当前图具体画风颜色材质照明透视\",\"objects\":[{\"id\":\"c01\",\"unit_id\":\"u01\",\"name\":\"当前具体单元\",\"kind\":\"mountain\",\"layer\":\"background\",\"location\":\"原图唯一位置\",\"appearance\":\"可见峰柱数量/相对高低/颜色/岩层/连接关系\",\"occlusion\":\"别的深度物体遮挡哪里，排除谁\",\"selection_reason\":\"为什么是完整自然复用单元\",\"bbox\":[0.1,0.1,0.4,0.8],\"asset_unit\":\"connected_formation\",\"connected_parts\":[\"真实相连部件，逐一列出\"],\"excluded_objects\":[\"前后重叠但不相连的物体\"],\"priority\":90,\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}。"
+                  "text": "只输出JSON {\"style\":\"当前图具体画风颜色材质照明透视\",\"objects\":[{\"id\":\"c01\",\"unit_id\":\"u01\",\"name\":\"当前具体单元\",\"kind\":\"mountain\",\"layer\":\"background\",\"location\":\"原图唯一位置\",\"appearance\":\"可见峰柱数量/相对高低/颜色/岩层/连接关系\",\"occlusion\":\"别的深度物体遮挡哪里，排除谁\",\"selection_reason\":\"为什么是完整自然复用单元\",\"bbox\":[100,100,400,800],\"asset_unit\":\"connected_formation\",\"connected_parts\":[\"真实相连部件，逐一列出\"],\"excluded_objects\":[\"前后重叠但不相连的物体\"],\"priority\":90,\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}。"
                 }
               ]
             },
@@ -316,7 +316,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "id唯一。真实同一完整单元的候选用相同unit_id；独立物体不要共享unit_id。布尔值必须是JSON真布尔。所有文本与数量取自当前图，不照搬示例。只输出JSON。"
+                  "text": "id唯一。真实同一完整单元的候选用相同unit_id；独立物体不要共享unit_id。is_single指一份可复用资产，连体双峰、多峰、峰柱共享岩台也必须为true，不是按峰数量判断；只有多个不相连物体拼在一起才是false。布尔值必须是JSON真布尔。所有文本与数量取自当前图，不照搬示例。只输出JSON。"
                 }
               ]
             }
@@ -425,7 +425,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是完整原图，图2是候选局部图表。连接文本是候选原始记录、硬过滤结果与裁图诊断。逐个对照原图看实体连接、重叠遮挡和是否被原图裁断，挑出恰好3个最适合复用的不同完整中远景单元。\n必须只从accepted_candidates选，使用原来的id/unit_id，不能用被淘汰的id、改名复活或把边界向内缩掩盖原图裁断。不得编造目标。若安全候选不足3个返回明确不足的JSON，不假装成功。\n保留每个候选的所有connected_parts，相连峰/侧柱/共享岩台整体留下。二维重叠而处于不同深度的独立山体分别提取；把其他山体、前景、树林、湖面、地面放进excluded_objects。山脚仅补齐目标自身短自然底部，不带广阔雪盆地或地面托盘。\n可在仍覆盖整个同一目标的前提下轻微修正bbox，不能换到别的目标。覆盖存在的中景与远景，优先选轮廓完整、可复用且有形态区分的3份，完整性优先。\n只输出JSON {\"style\":\"当前画风\",\"objects\":[{\"id\":\"来自安全候选的id\",\"unit_id\":\"原unit_id\",\"name\":\"具体名称\",\"bbox\":[0.1,0.1,0.4,0.8],\"appearance\":\"再核对的具体形体\",\"occlusion\":\"该目标遮挡补全和排除对象\",\"connected_parts\":[\"该完整单元全部部件\"],\"excluded_objects\":[\"不同深度的不相连物体\"],\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}，objects恰好3项，不能输出含糊描述或Markdown。"
+            "value": "图1是完整原图，图2是候选局部图表。连接文本是候选原始记录、硬过滤结果与裁图诊断。逐个对照原图看实体连接、重叠遮挡和是否被原图裁断，挑出恰好3个最适合复用的不同完整中远景单元。\n必须只从accepted_candidates选，使用原来的id/unit_id，不能用被淘汰的id、改名复活或把边界向内缩掩盖原图裁断。不得编造目标。若安全候选不足3个返回明确不足的JSON，不假装成功。\n保留每个候选的所有connected_parts，相连峰/侧柱/共享岩台整体留下。二维重叠而处于不同深度的独立山体分别提取；把其他山体、前景、树林、湖面、地面放进excluded_objects。山脚仅补齐目标自身短自然底部，不带广阔雪盆地或地面托盘。\n可在仍覆盖整个同一目标的前提下轻微修正bbox，不能换到别的目标。覆盖存在的中景与远景，优先选轮廓完整、可复用且有形态区分的3份，完整性优先。\n只输出JSON {\"style\":\"当前画风\",\"objects\":[{\"id\":\"来自安全候选的id\",\"unit_id\":\"原unit_id\",\"name\":\"具体名称\",\"appearance\":\"再核对的具体形体\",\"occlusion\":\"该目标遮挡补全和排除对象\",\"connected_parts\":[\"该完整单元全部部件\"],\"excluded_objects\":[\"不同深度的不相连物体\"],\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}，objects恰好3项，不能输出含糊描述或Markdown。一般保留原候选框，不必输出bbox；确需修正时bbox使用0–1归一化比例。is_single指一份可复用单元，完整相连双峰、多峰也是true。"
           }
         ],
         "outputSlots": [
@@ -623,7 +623,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "只输出JSON {\"style\":\"当前画风\",\"objects\":[{\"id\":\"来自安全候选的id\",\"unit_id\":\"原unit_id\",\"name\":\"具体名称\",\"bbox\":[0.1,0.1,0.4,0.8],\"appearance\":\"再核对的具体形体\",\"occlusion\":\"该目标遮挡补全和排除对象\",\"connected_parts\":[\"该完整单元全部部件\"],\"excluded_objects\":[\"不同深度的不相连物体\"],\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}，objects恰好3项，不能输出含糊描述或Markdown。"
+                  "text": "只输出JSON {\"style\":\"当前画风\",\"objects\":[{\"id\":\"来自安全候选的id\",\"unit_id\":\"原unit_id\",\"name\":\"具体名称\",\"appearance\":\"再核对的具体形体\",\"occlusion\":\"该目标遮挡补全和排除对象\",\"connected_parts\":[\"该完整单元全部部件\"],\"excluded_objects\":[\"不同深度的不相连物体\"],\"is_single\":true,\"boundary_cut\":false,\"suitable\":true}]}，objects恰好3项，不能输出含糊描述或Markdown。一般保留原候选框，不必输出bbox；确需修正时bbox使用0–1归一化比例。is_single指一份可复用单元，完整相连双峰、多峰也是true。"
                 }
               ]
             }
