@@ -15,7 +15,7 @@
 流程：原图 → 多候选分析 → 原图边界硬过滤与真实局部图表 →
 视觉复核三份不同完整单元 → 三个独立生成分支 →
 每份初稿、两轮自动审查修正 → 选择合格 RGBA → 三张透明 PNG。
-这是一次工作流任务，内部共九次图片模型调用和十一次视觉文本调用，
+这是一次工作流任务，内部共九次图片模型调用和十四次视觉文本调用，
 会比只生成三张初稿耗时更多。最终只保存三张合格素材。
 
 保留真实相连峰、侧柱、共享岩台和自然岩基；二维重叠、相邻雪地或覆草
@@ -201,6 +201,10 @@ detached foreground parts remain blocking defects.
 
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
+The graph includes 98 nodes and 220 connections. Three redundant guide-record
+save nodes were removed without changing generation or acceptance. The full
+graph currently stalls during clipboard import in the tested workbench;
+native engine execution and clipboard UI compatibility are separate checks.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard
 `LoadImage` before reaching native image/text models. PNG files preserve RGB
