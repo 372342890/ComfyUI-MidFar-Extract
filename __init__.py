@@ -4,6 +4,10 @@ from .core import parse_plan, choose_key, compile_prompt, matte
 from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
 from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_workflow
 from .selection import parse_selection, crop_reference, selected_prompt, expand_selection, selected_matte
+from .autonomous_nodes import (
+    BAMidFarCandidateReview, BAMidFarThreePlans, BAMidFarAutonomousReference,
+    BAMidFarAssetInspect, BAMidFarRepairPrompt, BAMidFarChooseAsset,
+)
 
 
 class BAMidFarPlanPrompt:
@@ -286,6 +290,12 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarSelectionExpand": BAMidFarSelectionExpand,
     "BAMidFarSelectedAsset": BAMidFarSelectedAsset,
     "BAMidFarSelectedMatte": BAMidFarSelectedMatte,
+    "BAMidFarCandidateReview": BAMidFarCandidateReview,
+    "BAMidFarThreePlans": BAMidFarThreePlans,
+    "BAMidFarAutonomousReference": BAMidFarAutonomousReference,
+    "BAMidFarAssetInspect": BAMidFarAssetInspect,
+    "BAMidFarRepairPrompt": BAMidFarRepairPrompt,
+    "BAMidFarChooseAsset": BAMidFarChooseAsset,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -298,4 +308,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarSelectionExpand": "MidFar Selection Expand / 精选2–3个完整资产",
     "BAMidFarSelectedAsset": "MidFar Selected Asset / 连体局部定位与提取",
     "BAMidFarSelectedMatte": "MidFar Selected Matte / 连体素材软边透明裁切",
+    "BAMidFarCandidateReview": "MidFar Candidate Review / 候选完整性复核",
+    "BAMidFarThreePlans": "MidFar Three Plans / 三份独立计划",
+    "BAMidFarAutonomousReference": "MidFar Autonomous Reference / 当前图目标参考",
+    "BAMidFarAssetInspect": "MidFar Asset Inspect / 完整性与透明检查",
+    "BAMidFarRepairPrompt": "MidFar Repair Prompt / 自动审查反馈修正",
+    "BAMidFarChooseAsset": "MidFar Choose Asset / 仅输出合格透明素材",
 }

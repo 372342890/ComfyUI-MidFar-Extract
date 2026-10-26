@@ -2,6 +2,43 @@
 
 通用的中景 / 远景**单个物体**提取、软边抠图及透明裁切节点。建筑、树、独立山体等按照参考图识别结果逐个处理，没有固定景物名单，不需要下载额外分割模型。旧版整层节点仍保留兼容。
 
+## 一次运行输出三份完整中远景素材
+
+使用根目录 `midfar-three-autonomous.byteartist.json`。安装本仓库并重启后，
+粘贴导入整个 JSON，在第一个 LoadImage 换参考图，设置输出目录前缀，
+点击一次“全局运行”。分析、选材、生成、检查和修正都在这一个工作流内，
+不需要再次导入展开结果。所有图片节点固定使用 **Seedream 5.0 pro**，
+2048×2048、PNG、关闭水印；视觉规划与审查开启思考。
+
+流程：原图 → 多候选分析 → 原图边界硬过滤与真实局部图表 →
+视觉复核三份不同完整单元 → 三个独立生成分支 →
+每份初稿、两轮自动审查修正 → 选择合格 RGBA → 三张透明 PNG。
+这是一次工作流任务，内部共九次图片模型调用和十一次视觉文本调用，
+会比只生成三张初稿耗时更多。最终只保存三张合格素材。
+
+保留真实相连峰、侧柱、共享岩台和自然岩基；二维重叠、相邻雪地或覆草
+不能作为物体连接的证据。排除草堆、树林、湖水和地面风景条，
+保留山体自身覆草覆雪。候选接触原图边界或已经裁断会被淘汰，
+不能通过向内缩 bbox 恢复资格。遮挡处只重建该目标自身的短自然山脚。
+所有目标和提示由当前图的原生视觉模型产生，没有按文件名指定素材。
+
+新增节点：`BAMidFarCandidateReview`、`BAMidFarThreePlans`、
+`BAMidFarAutonomousReference`、`BAMidFarAssetInspect`、
+`BAMidFarRepairPrompt`、`BAMidFarChooseAsset`。
+三份计划是三个独立 STRING 槽，不使用 ByteArtist 不支持的动态列表映射。
+自定义节点不执行模型请求，不保存密钥，也不依赖私有服务 SDK。
+
+最终选择同时要求数值检查通过、七个语义布尔项全部为真且评分至少85。
+缺峰、断底、遗漏相连部件、混入无关物体、风格不符、背景不干净、
+贴画布边缘或多主体都会失败。检查阶段返回缺陷供模型纠错；
+同一分支三版均未通过时明确报错，不能用不完整图凑三张。
+生成模型和视觉审查仍会出错；这些检查不能保证任意输入绝对成功。
+原图不足三个安全完整目标时同样明确失败。
+
+```sh
+python -m unittest discover -v
+```
+
 ## Selected connected mid/far assets
 
 For reusable natural scenery, use the selected-assets nodes:
@@ -37,7 +74,7 @@ visual review for semantic grouping, source fidelity and appearance.
 python -m unittest test_core test_objects test_terrain test_selection -v
 ```
 
-## Individual objects (recommended)
+## Individual objects (legacy instance mode)
 
 `Reference → vision LLM objects JSON → BAMidFarObjectPlan → image editor → BAMidFarObjectMatte → SaveImage`
 
