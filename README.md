@@ -206,7 +206,7 @@ detached foreground parts remain blocking defects.
 
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
-The graph includes 119 nodes and 268 connections. The native image
+The graph includes 119 nodes and 286 connections. The native image
 handoffs deliver the actual crop, guide and exact reviewed candidate to each repair.
 Earlier 98-node / 220-connection clipboard loading was verified after the
 workbench completed mounting; large graphs may take time to load. Allow the
@@ -237,6 +237,11 @@ the original numeric/visual replies under the output directory even if final
 selection raises. These are inspection records, not accepted asset outputs.
 Each branch also saves its exact localization polygon, occluder polygons and
 guide record. Screen prompts require a flat RGB color without paint grain.
+The current-crop identity anchor is passed to generation, review and repair.
+Diagnostic source views show a red circle at the automatically chosen point;
+model image inputs retain the original unmarked pixels. The marker is annotation
+only. Its crop coordinates take priority over global scene location words so a
+nearby mountain cannot silently replace the selected unit during review.
 The workflow still has exactly three final `SaveImage` nodes.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard

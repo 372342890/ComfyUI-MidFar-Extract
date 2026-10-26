@@ -440,6 +440,22 @@ class AuditTests(unittest.TestCase):
         self.assertIn("guide may omit", review)
         self.assertNotIn("Image 2 is the actual previous", prompt)
 
+    def test_current_crop_identity_precedes_global_location_in_review_and_repair(self):
+        identity = json.dumps({"id": "unit_a", "target_point_crop_1000": [620, 480]})
+        _, review, _, numeric = self.inspect(identity_record=identity)
+        repair = audit.repair_prompt(plan(), "#00FF00", numeric, verdict(), 1,
+                                     identity_record=identity)
+        for prompt in (review, repair):
+            self.assertIn("[620, 480]", prompt)
+            self.assertIn("CURRENT source crop", prompt)
+            self.assertIn("takes priority", prompt)
+            self.assertIn("red circle", prompt)
+        for change in ({"id": "different"}, {"target_point_crop_1000": [1200, 2]},
+                       {"target_point_crop_1000": [True, 480]}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.inspect(identity_record=json.dumps(
+                    {"id": "unit_a", "target_point_crop_1000": [620, 480], **change}))
+
     def test_clipping_repair_calls_for_scale_down_and_all_side_margins(self):
         _, _, _, numeric = self.inspect(generated(cut=True))
         prompt = audit.repair_prompt(plan(), "#00FF00", numeric, verdict(), 2)

@@ -5,10 +5,10 @@ import numpy as np
 
 try:
     from .core import key_rgb, validate_image
-    from .autonomous_audit import _one_plan, _object
+    from .autonomous_audit import _one_plan, _object, _identity_note
 except ImportError:
     from core import key_rgb, validate_image
-    from autonomous_audit import _one_plan, _object
+    from autonomous_audit import _one_plan, _object, _identity_note
 
 
 def _polygon(value, label):
@@ -20,7 +20,7 @@ def _polygon(value, label):
     return value
 
 
-def target_guide(reference_crop, plan_text, localization_text, key):
+def target_guide(reference_crop, plan_text, localization_text, key, identity_record=""):
     reference = validate_image(reference_crop)
     if reference.shape[0] != 1:
         raise ValueError("Guide needs one current reference crop.")
@@ -99,8 +99,10 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         "The guide may omit an entire real peak, remove large visible rock regions or "
         "contain occluder-shaped notches. Never copy those errors or let Image 2 override "
         "the actual original reference crop. Use the target name, appearance and attached "
-        "parts to identify the same unit in Image 1, excluding its other-depth neighbors. Retain the correct "
-        "visible target silhouette, peaks and attached shoulders. Do not reproduce the polygon mask's artificial lower "
+        "parts to identify the same unit in Image 1, excluding its other-depth neighbors.\n"
+        + _identity_note(identity_record, target) +
+        "Retain the correct visible target silhouette, peaks and attached shoulders. "
+        "Do not reproduce the polygon mask's artificial lower "
         "edge: reconstruct the hidden short natural mountain foot and smooth natural outline "
         "from the target's own structure. Extend the lower visible slopes downward only "
         "slightly, let them curve into a gently rounded irregular foot with real volume. "
@@ -115,6 +117,8 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         "its pointed crowns into artificial rock spikes. "
         "Complete both lower side shoulders and the base as short curved volumetric "
         "feet; never terminate them at straight side cut planes or a paper-thin polygon.\n"
+        "The lower silhouette follows a softly undulating natural foot with thickness, "
+        "not a straight slice, regular geometric ellipse or frozen guide boundary.\n"
         f"Local target observation: {localization['description']}\n"
         f"Hidden base to complete: {localization['hidden_base']}\n"
         f"Connected parts: {json.dumps(target['connected_parts'], ensure_ascii=False)}\n"

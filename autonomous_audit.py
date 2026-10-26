@@ -301,7 +301,28 @@ def _comparison(source, raw, rgba, guide=None, key=None):
     return sheet[None], panels
 
 
-def _review_prompt(plan, target, report):
+def _identity_note(identity_record, target):
+    if not identity_record:
+        return ""
+    identity = _object(identity_record, "identity_record")
+    point = identity.get("target_point_crop_1000")
+    if (identity.get("id") != target["id"] or not isinstance(point, list) or
+            len(point) != 2 or any(type(v) is not int or not 0 <= v <= 1000 for v in point)):
+        raise ValueError("identity_record must identify this target at a valid current-crop point.")
+    return (
+        f"Identity anchor: asset_id {target['id']} contains point {_dump(point)} on the "
+        "CURRENT source crop's integer 0..1000 grid. This anchor takes priority over "
+        "global scene location words and vague peak-count descriptions. In diagnostic "
+        "SOURCE CROP views the red circle/cross marks this point; ignore the red circle "
+        "as annotation, never judge it as a material color or reproduce it in the asset. "
+        "Identify the rock containing this point and all genuinely attached parts. "
+        "Do not switch to a neighbor at the crop's upper-left or to an unrelated depth. "
+        "For generation/repair, use this same position in Image 1 even when its source "
+        "pixels are unmarked. Judge actual visible connected geometry at that anchor.\n"
+    )
+
+
+def _review_prompt(plan, target, report, identity_record=""):
     schema = {**dict.fromkeys(VISUAL_GATES, False), "score": 0,
               "issues": ["Concrete blocking defect, with location and missing/extraneous part"]}
     contract = {field: target[field] for field in (
@@ -309,6 +330,7 @@ def _review_prompt(plan, target, report):
     contract["excluded_objects"] = target["excluded_objects"]
     return (
         "Review one connected terrain asset against its actual reference crop. "
+        + _identity_note(identity_record, target) +
         "Inspect LOWER FOOT DETAIL first, then compare the two-column full views. "
         "The detail is an unchanged enlarged crop of recovered alpha, not a separate asset. "
         "When KEY COLOR DETAIL is present, inspect its enlarged actual foreground pixels "
@@ -375,7 +397,7 @@ def _review_prompt(plan, target, report):
 
 
 def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=24,
-                  target_guide=None):
+                  target_guide=None, identity_record=""):
     """Return comparison RGB, visual-review prompt, candidate RGBA and numeric JSON.
 
     Numeric recovery failures return diagnostic_only:true and valid:false. Invalid
@@ -431,10 +453,10 @@ def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=2
         _, numeric_problems = _numeric(report, rgba)
         if numeric_problems:
             report.update(valid=False, diagnostic_only=True, problems=numeric_problems)
-    return sheet, _review_prompt(plan, target, report), rgba, _dump(report)
+    return sheet, _review_prompt(plan, target, report, identity_record), rgba, _dump(report)
 
 
-def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
+def repair_prompt(plan_text, key, numeric_report, visual_report, attempt, identity_record=""):
     """Compile generic feedback, retaining malformed audits as blocking failures."""
     plan, target = _one_plan(plan_text)
     key_rgb(key)
@@ -471,6 +493,7 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "is not immutable: remove its forest ribbon, extraneous fragments and crop planes "
         "when reported, and restore missing target parts using Image 1. Do not copy an "
         "error from either image. Finish the corrected asset, not a comparison sheet.\n"
+        + _identity_note(identity_record, target) +
         "Regenerate exactly this reference target from the actual original reference crop, "
         "using the editable guide only for identity, "
         "with the same "
@@ -503,6 +526,10 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "Replace that geometry with continuous sloping reference material. "
         "Remove artificial side cut planes and reconstruct both lower shoulders as "
         "short curved natural rock feet with thickness; no straight chopped endpoints.\n"
+        "Draw an irregular softly undulating lower contour that follows the source slopes "
+        "and turns around the mountain foot. Do not terminate the mountain at a straight "
+        "line, a regular geometric ellipse or the guide polygon boundary. Keep the "
+        "visible surface flowing into a short thick foot, without a cutaway slab face.\n"
         "Remove trees, depth-mismatched terrain, separate overlapping formations, external "
         "ground and unrelated objects. Do not remove attached rock parts or the target's own "
         "natural surface. Explicit excluded_objects: " + _dump(target["excluded_objects"]) + "\n"

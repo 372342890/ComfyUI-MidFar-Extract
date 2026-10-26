@@ -106,6 +106,7 @@ class BAMidFarAssetInspect:
             "softness": ("FLOAT", {"default": .06, "min": 0, "max": .2, "step": .01}),
             "padding": ("INT", {"default": 24, "min": 0, "max": 256}),
         }, "optional": {"target_guide": ("IMAGE",),
+                        "identity_record": ("STRING", {"default": "", "forceInput": True}),
                         "diagnostic_prefix": ("STRING", {"default": "", "forceInput": True}),
                         "version": ("INT", {"default": 1, "min": 1, "max": 3})}}
     RETURN_TYPES = ("IMAGE", "STRING", "IMAGE", "STRING")
@@ -114,10 +115,10 @@ class BAMidFarAssetInspect:
     CATEGORY = "MidFar Extract/Autonomous"
 
     def run(self, image, reference_crop, plan, key_color, softness, padding, target_guide=None,
-            diagnostic_prefix="", version=1):
+            diagnostic_prefix="", version=1, identity_record=""):
         sheet, prompt, rgba, numeric = inspect_asset(
             _array(image), _array(reference_crop), plan, key_color, softness, padding,
-            None if target_guide is None else _array(target_guide))
+            None if target_guide is None else _array(target_guide), identity_record)
         if diagnostic_prefix:
             import folder_paths
             save_inspection(_array(image), sheet, rgba, numeric, prompt, diagnostic_prefix,
@@ -132,14 +133,15 @@ class BAMidFarTargetGuide:
             "reference_crop": ("IMAGE",), "plan": ("STRING", {"forceInput": True}),
             "localization": ("STRING", {"forceInput": True}),
             "key_color": ("STRING", {"forceInput": True}),
-        }}
+        }, "optional": {"identity_record": ("STRING", {"default": "", "forceInput": True})}}
     RETURN_TYPES = ("IMAGE", "STRING", "STRING", "IMAGE", "MASK")
     RETURN_NAMES = ("guide_image", "guide_prompt", "guide_record", "completion_guide", "foot_mask")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
-    def run(self, reference_crop, plan, localization, key_color):
-        image, prompt, record = target_guide(_array(reference_crop), plan, localization, key_color)
+    def run(self, reference_crop, plan, localization, key_color, identity_record=""):
+        image, prompt, record = target_guide(
+            _array(reference_crop), plan, localization, key_color, identity_record)
         marked, mask = completion_context(image, key_color)
         return torch.from_numpy(image), prompt, record, torch.from_numpy(marked), torch.from_numpy(mask)
 
@@ -171,14 +173,15 @@ class BAMidFarRepairPrompt:
             "numeric_report": ("STRING", {"forceInput": True}),
             "visual_report": ("STRING", {"forceInput": True}),
             "attempt": ("INT", {"default": 1, "min": 1, "max": 2}),
-        }}
+        }, "optional": {"identity_record": ("STRING", {"default": "", "forceInput": True})}}
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("repair_prompt",)
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
-    def run(self, plan, key_color, numeric_report, visual_report, attempt):
-        return (repair_prompt(plan, key_color, numeric_report, visual_report, attempt),)
+    def run(self, plan, key_color, numeric_report, visual_report, attempt, identity_record=""):
+        return (repair_prompt(plan, key_color, numeric_report, visual_report, attempt,
+                              identity_record),)
 
 
 class BAMidFarChooseAsset:

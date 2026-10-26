@@ -161,6 +161,18 @@ class GraphContract(unittest.TestCase):
             self.assertEqual(self.nodes[guide["source"]]["data"]["type"], "BAMidFarTargetGuide")
             self.assertTrue(any(e["target"] == inspector["id"] and e["targetHandle"] == "diagnostic_prefix"
                                 for e in self.edges), "Rejected raw candidates must remain inspectable.")
+            source = next(e for e in self.edges if e["target"] == inspector["id"]
+                          and e["targetHandle"] == "reference_crop")
+            self.assertEqual(self.nodes[source["source"]]["data"]["type"], "BAMidFarLocalizationView")
+            self.assertEqual(source["sourceHandle"], "marked_crop")
+        for consumer in (self.of_type("BAMidFarAssetInspect")
+                         + self.of_type("BAMidFarRepairPrompt")
+                         + self.of_type("BAMidFarTargetGuide")):
+            identity = next((e for e in self.edges if e["target"] == consumer["id"]
+                             and e["targetHandle"] == "identity_record"), None)
+            self.assertIsNotNone(identity, "Every judgment/edit needs the same actual crop anchor.")
+            self.assertEqual(self.nodes[identity["source"]]["data"]["type"], "BAMidFarLocalizationView")
+            self.assertEqual(identity["sourceHandle"], "localization_record")
 
     def test_localization_polygons_are_retained_as_diagnostic_outputs(self):
         for guide in self.of_type("BAMidFarTargetGuide"):
