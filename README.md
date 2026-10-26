@@ -5,7 +5,7 @@
 ## 一次运行输出三份完整中远景素材
 
 使用根目录 `midfar-three-autonomous.byteartist.json`。安装本仓库并重启后，
-粘贴导入整个 JSON，在第一个 LoadImage 换参考图，设置输出目录前缀，
+粘贴导入整个 JSON，在第一个 LoadImage 换参考图，
 点击一次“全局运行”。分析、选材、生成、检查和修正都在这一个工作流内，
 不需要再次导入展开结果。所有图片节点固定使用 **Seedream 5.0 pro**，
 2048×2048、PNG、关闭水印。视觉判断分成候选分析、交叉复核和逐版审查，
@@ -206,7 +206,11 @@ detached foreground parts remain blocking defects.
 
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
-The graph includes 119 nodes and 286 connections. The native image
+The streamlined graph includes 106 nodes and 271 connections. Twelve
+side-effect-only `SaveText` nodes and the literal prefix node were removed;
+the prefix is now an inline input on each source-reference node. All remaining
+nodes contribute to the three final PNGs. Model inputs, identity anchors,
+matting and both correction rounds are unchanged. The native image
 handoffs deliver the actual crop, guide and exact reviewed candidate to each repair.
 Earlier 98-node / 220-connection clipboard loading was verified after the
 workbench completed mounting; large graphs may take time to load. Allow the
@@ -235,8 +239,9 @@ polygons; shorter verdict-only reviews retain their 1800-token allowance.
 Optional diagnostic prefixes retain raw candidates, alpha review images and
 the original numeric/visual replies under the output directory even if final
 selection raises. These are inspection records, not accepted asset outputs.
-Each branch also saves its exact localization polygon, occluder polygons and
-guide record. Screen prompts require a flat RGB color without paint grain.
+Localization polygon and occluder records remain node outputs for inspection,
+without separate text-file saves in the production graph.
+Screen prompts require a flat RGB color without paint grain.
 The current-crop identity anchor is passed to generation, review and repair.
 Diagnostic source views show a red circle at the automatically chosen point;
 model image inputs retain the original unmarked pixels. The marker is annotation

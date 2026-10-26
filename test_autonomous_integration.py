@@ -174,13 +174,14 @@ class GraphContract(unittest.TestCase):
             self.assertEqual(self.nodes[identity["source"]]["data"]["type"], "BAMidFarLocalizationView")
             self.assertEqual(identity["sourceHandle"], "localization_record")
 
-    def test_localization_polygons_are_retained_as_diagnostic_outputs(self):
-        for guide in self.of_type("BAMidFarTargetGuide"):
-            saved = [e for e in self.edges if e["source"] == guide["id"]
-                     and e["sourceHandle"] == "guide_record"]
-            self.assertEqual(len(saved), 1)
-            self.assertEqual(self.nodes[saved[0]["target"]]["data"]["type"], "SaveText|pysssss")
-            self.assertEqual(saved[0]["targetHandle"], "text")
+    def test_only_output_dependencies_remain_without_side_effect_only_saves(self):
+        self.assertEqual(len(self.of_type("SaveText|pysssss")), 0)
+        self.assertEqual(len(self.of_type("PrimitiveString")), 0)
+        used = set()
+        for save in self.of_type("SaveImage"):
+            used.update(self.ancestors(save["id"]))
+            used.add(save["id"])
+        self.assertEqual(used, set(self.nodes), "Unnecessary nodes must be pruned.")
 
     def test_every_model_reference_uses_standard_native_loading(self):
         carriers = {n["id"] for n in self.of_type("BALLMImage")+self.of_type("BALLMText")}

@@ -42,40 +42,6 @@
       }
     },
     {
-      "id": "90",
-      "type": "baNode",
-      "position": {
-        "x": 0,
-        "y": 500
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "PrimitiveString",
-        "title": "输出目录前缀",
-        "inputs": [
-          {
-            "name": "value",
-            "label": "value",
-            "type": "STRING",
-            "value": "midfar-autonomous"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "initialWidth": 360,
       "initialHeight": 480,
       "id": "101",
@@ -724,180 +690,6 @@
       }
     },
     {
-      "id": "190",
-      "type": "baNode",
-      "position": {
-        "x": 460,
-        "y": -550
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "候选原始观察记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-candidates.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "191",
-      "type": "baNode",
-      "position": {
-        "x": 920,
-        "y": -550
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "候选硬过滤记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-candidate-review.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "192",
-      "type": "baNode",
-      "position": {
-        "x": 1840,
-        "y": -550
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "三份选材复核记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-three-plans.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "id": "200",
       "type": "baNode",
       "position": {
@@ -928,7 +720,7 @@
             "name": "filename_prefix",
             "label": "filename_prefix",
             "type": "STRING",
-            "format": "slot"
+            "value": "midfar-autonomous"
           },
           {
             "name": "crop_context",
@@ -961,64 +753,6 @@
           {
             "name": "source_record",
             "label": "source_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "290",
-      "type": "baNode",
-      "position": {
-        "x": 2300,
-        "y": 520
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材1原图对应",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-1-source.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
             "type": "STRING"
           }
         ],
@@ -1404,64 +1138,6 @@
             "name": "foot_mask",
             "label": "foot_mask",
             "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "243",
-      "type": "baNode",
-      "position": {
-        "x": 3000,
-        "y": 1000
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材1定位轮廓与排除区域记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-1-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
           }
         ],
         "extra": {
@@ -4891,64 +4567,6 @@
       }
     },
     {
-      "id": "291",
-      "type": "baNode",
-      "position": {
-        "x": 8280,
-        "y": 520
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材1数值/视觉审查与最终选择",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-1-accepted.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "id": "300",
       "type": "baNode",
       "position": {
@@ -4979,7 +4597,7 @@
             "name": "filename_prefix",
             "label": "filename_prefix",
             "type": "STRING",
-            "format": "slot"
+            "value": "midfar-autonomous"
           },
           {
             "name": "crop_context",
@@ -5012,64 +4630,6 @@
           {
             "name": "source_record",
             "label": "source_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "390",
-      "type": "baNode",
-      "position": {
-        "x": 2300,
-        "y": 1620
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材2原图对应",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-2-source.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
             "type": "STRING"
           }
         ],
@@ -5455,64 +5015,6 @@
             "name": "foot_mask",
             "label": "foot_mask",
             "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "343",
-      "type": "baNode",
-      "position": {
-        "x": 3000,
-        "y": 2100
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材2定位轮廓与排除区域记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-2-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
           }
         ],
         "extra": {
@@ -8942,64 +8444,6 @@
       }
     },
     {
-      "id": "391",
-      "type": "baNode",
-      "position": {
-        "x": 8280,
-        "y": 1620
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材2数值/视觉审查与最终选择",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-2-accepted.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "id": "400",
       "type": "baNode",
       "position": {
@@ -9030,7 +8474,7 @@
             "name": "filename_prefix",
             "label": "filename_prefix",
             "type": "STRING",
-            "format": "slot"
+            "value": "midfar-autonomous"
           },
           {
             "name": "crop_context",
@@ -9063,64 +8507,6 @@
           {
             "name": "source_record",
             "label": "source_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "490",
-      "type": "baNode",
-      "position": {
-        "x": 2300,
-        "y": 2720
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材3原图对应",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-3-source.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
             "type": "STRING"
           }
         ],
@@ -9506,64 +8892,6 @@
             "name": "foot_mask",
             "label": "foot_mask",
             "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "443",
-      "type": "baNode",
-      "position": {
-        "x": 3000,
-        "y": 3200
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材3定位轮廓与排除区域记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-3-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
           }
         ],
         "extra": {
@@ -12993,64 +12321,6 @@
       }
     },
     {
-      "id": "491",
-      "type": "baNode",
-      "position": {
-        "x": 8280,
-        "y": 2720
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材3数值/视觉审查与最终选择",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-3-accepted.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "id": "1000",
       "type": "baNode",
       "position": {
@@ -15006,54 +14276,6 @@
       }
     },
     {
-      "id": "708",
-      "type": "baEdge",
-      "source": "101",
-      "target": "190",
-      "sourceHandle": "text",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "709",
-      "type": "baEdge",
-      "source": "102",
-      "target": "191",
-      "sourceHandle": "candidate_manifest",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "710",
-      "type": "baEdge",
-      "source": "104",
-      "target": "192",
-      "sourceHandle": "selection_report",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
       "id": "711",
       "type": "baEdge",
       "source": "104",
@@ -15082,38 +14304,6 @@
         "targetType": "IMAGE",
         "extra": {
           "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "713",
-      "type": "baEdge",
-      "source": "90",
-      "target": "200",
-      "sourceHandle": "STRING",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "714",
-      "type": "baEdge",
-      "source": "200",
-      "target": "290",
-      "sourceHandle": "source_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
         }
       }
     },
@@ -15252,22 +14442,6 @@
       "target": "242",
       "sourceHandle": "localization_record",
       "targetHandle": "identity_record",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "724",
-      "type": "baEdge",
-      "source": "242",
-      "target": "243",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -16238,22 +15412,6 @@
       }
     },
     {
-      "id": "785",
-      "type": "baEdge",
-      "source": "231",
-      "target": "291",
-      "sourceHandle": "selection_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
       "id": "786",
       "type": "baEdge",
       "source": "104",
@@ -16282,38 +15440,6 @@
         "targetType": "IMAGE",
         "extra": {
           "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "788",
-      "type": "baEdge",
-      "source": "90",
-      "target": "300",
-      "sourceHandle": "STRING",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "789",
-      "type": "baEdge",
-      "source": "300",
-      "target": "390",
-      "sourceHandle": "source_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
         }
       }
     },
@@ -16452,22 +15578,6 @@
       "target": "342",
       "sourceHandle": "localization_record",
       "targetHandle": "identity_record",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "799",
-      "type": "baEdge",
-      "source": "342",
-      "target": "343",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -17438,22 +16548,6 @@
       }
     },
     {
-      "id": "860",
-      "type": "baEdge",
-      "source": "331",
-      "target": "391",
-      "sourceHandle": "selection_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
       "id": "861",
       "type": "baEdge",
       "source": "104",
@@ -17482,38 +16576,6 @@
         "targetType": "IMAGE",
         "extra": {
           "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "863",
-      "type": "baEdge",
-      "source": "90",
-      "target": "400",
-      "sourceHandle": "STRING",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "864",
-      "type": "baEdge",
-      "source": "400",
-      "target": "490",
-      "sourceHandle": "source_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
         }
       }
     },
@@ -17652,22 +16714,6 @@
       "target": "442",
       "sourceHandle": "localization_record",
       "targetHandle": "identity_record",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "874",
-      "type": "baEdge",
-      "source": "442",
-      "target": "443",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -18628,22 +17674,6 @@
       "target": "432",
       "sourceHandle": "filename_prefix",
       "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "935",
-      "type": "baEdge",
-      "source": "431",
-      "target": "491",
-      "sourceHandle": "selection_record",
-      "targetHandle": "text",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
