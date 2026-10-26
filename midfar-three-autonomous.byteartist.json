@@ -12588,6 +12588,1393 @@
           "output_preview_names": []
         }
       }
+    },
+    {
+      "id": "1000",
+      "type": "baNode",
+      "position": {
+        "x": 920,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1001",
+      "type": "baNode",
+      "position": {
+        "x": 1100,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1002",
+      "type": "baNode",
+      "position": {
+        "x": 2300,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1003",
+      "type": "baNode",
+      "position": {
+        "x": 2480,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1004",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 1100
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1005",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 1260
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1006",
+      "type": "baNode",
+      "position": {
+        "x": 3220,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1007",
+      "type": "baNode",
+      "position": {
+        "x": 3400,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1008",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 1100
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1009",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 1260
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1010",
+      "type": "baNode",
+      "position": {
+        "x": 5060,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1011",
+      "type": "baNode",
+      "position": {
+        "x": 5240,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1012",
+      "type": "baNode",
+      "position": {
+        "x": 6900,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1013",
+      "type": "baNode",
+      "position": {
+        "x": 7080,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1014",
+      "type": "baNode",
+      "position": {
+        "x": 2300,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1015",
+      "type": "baNode",
+      "position": {
+        "x": 2480,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1016",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 2200
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1017",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 2360
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1018",
+      "type": "baNode",
+      "position": {
+        "x": 3220,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1019",
+      "type": "baNode",
+      "position": {
+        "x": 3400,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1020",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 2200
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1021",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 2360
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1022",
+      "type": "baNode",
+      "position": {
+        "x": 5060,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1023",
+      "type": "baNode",
+      "position": {
+        "x": 5240,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1024",
+      "type": "baNode",
+      "position": {
+        "x": 6900,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1025",
+      "type": "baNode",
+      "position": {
+        "x": 7080,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1026",
+      "type": "baNode",
+      "position": {
+        "x": 2300,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1027",
+      "type": "baNode",
+      "position": {
+        "x": 2480,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1028",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 3300
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1029",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 3460
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1030",
+      "type": "baNode",
+      "position": {
+        "x": 3220,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1031",
+      "type": "baNode",
+      "position": {
+        "x": 3400,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1032",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 3300
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1033",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 3460
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1034",
+      "type": "baNode",
+      "position": {
+        "x": 5060,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1035",
+      "type": "baNode",
+      "position": {
+        "x": 5240,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1036",
+      "type": "baNode",
+      "position": {
+        "x": 6900,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1037",
+      "type": "baNode",
+      "position": {
+        "x": 7080,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
     }
   ],
   "edges": [
@@ -12658,9 +14045,9 @@
     {
       "id": "704",
       "type": "baEdge",
-      "source": "102",
+      "source": "1001",
       "target": "103",
-      "sourceHandle": "candidate_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -12834,9 +14221,9 @@
     {
       "id": "715",
       "type": "baEdge",
-      "source": "200",
+      "source": "1003",
       "target": "240",
-      "sourceHandle": "reference_crop",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -12962,9 +14349,9 @@
     {
       "id": "723",
       "type": "baEdge",
-      "source": "241",
+      "source": "1005",
       "target": "201",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13106,9 +14493,9 @@
     {
       "id": "732",
       "type": "baEdge",
-      "source": "202",
+      "source": "1007",
       "target": "203",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13122,9 +14509,9 @@
     {
       "id": "733",
       "type": "baEdge",
-      "source": "241",
+      "source": "1009",
       "target": "203",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13234,9 +14621,9 @@
     {
       "id": "740",
       "type": "baEdge",
-      "source": "241",
+      "source": "1005",
       "target": "211",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13378,9 +14765,9 @@
     {
       "id": "749",
       "type": "baEdge",
-      "source": "212",
+      "source": "1011",
       "target": "213",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13394,9 +14781,9 @@
     {
       "id": "750",
       "type": "baEdge",
-      "source": "241",
+      "source": "1009",
       "target": "213",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13506,9 +14893,9 @@
     {
       "id": "757",
       "type": "baEdge",
-      "source": "241",
+      "source": "1005",
       "target": "221",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13650,9 +15037,9 @@
     {
       "id": "766",
       "type": "baEdge",
-      "source": "222",
+      "source": "1013",
       "target": "223",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13666,9 +15053,9 @@
     {
       "id": "767",
       "type": "baEdge",
-      "source": "241",
+      "source": "1009",
       "target": "223",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13954,9 +15341,9 @@
     {
       "id": "785",
       "type": "baEdge",
-      "source": "300",
+      "source": "1015",
       "target": "340",
-      "sourceHandle": "reference_crop",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14082,9 +15469,9 @@
     {
       "id": "793",
       "type": "baEdge",
-      "source": "341",
+      "source": "1017",
       "target": "301",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14226,9 +15613,9 @@
     {
       "id": "802",
       "type": "baEdge",
-      "source": "302",
+      "source": "1019",
       "target": "303",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14242,9 +15629,9 @@
     {
       "id": "803",
       "type": "baEdge",
-      "source": "341",
+      "source": "1021",
       "target": "303",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14354,9 +15741,9 @@
     {
       "id": "810",
       "type": "baEdge",
-      "source": "341",
+      "source": "1017",
       "target": "311",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14498,9 +15885,9 @@
     {
       "id": "819",
       "type": "baEdge",
-      "source": "312",
+      "source": "1023",
       "target": "313",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14514,9 +15901,9 @@
     {
       "id": "820",
       "type": "baEdge",
-      "source": "341",
+      "source": "1021",
       "target": "313",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14626,9 +16013,9 @@
     {
       "id": "827",
       "type": "baEdge",
-      "source": "341",
+      "source": "1017",
       "target": "321",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14770,9 +16157,9 @@
     {
       "id": "836",
       "type": "baEdge",
-      "source": "322",
+      "source": "1025",
       "target": "323",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14786,9 +16173,9 @@
     {
       "id": "837",
       "type": "baEdge",
-      "source": "341",
+      "source": "1021",
       "target": "323",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15074,9 +16461,9 @@
     {
       "id": "855",
       "type": "baEdge",
-      "source": "400",
+      "source": "1027",
       "target": "440",
-      "sourceHandle": "reference_crop",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15202,9 +16589,9 @@
     {
       "id": "863",
       "type": "baEdge",
-      "source": "441",
+      "source": "1029",
       "target": "401",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15346,9 +16733,9 @@
     {
       "id": "872",
       "type": "baEdge",
-      "source": "402",
+      "source": "1031",
       "target": "403",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15362,9 +16749,9 @@
     {
       "id": "873",
       "type": "baEdge",
-      "source": "441",
+      "source": "1033",
       "target": "403",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15474,9 +16861,9 @@
     {
       "id": "880",
       "type": "baEdge",
-      "source": "441",
+      "source": "1029",
       "target": "411",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15618,9 +17005,9 @@
     {
       "id": "889",
       "type": "baEdge",
-      "source": "412",
+      "source": "1035",
       "target": "413",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15634,9 +17021,9 @@
     {
       "id": "890",
       "type": "baEdge",
-      "source": "441",
+      "source": "1033",
       "target": "413",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15746,9 +17133,9 @@
     {
       "id": "897",
       "type": "baEdge",
-      "source": "441",
+      "source": "1029",
       "target": "421",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15890,9 +17277,9 @@
     {
       "id": "906",
       "type": "baEdge",
-      "source": "422",
+      "source": "1037",
       "target": "423",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -15906,9 +17293,9 @@
     {
       "id": "907",
       "type": "baEdge",
-      "source": "441",
+      "source": "1033",
       "target": "423",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16118,6 +17505,614 @@
       "target": "491",
       "sourceHandle": "selection_record",
       "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "921",
+      "type": "baEdge",
+      "source": "102",
+      "target": "1000",
+      "sourceHandle": "candidate_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "922",
+      "type": "baEdge",
+      "source": "1000",
+      "target": "1001",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "923",
+      "type": "baEdge",
+      "source": "200",
+      "target": "1002",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "924",
+      "type": "baEdge",
+      "source": "1002",
+      "target": "1003",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "925",
+      "type": "baEdge",
+      "source": "241",
+      "target": "1004",
+      "sourceHandle": "completion_guide",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "926",
+      "type": "baEdge",
+      "source": "1004",
+      "target": "1005",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "927",
+      "type": "baEdge",
+      "source": "202",
+      "target": "1006",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "928",
+      "type": "baEdge",
+      "source": "1006",
+      "target": "1007",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "929",
+      "type": "baEdge",
+      "source": "241",
+      "target": "1008",
+      "sourceHandle": "guide_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "930",
+      "type": "baEdge",
+      "source": "1008",
+      "target": "1009",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "931",
+      "type": "baEdge",
+      "source": "212",
+      "target": "1010",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "932",
+      "type": "baEdge",
+      "source": "1010",
+      "target": "1011",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "933",
+      "type": "baEdge",
+      "source": "222",
+      "target": "1012",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "934",
+      "type": "baEdge",
+      "source": "1012",
+      "target": "1013",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "935",
+      "type": "baEdge",
+      "source": "300",
+      "target": "1014",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "936",
+      "type": "baEdge",
+      "source": "1014",
+      "target": "1015",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "937",
+      "type": "baEdge",
+      "source": "341",
+      "target": "1016",
+      "sourceHandle": "completion_guide",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "938",
+      "type": "baEdge",
+      "source": "1016",
+      "target": "1017",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "939",
+      "type": "baEdge",
+      "source": "302",
+      "target": "1018",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "940",
+      "type": "baEdge",
+      "source": "1018",
+      "target": "1019",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "941",
+      "type": "baEdge",
+      "source": "341",
+      "target": "1020",
+      "sourceHandle": "guide_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "942",
+      "type": "baEdge",
+      "source": "1020",
+      "target": "1021",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "943",
+      "type": "baEdge",
+      "source": "312",
+      "target": "1022",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "944",
+      "type": "baEdge",
+      "source": "1022",
+      "target": "1023",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "945",
+      "type": "baEdge",
+      "source": "322",
+      "target": "1024",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "946",
+      "type": "baEdge",
+      "source": "1024",
+      "target": "1025",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "947",
+      "type": "baEdge",
+      "source": "400",
+      "target": "1026",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "948",
+      "type": "baEdge",
+      "source": "1026",
+      "target": "1027",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "949",
+      "type": "baEdge",
+      "source": "441",
+      "target": "1028",
+      "sourceHandle": "completion_guide",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "950",
+      "type": "baEdge",
+      "source": "1028",
+      "target": "1029",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "951",
+      "type": "baEdge",
+      "source": "402",
+      "target": "1030",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "952",
+      "type": "baEdge",
+      "source": "1030",
+      "target": "1031",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "953",
+      "type": "baEdge",
+      "source": "441",
+      "target": "1032",
+      "sourceHandle": "guide_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "954",
+      "type": "baEdge",
+      "source": "1032",
+      "target": "1033",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "955",
+      "type": "baEdge",
+      "source": "412",
+      "target": "1034",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "956",
+      "type": "baEdge",
+      "source": "1034",
+      "target": "1035",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "957",
+      "type": "baEdge",
+      "source": "422",
+      "target": "1036",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "958",
+      "type": "baEdge",
+      "source": "1036",
+      "target": "1037",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",

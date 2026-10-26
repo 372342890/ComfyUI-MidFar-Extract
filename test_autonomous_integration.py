@@ -10,6 +10,7 @@ NEW_TYPES = {
     "BAMidFarRepairPrompt", "BAMidFarChooseAsset",
     "BAMidFarTargetGuide",
     "BAMidFarCompleteFoot",
+    "BAMidFarNativeImageFile",
 }
 
 
@@ -56,8 +57,10 @@ class GraphContract(unittest.TestCase):
         self.assertEqual(len(saves), 3)
         self.assertEqual(len(self.of_type("BAMidFarChooseAsset")), 3)
         self.assertEqual(len(self.of_type("BAMidFarThreePlans")), 1)
-        self.assertEqual(len(self.of_type("LoadImage")), 1)
-        source = self.of_type("LoadImage")[0]["id"]
+        sources = [n for n in self.of_type("LoadImage") if any(
+            i["name"] == "image" and "value" in i for i in n["data"]["inputs"])]
+        self.assertEqual(len(sources), 1)
+        source = sources[0]["id"]
         providers = []
         for save in saves:
             self.assertIn(source, self.ancestors(save["id"]))
@@ -118,8 +121,20 @@ class GraphContract(unittest.TestCase):
             images = [e for e in self.edges
                       if e["target"] == generator["id"] and e["targetHandle"] == "image"]
             self.assertEqual(len(images), 1)
-            self.assertEqual(self.nodes[images[0]["source"]]["data"]["type"], "BAMidFarTargetGuide")
-            self.assertEqual(images[0]["sourceHandle"], "completion_guide")
+            loader = self.nodes[images[0]["source"]]
+            self.assertEqual(loader["data"]["type"], "LoadImage")
+            self.assertEqual(images[0]["sourceHandle"], "IMAGE")
+            handoff_id = next(e["source"] for e in self.edges if e["target"] == loader["id"])
+            self.assertEqual(self.nodes[handoff_id]["data"]["type"], "BAMidFarNativeImageFile")
+            origin = next(e for e in self.edges if e["target"] == handoff_id)
+            self.assertEqual(self.nodes[origin["source"]]["data"]["type"], "BAMidFarTargetGuide")
+            self.assertEqual(origin["sourceHandle"], "completion_guide")
+
+    def test_every_model_reference_uses_standard_native_loading(self):
+        carriers = {n["id"] for n in self.of_type("BALLMImage")+self.of_type("BALLMText")}
+        for edge in self.edges:
+            if edge["target"] in carriers and edge["targetHandle"] == "image":
+                self.assertEqual(self.nodes[edge["source"]]["data"]["type"], "LoadImage")
 
 
 if __name__ == "__main__":

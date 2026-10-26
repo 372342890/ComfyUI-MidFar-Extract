@@ -202,6 +202,12 @@ detached foreground parts remain blocking defects.
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
 
+Intermediate references now pass through `BAMidFarNativeImageFile` and standard
+`LoadImage` before reaching native image/text models. PNG files preserve RGB
+pixels and use content-addressed paths under the ComfyUI input directory. This
+also makes native model references independently inspectable; it does not relax
+the numeric or visual acceptance gates.
+
 ## Reference-guided natural terrain assets
 
 `Style image + shape image + brief → vision LLM assets JSON → BATerrainWorkflowExpand → import JSON → independent image carriers → RGBA PNGs`

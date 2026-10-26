@@ -7,7 +7,7 @@ from .selection import parse_selection, crop_reference, selected_prompt, expand_
 from .autonomous_nodes import (
     BAMidFarCandidateReview, BAMidFarThreePlans, BAMidFarAutonomousReference,
     BAMidFarAssetInspect, BAMidFarRepairPrompt, BAMidFarChooseAsset, BAMidFarTargetGuide,
-    BAMidFarCompleteFoot,
+    BAMidFarCompleteFoot, BAMidFarNativeImageFile,
 )
 
 
@@ -299,6 +299,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarChooseAsset": BAMidFarChooseAsset,
     "BAMidFarTargetGuide": BAMidFarTargetGuide,
     "BAMidFarCompleteFoot": BAMidFarCompleteFoot,
+    "BAMidFarNativeImageFile": BAMidFarNativeImageFile,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -319,4 +320,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarChooseAsset": "MidFar Choose Asset / 仅输出合格透明素材",
     "BAMidFarTargetGuide": "MidFar Target Guide / 自动轮廓定位参考",
     "BAMidFarCompleteFoot": "MidFar Complete Foot / 保留原形只合成山脚",
+    "BAMidFarNativeImageFile": "MidFar Native Image File / 原生图片传递",
 }

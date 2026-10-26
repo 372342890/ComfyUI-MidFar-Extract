@@ -6,10 +6,25 @@ from .autonomous_plan import candidate_review, split_three, asset_reference
 from .autonomous_audit import inspect_asset, repair_prompt, choose_asset
 from .target_guide import target_guide
 from .foot_completion import completion_context, complete_foot
+from .image_handoff import native_image_file
 
 
 def _array(image):
     return image.detach().cpu().numpy()
+
+
+class BAMidFarNativeImageFile:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {"image": ("IMAGE",)}}
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("image_file",)
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Autonomous"
+
+    def run(self, image):
+        import folder_paths
+        return (native_image_file(_array(image), folder_paths.get_input_directory()),)
 
 
 class BAMidFarCandidateReview:
