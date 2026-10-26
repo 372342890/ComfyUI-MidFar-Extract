@@ -1270,7 +1270,7 @@
             },
             "max_tokens": {
               "switch": true,
-              "value": 1800
+              "value": 4500
             },
             "temperature": {
               "switch": true,
@@ -5203,7 +5203,7 @@
             },
             "max_tokens": {
               "switch": true,
-              "value": 1800
+              "value": 4500
             },
             "temperature": {
               "switch": true,
@@ -9136,7 +9136,7 @@
             },
             "max_tokens": {
               "switch": true,
-              "value": 1800
+              "value": 4500
             },
             "temperature": {
               "switch": true,

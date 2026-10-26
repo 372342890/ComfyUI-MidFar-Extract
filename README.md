@@ -227,6 +227,8 @@ even in dark trees while ignoring nearly neutral snow/stone hues.
 When suspicious screen-hue pixels occur inside recovered foreground, visual
 review receives an unchanged magnified `KEY COLOR DETAIL` and compares it to
 the original material. Repairs must erase tree geometry, rather than recolor it.
+The localization reply has its own 4500-token allowance for target and occluder
+polygons; shorter verdict-only reviews retain their 1800-token allowance.
 
 Optional diagnostic prefixes retain raw candidates, alpha review images and
 the original numeric/visual replies under the output directory even if final
