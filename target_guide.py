@@ -78,7 +78,9 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     left, top = (side-dw)//2, (side-dh)//2
     guide[top:top+dh, left:left+dw] = cut+color*(1-cut_mask)
     prompt = (
-        f"编辑当前原图像素构成的粗轮廓参考，输出一座完整素材，背景均匀纯色{key}。"
+        f"图1是真实原图裁片，图2是自动粗定位参考。输出一座完整素材，背景均匀纯色{key}。"
+        "图1中目标真实形体、峰数和颜色是权威依据；图2仅提示身份，"
+        "可能漏掉整座峰或大块岩肩、有遮挡凹口，禁止照抄这些粗定位错误。"
         "优先保留原图目标自己的浅色、空气透视、笔触、峰形和相连岩肩，不重新设计。"
         "参考是自动粗定位，不是成品或不可改遮罩；可以删掉误纳入的天空/别的深度残片，"
         "恢复被粗定位漏掉的真实相连部分，并补全被挡住的短自然岩脚。"
@@ -88,10 +90,16 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         "下缘沿上方坡面自然收束成有厚度、略圆缓起伏的完整岩脚，不能平直切片。"
         "不增加山峰、草地托盘、浮空岛裙、树木、散落物。主体缩到画布约65%，四侧留白。"
         "不要加深颜色、增强对比、锐化成写实岩石；远景柔和雾色直接保留。只输出成图。\n"
-        f"The input is a rough source-pixel localization GUIDE for {target['name']} "
+        "Image 1 is the actual original reference crop and is authoritative for the "
+        "target's visible geometry, peak count, proportions, material, light and style. "
+        f"Image 2 is a rough source-pixel localization GUIDE for {target['name']} "
         f"(asset_id {target['id']}), not a finished asset. This editable guide identifies "
         "the intended source unit; remove incorrect fragments from other depths and "
-        "restore genuinely attached parts if localization missed them. Retain the correct "
+        "restore genuinely attached parts from Image 1 if localization missed them. "
+        "The guide may omit an entire real peak, remove large visible rock regions or "
+        "contain occluder-shaped notches. Never copy those errors or let Image 2 override "
+        "the actual original reference crop. Use the target name, appearance and attached "
+        "parts to identify the same unit in Image 1, excluding its other-depth neighbors. Retain the correct "
         "visible target silhouette, peaks and attached shoulders. Do not reproduce the polygon mask's artificial lower "
         "edge: reconstruct the hidden short natural mountain foot and smooth natural outline "
         "from the target's own structure. Extend the lower visible slopes downward only "
@@ -113,7 +121,10 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         f"Excluded objects: {json.dumps(target['excluded_objects'], ensure_ascii=False)}\n"
         f"Original style: {plan['style']}. Retain source light, colors, textures, viewpoint "
         "and atmospheric perspective. Finish as one complete natural terrain asset centered "
-        f"with 15% empty margin on every side, on uniform pure {key}. No cast shadows, "
+        f"with 15% empty margin on every side, on uniform pure {key}. "
+        "The screen is a perfectly flat RGB color: no grain, painted texture, speckles, "
+        "paper fibers, lighting, gradients or strokes anywhere in the background. "
+        "Do not transfer the source image's paint texture to the empty screen. No cast shadows, "
         "reflections, text, panels or environmental ground. Only output the completed image."
     )
     record = {**localization, "occluder_polygons": occluders,

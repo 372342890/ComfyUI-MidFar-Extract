@@ -123,19 +123,23 @@ class GraphContract(unittest.TestCase):
                       if e["target"] == generator["id"] and e["targetHandle"] == "image"]
             is_repair = any(self.nodes[e["source"]]["data"]["type"] == "BAMidFarRepairPrompt"
                             for e in self.edges if e["target"] == generator["id"])
-            self.assertEqual(len(images), 2 if is_repair else 1)
+            self.assertEqual(len(images), 3 if is_repair else 2)
             loader = self.nodes[images[0]["source"]]
             self.assertEqual(loader["data"]["type"], "LoadImage")
             self.assertEqual(images[0]["sourceHandle"], "IMAGE")
             handoff_id = next(e["source"] for e in self.edges if e["target"] == loader["id"])
             self.assertEqual(self.nodes[handoff_id]["data"]["type"], "BAMidFarNativeImageFile")
             origin = next(e for e in self.edges if e["target"] == handoff_id)
-            self.assertEqual(self.nodes[origin["source"]]["data"]["type"], "BAMidFarTargetGuide")
-            self.assertEqual(origin["sourceHandle"], "guide_image")
-            self.assertTrue(any(self.nodes[a]["data"]["type"] == "BAMidFarAutonomousReference"
-                                for a in self.ancestors(origin["source"])))
+            self.assertEqual(self.nodes[origin["source"]]["data"]["type"], "BAMidFarAutonomousReference")
+            self.assertEqual(origin["sourceHandle"], "reference_crop")
+            guide_loader = images[1]["source"]
+            guide_handoff = next(e["source"] for e in self.edges if e["target"] == guide_loader)
+            guide_origin = next(e for e in self.edges if e["target"] == guide_handoff)
+            self.assertEqual(self.nodes[guide_origin["source"]]["data"]["type"], "BAMidFarTargetGuide")
+            self.assertEqual(guide_origin["sourceHandle"], "guide_image")
+            self.assertIn(origin["source"], self.ancestors(guide_origin["source"]))
             if is_repair:
-                prior_loader = images[1]["source"]
+                prior_loader = images[2]["source"]
                 prior_handoff = next(e["source"] for e in self.edges if e["target"] == prior_loader)
                 prior_origin = next(e for e in self.edges if e["target"] == prior_handoff)
                 self.assertEqual(self.nodes[prior_origin["source"]]["data"]["type"], "BALLMImage")
@@ -157,6 +161,14 @@ class GraphContract(unittest.TestCase):
             self.assertEqual(self.nodes[guide["source"]]["data"]["type"], "BAMidFarTargetGuide")
             self.assertTrue(any(e["target"] == inspector["id"] and e["targetHandle"] == "diagnostic_prefix"
                                 for e in self.edges), "Rejected raw candidates must remain inspectable.")
+
+    def test_localization_polygons_are_retained_as_diagnostic_outputs(self):
+        for guide in self.of_type("BAMidFarTargetGuide"):
+            saved = [e for e in self.edges if e["source"] == guide["id"]
+                     and e["sourceHandle"] == "guide_record"]
+            self.assertEqual(len(saved), 1)
+            self.assertEqual(self.nodes[saved[0]["target"]]["data"]["type"], "SaveText|pysssss")
+            self.assertEqual(saved[0]["targetHandle"], "text")
 
     def test_every_model_reference_uses_standard_native_loading(self):
         carriers = {n["id"] for n in self.of_type("BALLMImage")+self.of_type("BALLMText")}

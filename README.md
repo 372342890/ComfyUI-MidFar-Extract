@@ -185,11 +185,13 @@ Import `midfar-three-autonomous.byteartist.json` in ByteArtist, replace the
 reference image, then click global run once. The fixed graph examines candidate
 connections and occlusions, selects three units, and makes a real source crop for
 each target. A source-coordinate target point is marked automatically before
-precise polygon localization. Every generation and repair uses a fresh source-pixel
-guide through a standard `LoadImage` handoff. Repairs also receive the actual
-previous candidate as image 2, so the model can see and edit the defects cited by
-the review. The original guide remains image 1 for target identity and source
-style; neither image freezes an incorrect mask or overrides rejection.
+precise polygon localization. Every generation and repair receives the actual
+original crop as image 1 and a rough source-pixel guide as image 2, through
+standard `LoadImage` handoffs. Repairs also receive the actual previous candidate
+as image 3, so the model can see and edit the defects cited by the review.
+The original crop is authoritative for visible geometry, peak count and style;
+the guide only identifies the unit and may omit real regions or contain notches.
+Neither the guide nor the prior candidate freezes an incorrect mask.
 
 Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
 editable source guide so they can remove unrelated upper fragments, restore connected
@@ -204,8 +206,8 @@ detached foreground parts remain blocking defects.
 
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
-The graph includes 110 nodes and 250 connections. The added native image
-handoffs deliver the exact previously reviewed candidate to each repair.
+The graph includes 119 nodes and 268 connections. The native image
+handoffs deliver the actual crop, guide and exact reviewed candidate to each repair.
 Earlier 98-node / 220-connection clipboard loading was verified after the
 workbench completed mounting; large graphs may take time to load. Allow the
 workbench to mount the graph before replacing or re-importing it.
@@ -233,6 +235,8 @@ polygons; shorter verdict-only reviews retain their 1800-token allowance.
 Optional diagnostic prefixes retain raw candidates, alpha review images and
 the original numeric/visual replies under the output directory even if final
 selection raises. These are inspection records, not accepted asset outputs.
+Each branch also saves its exact localization polygon, occluder polygons and
+guide record. Screen prompts require a flat RGB color without paint grain.
 The workflow still has exactly three final `SaveImage` nodes.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard

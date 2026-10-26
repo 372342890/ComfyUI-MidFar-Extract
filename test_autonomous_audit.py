@@ -428,13 +428,17 @@ class AuditTests(unittest.TestCase):
         self.assertIn("unrelated curled upper fragment", prompt)
         self.assertIn("missing side peak", prompt)
 
-    def test_repair_identifies_actual_previous_candidate_as_editable_second_image(self):
+    def test_repair_uses_authoritative_source_and_actual_candidate_as_third_image(self):
         _, numeric = self.good_candidate()
         prompt = audit.repair_prompt(plan(), "#00FF00", numeric,
                                      verdict(no_unrelated_objects=False, issues=["forest ribbon"]), 1)
-        for phrase in ("Image 1", "Image 2", "previous candidate", "not immutable",
-                       "actual visible defects", "forest ribbon"):
+        for phrase in ("Image 1", "Image 2", "Image 3", "previous candidate", "not immutable",
+                       "actual visible defects", "forest ribbon", "authoritative", "no grain"):
             self.assertIn(phrase, prompt)
+        _, review, _, _ = self.inspect()
+        self.assertIn("source crop is authoritative", review)
+        self.assertIn("guide may omit", review)
+        self.assertNotIn("Image 2 is the actual previous", prompt)
 
     def test_clipping_repair_calls_for_scale_down_and_all_side_margins(self):
         _, _, _, numeric = self.inspect(generated(cut=True))

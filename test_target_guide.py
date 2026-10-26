@@ -78,6 +78,18 @@ class TargetGuideTests(unittest.TestCase):
         self.assertIn("incorrect fragments", prompt)
         self.assertNotIn("只重绘朱红", prompt)
 
+    def test_punched_guide_cannot_override_the_actual_source_geometry(self):
+        reference = np.full((1, 100, 120, 3), [.2, .4, .6], np.float32)
+        localization = {"asset_id": "unit_a",
+            "visible_polygon": [[200, 800], [500, 500], [800, 800]],
+            "description": "main peak is incorrectly omitted in this rough polygon",
+            "hidden_base": "complete short natural foot"}
+        _, prompt, _ = target_guide(reference, plan(), localization, "#FF00FF")
+        for phrase in ("Image 1", "actual original reference crop", "authoritative",
+                       "Image 2", "omit", "peak count", "uniform", "no grain"):
+            self.assertIn(phrase, prompt)
+        self.assertNotIn("The input is a rough", prompt)
+
     def test_api_available(self):
         self.assertTrue(callable(target_guide))
 
