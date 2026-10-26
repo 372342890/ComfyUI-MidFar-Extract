@@ -20,11 +20,11 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     if localization.get("asset_id") != target["id"]:
         raise ValueError("Localization asset_id must match the actual target.")
     polygon = localization.get("visible_polygon")
-    if (not isinstance(polygon, list) or not 3 <= len(polygon) <= 80 or
+    if (not isinstance(polygon, list) or not 3 <= len(polygon) <= 256 or
             any(not isinstance(point, list) or len(point) != 2 or
                 any(type(v) is not int or not 0 <= v <= 1000 for v in point)
                 for point in polygon)):
-        raise ValueError("visible_polygon requires 3..80 points on an integer 0..1000 grid.")
+        raise ValueError("visible_polygon requires 3..256 points on an integer 0..1000 grid.")
     for field in ("description", "hidden_base"):
         if not isinstance(localization.get(field), str) or not localization[field].strip():
             raise ValueError("Localization needs " + field)

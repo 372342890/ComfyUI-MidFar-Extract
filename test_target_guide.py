@@ -11,6 +11,22 @@ except ImportError:
 from test_autonomous_audit import plan
 
 class TargetGuideTests(unittest.TestCase):
+    def test_detailed_model_polygon_preserves_all_vertices(self):
+        angles = np.linspace(0, 2*np.pi, 96, endpoint=False)
+        points = np.round(np.stack((500+280*np.cos(angles),
+                                    500+280*np.sin(angles)), axis=-1)).astype(int).tolist()
+        localization = json.dumps({
+            "asset_id": "unit_a", "visible_polygon": points,
+            "description": "detailed connected outline", "hidden_base": "short foot",
+        })
+        try:
+            image, _, record = target_guide(np.full((1, 100, 120, 3), .4, np.float32),
+                                            plan(), localization, "#FF00FF")
+        except ValueError as error:
+            self.fail(f"A detailed model polygon must remain usable: {error}")
+        self.assertEqual(json.loads(record)["visible_polygon"], points)
+        self.assertEqual(image.shape, (1, 120, 120, 3))
+
     def test_guide_is_editable_and_never_freezes_localization_errors(self):
         reference = np.full((1, 100, 120, 3), [.2, .4, .6], np.float32)
         localization = json.dumps({
