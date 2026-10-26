@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import http.server
+import threading
 
 
 class WeightTests(unittest.TestCase):
@@ -65,6 +67,40 @@ class WeightTests(unittest.TestCase):
                 model_assets.verified_download(source.as_uri(), target, 8,
                                                hashlib.sha256(b"fixture").hexdigest())
             self.assertFalse(target.exists())
+
+    def test_parallel_ranges_preserve_real_bytes_and_verify_checksum(self):
+        import model_assets
+        payload = b"actual range fixture" * 100000
+        requests = []
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args):
+                pass
+
+            def do_GET(self):
+                first, last = map(int, self.headers["Range"][6:].split("-"))
+                requests.append((first, last))
+                self.send_response(206)
+                self.send_header("Content-Range", f"bytes {first}-{last}/{len(payload)}")
+                self.send_header("Content-Length", str(last-first+1))
+                self.end_headers()
+                self.wfile.write(payload[first:last+1])
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                target = Path(d)/"weight"
+                model_assets.parallel_verified_download(
+                    f"http://127.0.0.1:{server.server_port}/weight", target,
+                    len(payload), hashlib.sha256(payload).hexdigest(),
+                    workers=4, chunk_size=256*1024)
+                self.assertEqual(target.read_bytes(), payload)
+                self.assertGreater(len(requests), 4)
+        finally:
+            server.shutdown()
+            server.server_close()
 
 
 if __name__ == "__main__":

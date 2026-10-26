@@ -2,6 +2,8 @@
 import hashlib
 import json
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import threading
 import time
 import urllib.request
 
@@ -77,9 +79,78 @@ def verified_download(url, destination, expected_size, expected_sha, progress_pa
         raise ValueError("Pinned checkpoint transfer failed: " + type(error).__name__) from None
 
 
+def parallel_verified_download(url, destination, expected_size, expected_sha,
+                               progress_path=None, workers=8, chunk_size=64*1024*1024):
+    """Range-transfer a pinned large file; never promote an unverified part."""
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        return verified_download(url, destination, expected_size, expected_sha, progress_path)
+    part = destination.with_suffix(destination.suffix+".part")
+    progress_path = Path(progress_path) if progress_path else None
+    received, last_update = 0, 0
+    lock = threading.Lock()
+
+    def progress(status):
+        if progress_path:
+            progress_path.parent.mkdir(parents=True, exist_ok=True)
+            record = {"status": status, "received": received, "expected": expected_size,
+                      "filename": destination.name, "workers": workers, "time": time.time()}
+            temp = progress_path.with_suffix(".tmp")
+            temp.write_text(json.dumps(record), encoding="utf-8")
+            temp.replace(progress_path)
+
+    progress("downloading")
+    with part.open("wb") as out:
+        out.truncate(expected_size)
+
+    def transfer(bounds):
+        nonlocal received, last_update
+        first, last = bounds
+        request = urllib.request.Request(url, headers={
+            "User-Agent": "MidFar-3D/1.0", "Range": f"bytes={first}-{last}"})
+        with urllib.request.urlopen(request, timeout=120) as response, part.open("r+b") as out:
+            if (response.status != 206 or
+                    response.headers.get("Content-Range") != f"bytes {first}-{last}/{expected_size}"):
+                raise ValueError("Model host did not honor the verified byte range")
+            out.seek(first)
+            count = 0
+            while True:
+                block = response.read(4*1024*1024)
+                if not block:
+                    break
+                count += len(block)
+                if count > last-first+1:
+                    raise ValueError("Model range length exceeded")
+                out.write(block)
+                with lock:
+                    received += len(block)
+                    if time.monotonic()-last_update > 2:
+                        progress("downloading")
+                        last_update = time.monotonic()
+            if count != last-first+1:
+                raise ValueError("Model range length mismatch")
+
+    bounds = [(first, min(first+chunk_size, expected_size)-1)
+              for first in range(0, expected_size, chunk_size)]
+    try:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for _ in pool.map(transfer, bounds):
+                pass
+        progress("verifying")
+        _verified(part, expected_size, expected_sha)
+        part.replace(destination)
+        progress("verified")
+        return destination
+    except Exception as error:
+        progress("failed")
+        raise ValueError("Parallel pinned checkpoint transfer failed: " +
+                         type(error).__name__) from None
+
+
 def ensure_hunyuan_checkpoint(models_directory, progress_path=None):
     models_directory = Path(models_directory)
     destination = models_directory/"checkpoints"/"midfar"/HUNYUAN["filename"]
-    verified_download(HUNYUAN["url"], destination, HUNYUAN["bytes"],
-                      HUNYUAN["sha256"], progress_path)
+    parallel_verified_download(HUNYUAN["url"], destination, HUNYUAN["bytes"],
+                               HUNYUAN["sha256"], progress_path)
     return "midfar/" + HUNYUAN["filename"]
