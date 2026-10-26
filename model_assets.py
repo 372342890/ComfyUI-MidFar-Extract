@@ -18,6 +18,7 @@ HUNYUAN = {
 }
 HUNYUAN["url"] = ("https://huggingface.co/" + HUNYUAN["repository"] +
                   "/resolve/" + HUNYUAN["revision"] + "/" + HUNYUAN["remote_path"])
+HUNYUAN["mirror_url"] = HUNYUAN["url"].replace("https://huggingface.co/", "https://hf-mirror.com/", 1)
 
 
 def _verified(path, expected_size, expected_sha):
@@ -150,9 +151,24 @@ def parallel_verified_download(url, destination, expected_size, expected_sha,
                          type(error).__name__) from None
 
 
+def verified_download_sources(urls, destination, expected_size, expected_sha, progress_path=None):
+    """Try identical pinned files; a partial/corrupt transfer is never promoted."""
+    destination = Path(destination)
+    if destination.exists():
+        _verified(destination, expected_size, expected_sha)
+        return verified_download(urls[0], destination, expected_size, expected_sha, progress_path)
+    failures = []
+    for url in urls:
+        try:
+            return verified_download(url, destination, expected_size, expected_sha, progress_path)
+        except ValueError as error:
+            failures.append(type(error).__name__)
+    raise ValueError("All pinned model download sources failed: "+", ".join(failures))
+
+
 def ensure_hunyuan_checkpoint(models_directory, progress_path=None):
     models_directory = Path(models_directory)
     destination = models_directory/"checkpoints"/"midfar"/HUNYUAN["filename"]
-    parallel_verified_download(HUNYUAN["url"], destination, HUNYUAN["bytes"],
-                               HUNYUAN["sha256"], progress_path)
+    verified_download_sources([HUNYUAN["mirror_url"], HUNYUAN["url"]], destination,
+                              HUNYUAN["bytes"], HUNYUAN["sha256"], progress_path)
     return "midfar/" + HUNYUAN["filename"]

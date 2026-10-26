@@ -68,6 +68,30 @@ class WeightTests(unittest.TestCase):
                                                hashlib.sha256(b"fixture").hexdigest())
             self.assertFalse(target.exists())
 
+    def test_fallback_download_promotes_only_verified_source(self):
+        import model_assets
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            first, second, target = root/"unverified", root/"verified", root/"model"
+            first.write_bytes(b"corrupt")
+            second.write_bytes(b"correct")
+            model_assets.verified_download_sources(
+                [first.as_uri(), second.as_uri()], target, 7,
+                hashlib.sha256(b"correct").hexdigest())
+            self.assertEqual(target.read_bytes(), b"correct")
+
+    def test_fallback_sources_do_not_delete_corrupt_existing_model(self):
+        import model_assets
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            source, target = root/"source", root/"model"
+            source.write_bytes(b"correct")
+            target.write_bytes(b"corrupt")
+            with self.assertRaises(ValueError):
+                model_assets.verified_download_sources(
+                    [source.as_uri()], target, 7, hashlib.sha256(b"correct").hexdigest())
+            self.assertEqual(target.read_bytes(), b"corrupt")
+
     def test_parallel_ranges_preserve_real_bytes_and_verify_checksum(self):
         import model_assets
         payload = b"actual range fixture" * 100000

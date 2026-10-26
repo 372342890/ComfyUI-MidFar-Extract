@@ -87,7 +87,7 @@ class BAMidFar3DGenerate:
         voxel = _native("VAEDecodeHunyuan3D", vae=vae, samples=samples,
                         num_chunks=8000, octree_resolution=256)[0]
         mesh = _native("VoxelToMesh", voxel=voxel, algorithm="surface net", threshold=.6)[0]
-        record = {"model": {k: v for k, v in HUNYUAN.items() if k != "url"},
+        record = {"model": {k: v for k, v in HUNYUAN.items() if k not in ("url", "mirror_url")},
                   "native_nodes": ["CLIPVisionEncode", "Hunyuan3Dv2Conditioning",
                                    "EmptyLatentHunyuan3Dv2", "KSampler",
                                    "VAEDecodeHunyuan3D", "VoxelToMesh"],

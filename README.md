@@ -315,6 +315,8 @@ downloads the pinned official 4.93 GB checkpoint to
 `models/checkpoints/midfar/`; size and SHA256 must match before loading.
 Download progress is stored under `output/midfar-3d/hunyuan-download.json`.
 Allow sufficient model storage and GPU memory.
+The pinned file is downloaded from `hf-mirror.com` with the official Hugging Face
+URL as fallback. Both sources must pass the same official size and SHA256.
 This version matches the workbench's native `Hunyuan3Dv2` model detector;
 Hunyuan3D 2.1 requires a newer ComfyUI core than this workbench currently runs.
 
