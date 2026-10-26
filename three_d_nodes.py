@@ -47,7 +47,7 @@ class BAMidFar3DModel:
     RETURN_NAMES = ("model", "clip_vision", "vae")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/3D"
-    DESCRIPTION = "Verified official Hunyuan3D 2.1; shared by all three assets."
+    DESCRIPTION = "Verified official Hunyuan3D 2.0; compatible with native Hunyuan3Dv2 and shared by all assets."
 
     def run(self):
         import folder_paths
@@ -80,7 +80,7 @@ class BAMidFar3DGenerate:
         rgb = torch.from_numpy(prepare_rgb(rgba.detach().cpu().numpy()))
         encoded = _native("CLIPVisionEncode", clip_vision=clip_vision, image=rgb, crop="none")[0]
         positive, negative = _native("Hunyuan3Dv2Conditioning", clip_vision_output=encoded)
-        latent = _native("EmptyLatentHunyuan3Dv2", resolution=4096, batch_size=1)[0]
+        latent = _native("EmptyLatentHunyuan3Dv2", resolution=3072, batch_size=1)[0]
         samples = _native("KSampler", model=model, seed=seed, steps=30, cfg=5.0,
                           sampler_name="euler", scheduler="normal", positive=positive,
                           negative=negative, latent_image=latent, denoise=1.0)[0]
@@ -91,7 +91,7 @@ class BAMidFar3DGenerate:
                   "native_nodes": ["CLIPVisionEncode", "Hunyuan3Dv2Conditioning",
                                    "EmptyLatentHunyuan3Dv2", "KSampler",
                                    "VAEDecodeHunyuan3D", "VoxelToMesh"],
-                  "seed": seed, "steps": 30, "cfg": 5, "latent_resolution": 4096,
+                  "seed": seed, "steps": 30, "cfg": 5, "latent_resolution": 3072,
                   "octree_resolution": 256, "algorithm": "surface net",
                   "duration_seconds": round(time.monotonic()-started, 3)}
         return mesh, json.dumps(record)

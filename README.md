@@ -309,12 +309,14 @@ one shared `BAMidFar3DModel`, three `BAMidFar3DGenerate` instances and three
 `BAMidFarGLBExport` instances. All three original PNG outputs remain.
 
 Image generation stays on Seedream 5.0 pro. Shape generation uses the installed
-native Hunyuan3D 2.1 image-conditioned diffusion pipeline, 4096 latent tokens,
+native Hunyuan3D 2.0 image-conditioned diffusion pipeline, 3072 latent tokens,
 30 Euler steps/CFG 5, octree 256 and surface-net extraction. The first run
-downloads the pinned official 7.37 GB checkpoint to
+downloads the pinned official 4.93 GB checkpoint to
 `models/checkpoints/midfar/`; size and SHA256 must match before loading.
 Download progress is stored under `output/midfar-3d/hunyuan-download.json`.
 Allow sufficient model storage and GPU memory.
+This version matches the workbench's native `Hunyuan3Dv2` model detector;
+Hunyuan3D 2.1 requires a newer ComfyUI core than this workbench currently runs.
 
 RGBA is composited on white with square padding; it is never stretched or
 cropped. Generated mesh positions and triangle indices are preserved in glTF

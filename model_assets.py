@@ -8,14 +8,16 @@ import time
 import urllib.request
 
 HUNYUAN = {
-    "repository": "Comfy-Org/Hunyuan-3D-2.1",
-    "revision": "606def5076d38b387b005caf93b5336c56ca99f9",
-    "filename": "hunyuan_3d_v2.1.safetensors",
-    "bytes": 7365943290,
-    "sha256": "5f21e98a6cb99b13b5e224abaee33929570fff7af2b6a0060001559a04ba9d72",
+    "repository": "Comfy-Org/Hunyuan-3D-2.0",
+    "revision": "6da110fc4bbaa23cc4fe7d20129c54c2aac28f80",
+    "filename": "hunyuan3d-dit-v2_fp16.safetensors",
+    "remote_path": "split_files/hunyuan3d-dit-v2_fp16.safetensors",
+    "version": "2.0",
+    "bytes": 4928151562,
+    "sha256": "360bc281fc956d4acac0c3d36d5ec0ebf8cdddbf4b8892e894d12419388d479b",
 }
 HUNYUAN["url"] = ("https://huggingface.co/" + HUNYUAN["repository"] +
-                  "/resolve/" + HUNYUAN["revision"] + "/" + HUNYUAN["filename"])
+                  "/resolve/" + HUNYUAN["revision"] + "/" + HUNYUAN["remote_path"])
 
 
 def _verified(path, expected_size, expected_sha):
