@@ -13,6 +13,29 @@ def guide():
 
 
 class FootCompletionTests(unittest.TestCase):
+    def test_edit_region_covers_occluder_notches_above_fixed_fraction(self):
+        image = guide()
+        image[:, 76:110, 74:87] = [1, 0, 1]
+        _, mask = completion_context(image, "#FF00FF")
+        self.assertGreater(float(mask[0, 77, 80]), .25)
+
+    def test_large_foot_notch_is_detected_without_rejecting_rounded_feet(self):
+        from foot_completion import foot_profile_problem
+        rgba = np.zeros((1, 160, 180, 4), np.float32)
+        rgba[:, 30:130, 20:160, 3] = 1
+        self.assertEqual(foot_profile_problem(rgba), "")
+        rgba[:, 90:130, 75:105, 3] = 0
+        self.assertIn("notch", foot_profile_problem(rgba))
+
+    def test_foot_transition_matches_reference_color_without_touching_upper(self):
+        source = guide()
+        _, mask = completion_context(source, "#FF00FF")
+        generated = source.copy()
+        generated[:, 70:125, 45:115] = [.4, .6, .8]
+        result, _ = complete_foot(generated, source, mask, "#FF00FF")
+        np.testing.assert_allclose(result[0, 92, 80], [.3, .5, .7], atol=.04)
+        np.testing.assert_array_equal(result[:, :65], source[:, :65])
+
     def test_api_exists(self):
         self.assertTrue(callable(completion_context))
         self.assertTrue(callable(complete_foot))

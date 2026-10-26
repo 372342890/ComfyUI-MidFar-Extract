@@ -25,10 +25,12 @@ try:
     from .core import key_rgb, validate_image
     from .objects import crop_asset
     from .selection import parse_selection, selected_matte, selected_prompt
+    from .foot_completion import foot_profile_problem
 except ImportError:
     from core import key_rgb, validate_image
     from objects import crop_asset
     from selection import parse_selection, selected_matte, selected_prompt
+    from foot_completion import foot_profile_problem
 
 
 VISUAL_GATES = ("target_match", "complete_outline", "connected_parts_preserved",
@@ -307,6 +309,9 @@ def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=2
             problems.append(quality["warning"])
         if quality["removed_remote_pixels"]:
             problems.append("Matte recovery removed detached pixels; inspect raw image and regenerate.")
+        outline_problem = foot_profile_problem(rgba)
+        if outline_problem:
+            problems.append(outline_problem)
     except (ValueError, cv2.error) as error:
         matte_error = str(error)
         problems.append(matte_error)
@@ -359,6 +364,7 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         f"局部重绘：图片中朱红#FF380A区域是待补全的山脚，只编辑朱红范围，"
         f"背景输出均匀纯色{key}。其余原图上半部保持原位置比例轮廓颜色不变。"
         "朱红范围重绘为顺着上方岩坡自然延伸的短、完整、有体积的岩脚，周围为纯色背景。"
+        "补齐下沿所有凹洞和遮挡者形状缺口，连成目标自身连续自然岩基，不得照抄遮罩切口。"
         "不要放大或重新居中，不添加峰柱、树、地面、浮空下垂岩基。图像编辑后保持同一画布。\n"
         "Regenerate exactly this reference target from its source-pixel guide, with the same "
         "visible peak count, slopes, proportions, viewpoint, color and soft aerial perspective. "

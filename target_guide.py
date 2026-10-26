@@ -57,6 +57,7 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         "岩肩、颜色、积雪、纹理与位置全部保持原样；画布大小、主体位置和比例均不变。"
         "不要裁图、放大、换背景色、增加树木、新峰、岩柱或浮空下垂底座。"
         "脚部顺着上半部坡面向下短距离收束，末端有自然圆缓的不规则岩脚体积，"
+        "原遮罩下沿的凹洞、树冠锯齿和缺口必须补成连续岩体；左右坡脚都要有厚度。"
         "没有整条直线切口、薄纸底、矩形凹口、独立地面托盘。朱红是编辑标记，不是主体颜色，"
         "完成后不能残留朱红。只输出编辑后的图片。\n"
         f"The input is a rough source-pixel localization GUIDE for {target['name']} "

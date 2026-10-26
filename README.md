@@ -208,6 +208,10 @@ pixels and use content-addressed paths under the ComfyUI input directory. This
 also makes native model references independently inspectable; it does not relax
 the numeric or visual acceptance gates.
 
+Lower-foot edit regions automatically expand above inward occluder notches.
+Transition colors are matched inside the edit region; a geometric lower-profile
+check rejects deep unfilled occlusion cutouts even if a visual model misses them.
+
 ## Reference-guided natural terrain assets
 
 `Style image + shape image + brief → vision LLM assets JSON → BATerrainWorkflowExpand → import JSON → independent image carriers → RGBA PNGs`
