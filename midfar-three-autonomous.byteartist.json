@@ -1022,376 +1022,6 @@
     {
       "initialWidth": 360,
       "initialHeight": 480,
-      "id": "240",
-      "width": 360,
-      "data": {
-        "title": "先思考当前目标轮廓 · 排除其他深度",
-        "type": "BALLMText",
-        "inputs": [
-          {
-            "name": "text",
-            "label": "文本",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "image",
-            "label": "图片",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "video",
-            "label": "视频",
-            "type": "VIDEO",
-            "format": "slot"
-          },
-          {
-            "name": "audio",
-            "label": "音频",
-            "type": "AUDIO",
-            "format": "slot"
-          },
-          {
-            "name": "model",
-            "label": "model",
-            "type": "STRING",
-            "value": ""
-          },
-          {
-            "name": "user_prompt",
-            "label": "user_prompt",
-            "type": "STRING",
-            "value": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。\n输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。\nvisible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "text",
-            "type": "STRING",
-            "label": "文本"
-          }
-        ],
-        "extra": {
-          "output_preview_names": [],
-          "uiHeightMap": {
-            "user_prompt": 220
-          },
-          "model": {
-            "cover_url": "https://p11-chimera.byteimg.com/tos-cn-i-tl5fq5atma/ba_model_cover/doubao.png~tplv-tl5fq5atma-image.webp",
-            "key": "Doubao-Seed-2.1-pro",
-            "max_tokens": 1000,
-            "model": "Doubao-Seed-2.1-pro",
-            "name": "豆包2.1 pro",
-            "name_en": "Doubao 2.1 pro",
-            "origin": "egress",
-            "schema": [
-              {
-                "default_value": "false",
-                "format": "select",
-                "internal_name": "thinking",
-                "json_path": "thinking.type",
-                "label": "thinking",
-                "name": "thinking",
-                "omitempty": false,
-                "props": {
-                  "enums": [
-                    {
-                      "label": "false",
-                      "value": "disabled"
-                    },
-                    {
-                      "label": "true",
-                      "value": "enabled"
-                    }
-                  ],
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "是否开启深度思考模式",
-                "type": "string",
-                "visible": true
-              },
-              {
-                "default_value": 1000,
-                "format": "input_number",
-                "internal_name": "max_tokens",
-                "json_path": "max_tokens",
-                "label": "最大回复长度",
-                "name": "max_tokens",
-                "omitempty": false,
-                "props": {
-                  "max": 256000,
-                  "min": 1,
-                  "precision": 0,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "可控制模型回复的最多 Token 数量，以满足不同场景和需求。通常 100 Tokens 约等于 60 个中文汉字。",
-                "type": "int",
-                "visible": true
-              },
-              {
-                "default_value": 1,
-                "format": "input_number",
-                "internal_name": "temperature",
-                "json_path": "temperature",
-                "label": "温度",
-                "name": "temperature",
-                "omitempty": false,
-                "props": {
-                  "max": 2,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "温度控制随机性。较低的温度会导致较少的随机完成。随着温度接近零，模型将变得确定性和重复性。较高的温度会导致更多的随机完成。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": 0.7,
-                "format": "input_number",
-                "internal_name": "top_p",
-                "json_path": "top_p",
-                "label": "Top P",
-                "name": "top_p",
-                "omitempty": false,
-                "props": {
-                  "max": 1,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": false,
-                "tips": "通过核心采样控制多样性：0.5表示考虑了一半的所有可能性加权选项。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": -1,
-                "format": "input_seed",
-                "internal_name": "seed",
-                "json_path": "seed",
-                "label": "seed",
-                "name": "seed",
-                "omitempty": false,
-                "props": {
-                  "max": 2147483647,
-                  "min": -1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "seed",
-                "type": "int",
-                "visible": true
-              }
-            ],
-            "support_input_types": [
-              "text",
-              "image",
-              "video"
-            ],
-            "support_multi_image_input": true,
-            "support_multi_prompt_input": true,
-            "support_multimodal": false,
-            "support_vision_status": 2,
-            "vision_model": "Doubao-Seed-2.1-pro"
-          },
-          "modelConfig": {
-            "thinking": {
-              "switch": true,
-              "value": "disabled"
-            },
-            "max_tokens": {
-              "switch": true,
-              "value": 1800
-            },
-            "temperature": {
-              "switch": true,
-              "value": 0.1
-            },
-            "system_prompt": {
-              "switch": true,
-              "value": "按当前图片与连接文本严谨判断。只输出要求的合法JSON，无代码围栏。"
-            }
-          },
-          "user_prompt": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "visible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-                }
-              ]
-            }
-          ]
-        }
-      },
-      "position": {
-        "x": 2300,
-        "y": 750
-      },
-      "type": "baNode",
-      "zIndex": 0,
-      "selected": false
-    },
-    {
-      "id": "241",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 750
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarTargetGuide",
-        "title": "只隔离当前目标参考 · 山脚交给生成补全",
-        "inputs": [
-          {
-            "name": "reference_crop",
-            "label": "reference_crop",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "plan",
-            "label": "plan",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "localization",
-            "label": "localization",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "guide_image",
-            "label": "guide_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "guide_prompt",
-            "label": "guide_prompt",
-            "type": "STRING"
-          },
-          {
-            "name": "guide_record",
-            "label": "guide_record",
-            "type": "STRING"
-          },
-          {
-            "name": "completion_guide",
-            "label": "completion_guide",
-            "type": "IMAGE"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "292",
-      "type": "baNode",
-      "position": {
-        "x": 3220,
-        "y": 750
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材1自动轮廓定位记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-1-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "initialWidth": 360,
-      "initialHeight": 480,
       "id": "201",
       "width": 360,
       "data": {
@@ -1414,7 +1044,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+            "value": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。\n精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。\n严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
           },
           {
             "name": "model",
@@ -2031,7 +1661,23 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+                  "text": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
                 }
               ]
             }
@@ -2045,63 +1691,6 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
-    },
-    {
-      "id": "206",
-      "type": "baNode",
-      "position": {
-        "x": 3060,
-        "y": 480
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
     },
     {
       "id": "202",
@@ -2225,7 +1814,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -2391,7 +1980,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -2407,7 +1996,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -2455,7 +2052,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -3072,7 +2669,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -3137,63 +2734,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "216",
-      "type": "baNode",
-      "position": {
-        "x": 4900,
-        "y": 480
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -3324,7 +2864,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -3490,7 +3030,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -3506,7 +3046,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -3554,7 +3102,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -4171,7 +3719,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -4236,63 +3784,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "226",
-      "type": "baNode",
-      "position": {
-        "x": 6740,
-        "y": 480
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -4423,7 +3914,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -4589,7 +4080,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -4605,7 +4096,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -4946,376 +4445,6 @@
     {
       "initialWidth": 360,
       "initialHeight": 480,
-      "id": "340",
-      "width": 360,
-      "data": {
-        "title": "先思考当前目标轮廓 · 排除其他深度",
-        "type": "BALLMText",
-        "inputs": [
-          {
-            "name": "text",
-            "label": "文本",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "image",
-            "label": "图片",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "video",
-            "label": "视频",
-            "type": "VIDEO",
-            "format": "slot"
-          },
-          {
-            "name": "audio",
-            "label": "音频",
-            "type": "AUDIO",
-            "format": "slot"
-          },
-          {
-            "name": "model",
-            "label": "model",
-            "type": "STRING",
-            "value": ""
-          },
-          {
-            "name": "user_prompt",
-            "label": "user_prompt",
-            "type": "STRING",
-            "value": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。\n输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。\nvisible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "text",
-            "type": "STRING",
-            "label": "文本"
-          }
-        ],
-        "extra": {
-          "output_preview_names": [],
-          "uiHeightMap": {
-            "user_prompt": 220
-          },
-          "model": {
-            "cover_url": "https://p11-chimera.byteimg.com/tos-cn-i-tl5fq5atma/ba_model_cover/doubao.png~tplv-tl5fq5atma-image.webp",
-            "key": "Doubao-Seed-2.1-pro",
-            "max_tokens": 1000,
-            "model": "Doubao-Seed-2.1-pro",
-            "name": "豆包2.1 pro",
-            "name_en": "Doubao 2.1 pro",
-            "origin": "egress",
-            "schema": [
-              {
-                "default_value": "false",
-                "format": "select",
-                "internal_name": "thinking",
-                "json_path": "thinking.type",
-                "label": "thinking",
-                "name": "thinking",
-                "omitempty": false,
-                "props": {
-                  "enums": [
-                    {
-                      "label": "false",
-                      "value": "disabled"
-                    },
-                    {
-                      "label": "true",
-                      "value": "enabled"
-                    }
-                  ],
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "是否开启深度思考模式",
-                "type": "string",
-                "visible": true
-              },
-              {
-                "default_value": 1000,
-                "format": "input_number",
-                "internal_name": "max_tokens",
-                "json_path": "max_tokens",
-                "label": "最大回复长度",
-                "name": "max_tokens",
-                "omitempty": false,
-                "props": {
-                  "max": 256000,
-                  "min": 1,
-                  "precision": 0,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "可控制模型回复的最多 Token 数量，以满足不同场景和需求。通常 100 Tokens 约等于 60 个中文汉字。",
-                "type": "int",
-                "visible": true
-              },
-              {
-                "default_value": 1,
-                "format": "input_number",
-                "internal_name": "temperature",
-                "json_path": "temperature",
-                "label": "温度",
-                "name": "temperature",
-                "omitempty": false,
-                "props": {
-                  "max": 2,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "温度控制随机性。较低的温度会导致较少的随机完成。随着温度接近零，模型将变得确定性和重复性。较高的温度会导致更多的随机完成。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": 0.7,
-                "format": "input_number",
-                "internal_name": "top_p",
-                "json_path": "top_p",
-                "label": "Top P",
-                "name": "top_p",
-                "omitempty": false,
-                "props": {
-                  "max": 1,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": false,
-                "tips": "通过核心采样控制多样性：0.5表示考虑了一半的所有可能性加权选项。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": -1,
-                "format": "input_seed",
-                "internal_name": "seed",
-                "json_path": "seed",
-                "label": "seed",
-                "name": "seed",
-                "omitempty": false,
-                "props": {
-                  "max": 2147483647,
-                  "min": -1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "seed",
-                "type": "int",
-                "visible": true
-              }
-            ],
-            "support_input_types": [
-              "text",
-              "image",
-              "video"
-            ],
-            "support_multi_image_input": true,
-            "support_multi_prompt_input": true,
-            "support_multimodal": false,
-            "support_vision_status": 2,
-            "vision_model": "Doubao-Seed-2.1-pro"
-          },
-          "modelConfig": {
-            "thinking": {
-              "switch": true,
-              "value": "disabled"
-            },
-            "max_tokens": {
-              "switch": true,
-              "value": 1800
-            },
-            "temperature": {
-              "switch": true,
-              "value": 0.1
-            },
-            "system_prompt": {
-              "switch": true,
-              "value": "按当前图片与连接文本严谨判断。只输出要求的合法JSON，无代码围栏。"
-            }
-          },
-          "user_prompt": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "visible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-                }
-              ]
-            }
-          ]
-        }
-      },
-      "position": {
-        "x": 2300,
-        "y": 1850
-      },
-      "type": "baNode",
-      "zIndex": 0,
-      "selected": false
-    },
-    {
-      "id": "341",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 1850
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarTargetGuide",
-        "title": "只隔离当前目标参考 · 山脚交给生成补全",
-        "inputs": [
-          {
-            "name": "reference_crop",
-            "label": "reference_crop",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "plan",
-            "label": "plan",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "localization",
-            "label": "localization",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "guide_image",
-            "label": "guide_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "guide_prompt",
-            "label": "guide_prompt",
-            "type": "STRING"
-          },
-          {
-            "name": "guide_record",
-            "label": "guide_record",
-            "type": "STRING"
-          },
-          {
-            "name": "completion_guide",
-            "label": "completion_guide",
-            "type": "IMAGE"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "392",
-      "type": "baNode",
-      "position": {
-        "x": 3220,
-        "y": 1850
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材2自动轮廓定位记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-2-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "initialWidth": 360,
-      "initialHeight": 480,
       "id": "301",
       "width": 360,
       "data": {
@@ -5338,7 +4467,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+            "value": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。\n精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。\n严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
           },
           {
             "name": "model",
@@ -5955,7 +5084,23 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+                  "text": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
                 }
               ]
             }
@@ -5969,63 +5114,6 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
-    },
-    {
-      "id": "306",
-      "type": "baNode",
-      "position": {
-        "x": 3060,
-        "y": 1580
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
     },
     {
       "id": "302",
@@ -6149,7 +5237,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -6315,7 +5403,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -6331,7 +5419,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -6379,7 +5475,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -6996,7 +6092,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -7061,63 +6157,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "316",
-      "type": "baNode",
-      "position": {
-        "x": 4900,
-        "y": 1580
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -7248,7 +6287,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -7414,7 +6453,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -7430,7 +6469,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -7478,7 +6525,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -8095,7 +7142,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -8160,63 +7207,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "326",
-      "type": "baNode",
-      "position": {
-        "x": 6740,
-        "y": 1580
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -8347,7 +7337,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -8513,7 +7503,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -8529,7 +7519,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -8870,376 +7868,6 @@
     {
       "initialWidth": 360,
       "initialHeight": 480,
-      "id": "440",
-      "width": 360,
-      "data": {
-        "title": "先思考当前目标轮廓 · 排除其他深度",
-        "type": "BALLMText",
-        "inputs": [
-          {
-            "name": "text",
-            "label": "文本",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "image",
-            "label": "图片",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "video",
-            "label": "视频",
-            "type": "VIDEO",
-            "format": "slot"
-          },
-          {
-            "name": "audio",
-            "label": "音频",
-            "type": "AUDIO",
-            "format": "slot"
-          },
-          {
-            "name": "model",
-            "label": "model",
-            "type": "STRING",
-            "value": ""
-          },
-          {
-            "name": "user_prompt",
-            "label": "user_prompt",
-            "type": "STRING",
-            "value": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。\n输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。\nvisible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "text",
-            "type": "STRING",
-            "label": "文本"
-          }
-        ],
-        "extra": {
-          "output_preview_names": [],
-          "uiHeightMap": {
-            "user_prompt": 220
-          },
-          "model": {
-            "cover_url": "https://p11-chimera.byteimg.com/tos-cn-i-tl5fq5atma/ba_model_cover/doubao.png~tplv-tl5fq5atma-image.webp",
-            "key": "Doubao-Seed-2.1-pro",
-            "max_tokens": 1000,
-            "model": "Doubao-Seed-2.1-pro",
-            "name": "豆包2.1 pro",
-            "name_en": "Doubao 2.1 pro",
-            "origin": "egress",
-            "schema": [
-              {
-                "default_value": "false",
-                "format": "select",
-                "internal_name": "thinking",
-                "json_path": "thinking.type",
-                "label": "thinking",
-                "name": "thinking",
-                "omitempty": false,
-                "props": {
-                  "enums": [
-                    {
-                      "label": "false",
-                      "value": "disabled"
-                    },
-                    {
-                      "label": "true",
-                      "value": "enabled"
-                    }
-                  ],
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "是否开启深度思考模式",
-                "type": "string",
-                "visible": true
-              },
-              {
-                "default_value": 1000,
-                "format": "input_number",
-                "internal_name": "max_tokens",
-                "json_path": "max_tokens",
-                "label": "最大回复长度",
-                "name": "max_tokens",
-                "omitempty": false,
-                "props": {
-                  "max": 256000,
-                  "min": 1,
-                  "precision": 0,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "可控制模型回复的最多 Token 数量，以满足不同场景和需求。通常 100 Tokens 约等于 60 个中文汉字。",
-                "type": "int",
-                "visible": true
-              },
-              {
-                "default_value": 1,
-                "format": "input_number",
-                "internal_name": "temperature",
-                "json_path": "temperature",
-                "label": "温度",
-                "name": "temperature",
-                "omitempty": false,
-                "props": {
-                  "max": 2,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": true,
-                "tips": "温度控制随机性。较低的温度会导致较少的随机完成。随着温度接近零，模型将变得确定性和重复性。较高的温度会导致更多的随机完成。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": 0.7,
-                "format": "input_number",
-                "internal_name": "top_p",
-                "json_path": "top_p",
-                "label": "Top P",
-                "name": "top_p",
-                "omitempty": false,
-                "props": {
-                  "max": 1,
-                  "min": 0,
-                  "precision": 1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "show_switch": true,
-                "switch_value": false,
-                "tips": "通过核心采样控制多样性：0.5表示考虑了一半的所有可能性加权选项。",
-                "type": "float32",
-                "visible": true
-              },
-              {
-                "default_value": -1,
-                "format": "input_seed",
-                "internal_name": "seed",
-                "json_path": "seed",
-                "label": "seed",
-                "name": "seed",
-                "omitempty": false,
-                "props": {
-                  "max": 2147483647,
-                  "min": -1,
-                  "required": false,
-                  "support_smart_duration": null
-                },
-                "tips": "seed",
-                "type": "int",
-                "visible": true
-              }
-            ],
-            "support_input_types": [
-              "text",
-              "image",
-              "video"
-            ],
-            "support_multi_image_input": true,
-            "support_multi_prompt_input": true,
-            "support_multimodal": false,
-            "support_vision_status": 2,
-            "vision_model": "Doubao-Seed-2.1-pro"
-          },
-          "modelConfig": {
-            "thinking": {
-              "switch": true,
-              "value": "disabled"
-            },
-            "max_tokens": {
-              "switch": true,
-              "value": 1800
-            },
-            "temperature": {
-              "switch": true,
-              "value": 0.1
-            },
-            "system_prompt": {
-              "switch": true,
-              "value": "按当前图片与连接文本严谨判断。只输出要求的合法JSON，无代码围栏。"
-            }
-          },
-          "user_prompt": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "连接文本指定了当前裁图中的唯一目标及其相连部分。请像美术师一样仔细观察，只定位这个实体的可见轮廓，把前排丘体、另一个深度的山、树林、云水地面排除。不要换目标，不要按整张裁图画框。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "输出JSON {\"asset_id\":\"连接文本中的source id\",\"visible_polygon\":[[x,y],[x,y]],\"description\":\"当前目标的峰顶数量、左右岩肩、颜色材质、相连部件；明确裁图中哪部分是前景应删\",\"hidden_base\":\"下缘被哪个前景挡住，应怎样补齐该目标自身的自然完整山脚\"}。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "visible_polygon为沿可见目标外轮廓顺时针排列的12–36个点，每点两个0–1000整数，相对于当前这张裁图的宽高。覆盖峰尖、山侧、所有真正相接岩肩；到不同深度前景的交界线就停止，不能把前排山纳入。多边形只是遮罩参考，山脚后续由生成补齐，不在这一步编造不可见的轮廓。只输出JSON，不输出Markdown。"
-                }
-              ]
-            }
-          ]
-        }
-      },
-      "position": {
-        "x": 2300,
-        "y": 2950
-      },
-      "type": "baNode",
-      "zIndex": 0,
-      "selected": false
-    },
-    {
-      "id": "441",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 2950
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarTargetGuide",
-        "title": "只隔离当前目标参考 · 山脚交给生成补全",
-        "inputs": [
-          {
-            "name": "reference_crop",
-            "label": "reference_crop",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "plan",
-            "label": "plan",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "localization",
-            "label": "localization",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "guide_image",
-            "label": "guide_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "guide_prompt",
-            "label": "guide_prompt",
-            "type": "STRING"
-          },
-          {
-            "name": "guide_record",
-            "label": "guide_record",
-            "type": "STRING"
-          },
-          {
-            "name": "completion_guide",
-            "label": "completion_guide",
-            "type": "IMAGE"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "492",
-      "type": "baNode",
-      "position": {
-        "x": 3220,
-        "y": 2950
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "SaveText|pysssss",
-        "title": "素材3自动轮廓定位记录",
-        "inputs": [
-          {
-            "name": "root_dir",
-            "label": "root_dir",
-            "type": "COMBO",
-            "value": "output"
-          },
-          {
-            "name": "file",
-            "label": "file",
-            "type": "STRING",
-            "value": "midfar-3-guide.json"
-          },
-          {
-            "name": "append",
-            "label": "append",
-            "type": "COMBO",
-            "value": "overwrite"
-          },
-          {
-            "name": "insert",
-            "label": "insert",
-            "type": "BOOLEAN",
-            "value": true
-          },
-          {
-            "name": "text",
-            "label": "text",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "STRING",
-            "label": "STRING",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "initialWidth": 360,
-      "initialHeight": 480,
       "id": "401",
       "width": 360,
       "data": {
@@ -9262,7 +7890,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+            "value": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。\n精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。\n严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
           },
           {
             "name": "model",
@@ -9879,7 +8507,23 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
+                  "text": "从当前真实局部参考图中提取连接文本指定的一座完整山体/岩体，作为一张独立中远景素材。目标位置文字是相对于原始全景图，当前输入已经是这个目标的局部裁图。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "精确保留这个目标的峰数、相连岩肩、岩层、积雪覆草、颜色、画风和空气透视。删除天空、树林、云水、前后不同深度的其他山与地面，仅保留目标自身真实相连部分。被遮挡的山脚根据自身坡面自然延伸，补成有体积的短完整岩脚，所有峰尖和两侧都完整，不生硬平切，不照抄前景遮挡缺口。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "严格使用连接文本中的纯色键作背景，主体居中，四侧各留15%安全空白。不要加峰、散落物、地面托盘、阴影、文字或额外物体。输出一张完整资产图。"
                 }
               ]
             }
@@ -9893,63 +8537,6 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
-    },
-    {
-      "id": "406",
-      "type": "baNode",
-      "position": {
-        "x": 3060,
-        "y": 2680
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
     },
     {
       "id": "402",
@@ -10073,7 +8660,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -10239,7 +8826,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -10255,7 +8842,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -10303,7 +8898,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -10920,7 +9515,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -10985,63 +9580,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "416",
-      "type": "baNode",
-      "position": {
-        "x": 4900,
-        "y": 2680
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -11172,7 +9710,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -11338,7 +9876,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -11354,7 +9892,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -11402,7 +9948,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+            "value": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
           },
           {
             "name": "model",
@@ -12019,7 +10565,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
+                  "text": "根据连接的审查反馈重新从本次真实局部原图提取完整目标。输入仍是原图裁图，不能照抄上一版错误主体或错误遮罩；删除混入的残片，恢复真实相连部件，补全自然山脚。精确保留目标原来的峰数、比例、岩层、颜色和空气透视。四侧留15%纯色键空白，不平切、不画地面托盘、不加新峰或树木。"
                 }
               ]
             }
@@ -12084,63 +10630,6 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "426",
-      "type": "baNode",
-      "position": {
-        "x": 6740,
-        "y": 2680
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarCompleteFoot",
-        "title": "仅合成山脚 · 原始上半部固定保留",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "source_guide",
-            "label": "source_guide",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "foot_mask",
-            "label": "foot_mask",
-            "type": "MASK",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "completed_image",
-            "label": "completed_image",
-            "type": "IMAGE"
-          },
-          {
-            "name": "completion_record",
-            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -12271,7 +10760,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
+            "value": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。\n提取后移到纯色/透明背景、居中缩放、去掉天空林木其他山、用自身结构补齐隐藏山脚，都是要求的操作，不能把这些操作本身判为失败；合理补全可以通过。但新添峰柱、纸片/平切底、地面托盘、明显改变目标轮廓/光照或颜色、丢失相连岩体、实际键色残留必须判为失败。判断目标自身视角，不把源图湖泊俯瞰角度强加于远景山峰。\n位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。\n检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。\n只输出连接检查提示要求的固定JSON。score按真实完成度评分；issues只写图上实际看到的阻塞缺陷，没有就[]。不要臆测风险或声称有颜色的面板全黑。"
           }
         ],
         "outputSlots": [
@@ -12437,7 +10926,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "图1是原图裁图/生成图/透明结果三个面板，图2是自动定位的目标参考。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。图2下缘是遮挡造成的粗裁切，不是成品。"
+                  "text": "输入是原图裁图/生成图/透明结果三个面板。认真观察图像真实内容。检查同一目标的可见轮廓、峰数、比例、颜色质感和底部完整性。原图中被环境遮挡的下缘不是最终素材轮廓，应根据目标自身结构自然补全。"
                 }
               ]
             },
@@ -12453,7 +10942,15 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "检查上下拼接处是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。"
+                  "text": "位置描述是原始全景中的位置，不是当前裁图内的位置，不能把全景“左上”重新解释成裁图左上的另一个物体。准确对照裁图中的目标自身结构。"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "检查是否存在明显横向色带或接缝，有则style_match=false；检查底部是否照抄前景树冠/山体的遮挡凹口，有则natural_base=false。透明结果沿边不能有彩色杂点、硬裁切、平直纸片底或其他山体残片。"
                 }
               ]
             },
@@ -12811,8 +11308,8 @@
       "id": "1004",
       "type": "baNode",
       "position": {
-        "x": 2760,
-        "y": 1100
+        "x": 3220,
+        "y": 350
       },
       "width": 360,
       "initialWidth": 360,
@@ -12845,8 +11342,8 @@
       "id": "1005",
       "type": "baNode",
       "position": {
-        "x": 2940,
-        "y": 1260
+        "x": 3400,
+        "y": 510
       },
       "width": 360,
       "initialWidth": 360,
@@ -12884,7 +11381,7 @@
       "id": "1006",
       "type": "baNode",
       "position": {
-        "x": 3220,
+        "x": 5060,
         "y": 350
       },
       "width": 360,
@@ -12918,7 +11415,7 @@
       "id": "1007",
       "type": "baNode",
       "position": {
-        "x": 3400,
+        "x": 5240,
         "y": 510
       },
       "width": 360,
@@ -12957,152 +11454,6 @@
       "id": "1008",
       "type": "baNode",
       "position": {
-        "x": 2760,
-        "y": 1100
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1009",
-      "type": "baNode",
-      "position": {
-        "x": 2940,
-        "y": 1260
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1010",
-      "type": "baNode",
-      "position": {
-        "x": 5060,
-        "y": 350
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1011",
-      "type": "baNode",
-      "position": {
-        "x": 5240,
-        "y": 510
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1012",
-      "type": "baNode",
-      "position": {
         "x": 6900,
         "y": 350
       },
@@ -13134,7 +11485,7 @@
       }
     },
     {
-      "id": "1013",
+      "id": "1009",
       "type": "baNode",
       "position": {
         "x": 7080,
@@ -13173,7 +11524,7 @@
       }
     },
     {
-      "id": "1014",
+      "id": "1010",
       "type": "baNode",
       "position": {
         "x": 2300,
@@ -13207,10 +11558,156 @@
       }
     },
     {
-      "id": "1015",
+      "id": "1011",
       "type": "baNode",
       "position": {
         "x": 2480,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1012",
+      "type": "baNode",
+      "position": {
+        "x": 3220,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1013",
+      "type": "baNode",
+      "position": {
+        "x": 3400,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1014",
+      "type": "baNode",
+      "position": {
+        "x": 5060,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1015",
+      "type": "baNode",
+      "position": {
+        "x": 5240,
         "y": 1610
       },
       "width": 360,
@@ -13249,298 +11746,6 @@
       "id": "1016",
       "type": "baNode",
       "position": {
-        "x": 2760,
-        "y": 2200
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1017",
-      "type": "baNode",
-      "position": {
-        "x": 2940,
-        "y": 2360
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1018",
-      "type": "baNode",
-      "position": {
-        "x": 3220,
-        "y": 1450
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1019",
-      "type": "baNode",
-      "position": {
-        "x": 3400,
-        "y": 1610
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1020",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 2200
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1021",
-      "type": "baNode",
-      "position": {
-        "x": 2940,
-        "y": 2360
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1022",
-      "type": "baNode",
-      "position": {
-        "x": 5060,
-        "y": 1450
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1023",
-      "type": "baNode",
-      "position": {
-        "x": 5240,
-        "y": 1610
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1024",
-      "type": "baNode",
-      "position": {
         "x": 6900,
         "y": 1450
       },
@@ -13572,7 +11777,7 @@
       }
     },
     {
-      "id": "1025",
+      "id": "1017",
       "type": "baNode",
       "position": {
         "x": 7080,
@@ -13611,7 +11816,7 @@
       }
     },
     {
-      "id": "1026",
+      "id": "1018",
       "type": "baNode",
       "position": {
         "x": 2300,
@@ -13645,7 +11850,7 @@
       }
     },
     {
-      "id": "1027",
+      "id": "1019",
       "type": "baNode",
       "position": {
         "x": 2480,
@@ -13684,80 +11889,7 @@
       }
     },
     {
-      "id": "1028",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 3300
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1029",
-      "type": "baNode",
-      "position": {
-        "x": 2940,
-        "y": 3460
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1030",
+      "id": "1020",
       "type": "baNode",
       "position": {
         "x": 3220,
@@ -13791,7 +11923,7 @@
       }
     },
     {
-      "id": "1031",
+      "id": "1021",
       "type": "baNode",
       "position": {
         "x": 3400,
@@ -13830,80 +11962,7 @@
       }
     },
     {
-      "id": "1032",
-      "type": "baNode",
-      "position": {
-        "x": 2760,
-        "y": 3300
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1033",
-      "type": "baNode",
-      "position": {
-        "x": 2940,
-        "y": 3460
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1034",
+      "id": "1022",
       "type": "baNode",
       "position": {
         "x": 5060,
@@ -13937,7 +11996,7 @@
       }
     },
     {
-      "id": "1035",
+      "id": "1023",
       "type": "baNode",
       "position": {
         "x": 5240,
@@ -13976,7 +12035,7 @@
       }
     },
     {
-      "id": "1036",
+      "id": "1024",
       "type": "baNode",
       "position": {
         "x": 6900,
@@ -14010,7 +12069,7 @@
       }
     },
     {
-      "id": "1037",
+      "id": "1025",
       "type": "baNode",
       "position": {
         "x": 7080,
@@ -14293,8 +12352,24 @@
     {
       "id": "715",
       "type": "baEdge",
+      "source": "200",
+      "target": "201",
+      "sourceHandle": "prompt",
+      "targetHandle": "prompt",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "716",
+      "type": "baEdge",
       "source": "1003",
-      "target": "240",
+      "target": "201",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
@@ -14307,28 +12382,12 @@
       }
     },
     {
-      "id": "716",
-      "type": "baEdge",
-      "source": "200",
-      "target": "240",
-      "sourceHandle": "prompt",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
       "id": "717",
       "type": "baEdge",
-      "source": "200",
-      "target": "241",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
+      "source": "201",
+      "target": "202",
+      "sourceHandle": "image",
+      "targetHandle": "image",
       "data": {
         "type": "IMAGE",
         "sourceType": "IMAGE",
@@ -14341,26 +12400,26 @@
     {
       "id": "718",
       "type": "baEdge",
-      "source": "104",
-      "target": "241",
-      "sourceHandle": "plan_1",
-      "targetHandle": "plan",
+      "source": "200",
+      "target": "202",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "reference_crop",
       "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
         "extra": {
-          "type": "STRING"
+          "type": "IMAGE"
         }
       }
     },
     {
       "id": "719",
       "type": "baEdge",
-      "source": "240",
-      "target": "241",
-      "sourceHandle": "text",
-      "targetHandle": "localization",
+      "source": "104",
+      "target": "202",
+      "sourceHandle": "plan_1",
+      "targetHandle": "plan",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -14374,7 +12433,7 @@
       "id": "720",
       "type": "baEdge",
       "source": "200",
-      "target": "241",
+      "target": "202",
       "sourceHandle": "key_color",
       "targetHandle": "key_color",
       "data": {
@@ -14389,213 +12448,21 @@
     {
       "id": "721",
       "type": "baEdge",
-      "source": "241",
-      "target": "292",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
+      "source": "1005",
+      "target": "203",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
       "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
         "extra": {
-          "type": "STRING"
+          "type": "IMAGE"
         }
       }
     },
     {
       "id": "722",
-      "type": "baEdge",
-      "source": "241",
-      "target": "201",
-      "sourceHandle": "guide_prompt",
-      "targetHandle": "prompt",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "723",
-      "type": "baEdge",
-      "source": "1005",
-      "target": "201",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "724",
-      "type": "baEdge",
-      "source": "201",
-      "target": "206",
-      "sourceHandle": "image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "725",
-      "type": "baEdge",
-      "source": "241",
-      "target": "206",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "726",
-      "type": "baEdge",
-      "source": "241",
-      "target": "206",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "727",
-      "type": "baEdge",
-      "source": "200",
-      "target": "206",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "728",
-      "type": "baEdge",
-      "source": "206",
-      "target": "202",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "729",
-      "type": "baEdge",
-      "source": "200",
-      "target": "202",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "730",
-      "type": "baEdge",
-      "source": "104",
-      "target": "202",
-      "sourceHandle": "plan_1",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "731",
-      "type": "baEdge",
-      "source": "200",
-      "target": "202",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "732",
-      "type": "baEdge",
-      "source": "1007",
-      "target": "203",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "733",
-      "type": "baEdge",
-      "source": "1009",
-      "target": "203",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "734",
       "type": "baEdge",
       "source": "202",
       "target": "203",
@@ -14611,7 +12478,7 @@
       }
     },
     {
-      "id": "735",
+      "id": "723",
       "type": "baEdge",
       "source": "104",
       "target": "204",
@@ -14627,7 +12494,7 @@
       }
     },
     {
-      "id": "736",
+      "id": "724",
       "type": "baEdge",
       "source": "200",
       "target": "204",
@@ -14643,7 +12510,7 @@
       }
     },
     {
-      "id": "737",
+      "id": "725",
       "type": "baEdge",
       "source": "202",
       "target": "204",
@@ -14659,7 +12526,7 @@
       }
     },
     {
-      "id": "738",
+      "id": "726",
       "type": "baEdge",
       "source": "203",
       "target": "204",
@@ -14675,7 +12542,7 @@
       }
     },
     {
-      "id": "739",
+      "id": "727",
       "type": "baEdge",
       "source": "204",
       "target": "211",
@@ -14691,9 +12558,9 @@
       }
     },
     {
-      "id": "740",
+      "id": "728",
       "type": "baEdge",
-      "source": "1005",
+      "source": "1003",
       "target": "211",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14707,10 +12574,10 @@
       }
     },
     {
-      "id": "741",
+      "id": "729",
       "type": "baEdge",
       "source": "211",
-      "target": "216",
+      "target": "212",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -14723,71 +12590,7 @@
       }
     },
     {
-      "id": "742",
-      "type": "baEdge",
-      "source": "241",
-      "target": "216",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "743",
-      "type": "baEdge",
-      "source": "241",
-      "target": "216",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "744",
-      "type": "baEdge",
-      "source": "200",
-      "target": "216",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "745",
-      "type": "baEdge",
-      "source": "216",
-      "target": "212",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "746",
+      "id": "730",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -14803,7 +12606,7 @@
       }
     },
     {
-      "id": "747",
+      "id": "731",
       "type": "baEdge",
       "source": "104",
       "target": "212",
@@ -14819,7 +12622,7 @@
       }
     },
     {
-      "id": "748",
+      "id": "732",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -14835,9 +12638,9 @@
       }
     },
     {
-      "id": "749",
+      "id": "733",
       "type": "baEdge",
-      "source": "1011",
+      "source": "1007",
       "target": "213",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14851,23 +12654,7 @@
       }
     },
     {
-      "id": "750",
-      "type": "baEdge",
-      "source": "1009",
-      "target": "213",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "751",
+      "id": "734",
       "type": "baEdge",
       "source": "212",
       "target": "213",
@@ -14883,7 +12670,7 @@
       }
     },
     {
-      "id": "752",
+      "id": "735",
       "type": "baEdge",
       "source": "104",
       "target": "214",
@@ -14899,7 +12686,7 @@
       }
     },
     {
-      "id": "753",
+      "id": "736",
       "type": "baEdge",
       "source": "200",
       "target": "214",
@@ -14915,7 +12702,7 @@
       }
     },
     {
-      "id": "754",
+      "id": "737",
       "type": "baEdge",
       "source": "212",
       "target": "214",
@@ -14931,7 +12718,7 @@
       }
     },
     {
-      "id": "755",
+      "id": "738",
       "type": "baEdge",
       "source": "213",
       "target": "214",
@@ -14947,7 +12734,7 @@
       }
     },
     {
-      "id": "756",
+      "id": "739",
       "type": "baEdge",
       "source": "214",
       "target": "221",
@@ -14963,9 +12750,9 @@
       }
     },
     {
-      "id": "757",
+      "id": "740",
       "type": "baEdge",
-      "source": "1005",
+      "source": "1003",
       "target": "221",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14979,10 +12766,10 @@
       }
     },
     {
-      "id": "758",
+      "id": "741",
       "type": "baEdge",
       "source": "221",
-      "target": "226",
+      "target": "222",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -14995,71 +12782,7 @@
       }
     },
     {
-      "id": "759",
-      "type": "baEdge",
-      "source": "241",
-      "target": "226",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "760",
-      "type": "baEdge",
-      "source": "241",
-      "target": "226",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "761",
-      "type": "baEdge",
-      "source": "200",
-      "target": "226",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "762",
-      "type": "baEdge",
-      "source": "226",
-      "target": "222",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "763",
+      "id": "742",
       "type": "baEdge",
       "source": "200",
       "target": "222",
@@ -15075,7 +12798,7 @@
       }
     },
     {
-      "id": "764",
+      "id": "743",
       "type": "baEdge",
       "source": "104",
       "target": "222",
@@ -15091,7 +12814,7 @@
       }
     },
     {
-      "id": "765",
+      "id": "744",
       "type": "baEdge",
       "source": "200",
       "target": "222",
@@ -15107,23 +12830,7 @@
       }
     },
     {
-      "id": "766",
-      "type": "baEdge",
-      "source": "1013",
-      "target": "223",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "767",
+      "id": "745",
       "type": "baEdge",
       "source": "1009",
       "target": "223",
@@ -15139,7 +12846,7 @@
       }
     },
     {
-      "id": "768",
+      "id": "746",
       "type": "baEdge",
       "source": "222",
       "target": "223",
@@ -15155,7 +12862,7 @@
       }
     },
     {
-      "id": "769",
+      "id": "747",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -15171,7 +12878,7 @@
       }
     },
     {
-      "id": "770",
+      "id": "748",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -15187,7 +12894,7 @@
       }
     },
     {
-      "id": "771",
+      "id": "749",
       "type": "baEdge",
       "source": "203",
       "target": "231",
@@ -15203,7 +12910,7 @@
       }
     },
     {
-      "id": "772",
+      "id": "750",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -15219,7 +12926,7 @@
       }
     },
     {
-      "id": "773",
+      "id": "751",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -15235,7 +12942,7 @@
       }
     },
     {
-      "id": "774",
+      "id": "752",
       "type": "baEdge",
       "source": "213",
       "target": "231",
@@ -15251,7 +12958,7 @@
       }
     },
     {
-      "id": "775",
+      "id": "753",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -15267,7 +12974,7 @@
       }
     },
     {
-      "id": "776",
+      "id": "754",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -15283,7 +12990,7 @@
       }
     },
     {
-      "id": "777",
+      "id": "755",
       "type": "baEdge",
       "source": "223",
       "target": "231",
@@ -15299,7 +13006,7 @@
       }
     },
     {
-      "id": "778",
+      "id": "756",
       "type": "baEdge",
       "source": "231",
       "target": "232",
@@ -15315,7 +13022,7 @@
       }
     },
     {
-      "id": "779",
+      "id": "757",
       "type": "baEdge",
       "source": "200",
       "target": "232",
@@ -15331,7 +13038,7 @@
       }
     },
     {
-      "id": "780",
+      "id": "758",
       "type": "baEdge",
       "source": "231",
       "target": "291",
@@ -15347,7 +13054,7 @@
       }
     },
     {
-      "id": "781",
+      "id": "759",
       "type": "baEdge",
       "source": "104",
       "target": "300",
@@ -15363,7 +13070,7 @@
       }
     },
     {
-      "id": "782",
+      "id": "760",
       "type": "baEdge",
       "source": "100",
       "target": "300",
@@ -15379,7 +13086,7 @@
       }
     },
     {
-      "id": "783",
+      "id": "761",
       "type": "baEdge",
       "source": "90",
       "target": "300",
@@ -15395,7 +13102,7 @@
       }
     },
     {
-      "id": "784",
+      "id": "762",
       "type": "baEdge",
       "source": "300",
       "target": "390",
@@ -15411,123 +13118,11 @@
       }
     },
     {
-      "id": "785",
-      "type": "baEdge",
-      "source": "1015",
-      "target": "340",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "786",
+      "id": "763",
       "type": "baEdge",
       "source": "300",
-      "target": "340",
-      "sourceHandle": "prompt",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "787",
-      "type": "baEdge",
-      "source": "300",
-      "target": "341",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "788",
-      "type": "baEdge",
-      "source": "104",
-      "target": "341",
-      "sourceHandle": "plan_2",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "789",
-      "type": "baEdge",
-      "source": "340",
-      "target": "341",
-      "sourceHandle": "text",
-      "targetHandle": "localization",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "790",
-      "type": "baEdge",
-      "source": "300",
-      "target": "341",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "791",
-      "type": "baEdge",
-      "source": "341",
-      "target": "392",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "792",
-      "type": "baEdge",
-      "source": "341",
       "target": "301",
-      "sourceHandle": "guide_prompt",
+      "sourceHandle": "prompt",
       "targetHandle": "prompt",
       "data": {
         "type": "STRING",
@@ -15539,9 +13134,9 @@
       }
     },
     {
-      "id": "793",
+      "id": "764",
       "type": "baEdge",
-      "source": "1017",
+      "source": "1011",
       "target": "301",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15555,10 +13150,10 @@
       }
     },
     {
-      "id": "794",
+      "id": "765",
       "type": "baEdge",
       "source": "301",
-      "target": "306",
+      "target": "302",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -15571,71 +13166,7 @@
       }
     },
     {
-      "id": "795",
-      "type": "baEdge",
-      "source": "341",
-      "target": "306",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "796",
-      "type": "baEdge",
-      "source": "341",
-      "target": "306",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "797",
-      "type": "baEdge",
-      "source": "300",
-      "target": "306",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "798",
-      "type": "baEdge",
-      "source": "306",
-      "target": "302",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "799",
+      "id": "766",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -15651,7 +13182,7 @@
       }
     },
     {
-      "id": "800",
+      "id": "767",
       "type": "baEdge",
       "source": "104",
       "target": "302",
@@ -15667,7 +13198,7 @@
       }
     },
     {
-      "id": "801",
+      "id": "768",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -15683,9 +13214,9 @@
       }
     },
     {
-      "id": "802",
+      "id": "769",
       "type": "baEdge",
-      "source": "1019",
+      "source": "1013",
       "target": "303",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15699,23 +13230,7 @@
       }
     },
     {
-      "id": "803",
-      "type": "baEdge",
-      "source": "1021",
-      "target": "303",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "804",
+      "id": "770",
       "type": "baEdge",
       "source": "302",
       "target": "303",
@@ -15731,7 +13246,7 @@
       }
     },
     {
-      "id": "805",
+      "id": "771",
       "type": "baEdge",
       "source": "104",
       "target": "304",
@@ -15747,7 +13262,7 @@
       }
     },
     {
-      "id": "806",
+      "id": "772",
       "type": "baEdge",
       "source": "300",
       "target": "304",
@@ -15763,7 +13278,7 @@
       }
     },
     {
-      "id": "807",
+      "id": "773",
       "type": "baEdge",
       "source": "302",
       "target": "304",
@@ -15779,7 +13294,7 @@
       }
     },
     {
-      "id": "808",
+      "id": "774",
       "type": "baEdge",
       "source": "303",
       "target": "304",
@@ -15795,7 +13310,7 @@
       }
     },
     {
-      "id": "809",
+      "id": "775",
       "type": "baEdge",
       "source": "304",
       "target": "311",
@@ -15811,9 +13326,9 @@
       }
     },
     {
-      "id": "810",
+      "id": "776",
       "type": "baEdge",
-      "source": "1017",
+      "source": "1011",
       "target": "311",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15827,10 +13342,10 @@
       }
     },
     {
-      "id": "811",
+      "id": "777",
       "type": "baEdge",
       "source": "311",
-      "target": "316",
+      "target": "312",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -15843,71 +13358,7 @@
       }
     },
     {
-      "id": "812",
-      "type": "baEdge",
-      "source": "341",
-      "target": "316",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "813",
-      "type": "baEdge",
-      "source": "341",
-      "target": "316",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "814",
-      "type": "baEdge",
-      "source": "300",
-      "target": "316",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "815",
-      "type": "baEdge",
-      "source": "316",
-      "target": "312",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "816",
+      "id": "778",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -15923,7 +13374,7 @@
       }
     },
     {
-      "id": "817",
+      "id": "779",
       "type": "baEdge",
       "source": "104",
       "target": "312",
@@ -15939,7 +13390,7 @@
       }
     },
     {
-      "id": "818",
+      "id": "780",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -15955,9 +13406,9 @@
       }
     },
     {
-      "id": "819",
+      "id": "781",
       "type": "baEdge",
-      "source": "1023",
+      "source": "1015",
       "target": "313",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15971,23 +13422,7 @@
       }
     },
     {
-      "id": "820",
-      "type": "baEdge",
-      "source": "1021",
-      "target": "313",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "821",
+      "id": "782",
       "type": "baEdge",
       "source": "312",
       "target": "313",
@@ -16003,7 +13438,7 @@
       }
     },
     {
-      "id": "822",
+      "id": "783",
       "type": "baEdge",
       "source": "104",
       "target": "314",
@@ -16019,7 +13454,7 @@
       }
     },
     {
-      "id": "823",
+      "id": "784",
       "type": "baEdge",
       "source": "300",
       "target": "314",
@@ -16035,7 +13470,7 @@
       }
     },
     {
-      "id": "824",
+      "id": "785",
       "type": "baEdge",
       "source": "312",
       "target": "314",
@@ -16051,7 +13486,7 @@
       }
     },
     {
-      "id": "825",
+      "id": "786",
       "type": "baEdge",
       "source": "313",
       "target": "314",
@@ -16067,7 +13502,7 @@
       }
     },
     {
-      "id": "826",
+      "id": "787",
       "type": "baEdge",
       "source": "314",
       "target": "321",
@@ -16083,9 +13518,9 @@
       }
     },
     {
-      "id": "827",
+      "id": "788",
       "type": "baEdge",
-      "source": "1017",
+      "source": "1011",
       "target": "321",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16099,10 +13534,10 @@
       }
     },
     {
-      "id": "828",
+      "id": "789",
       "type": "baEdge",
       "source": "321",
-      "target": "326",
+      "target": "322",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -16115,71 +13550,7 @@
       }
     },
     {
-      "id": "829",
-      "type": "baEdge",
-      "source": "341",
-      "target": "326",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "830",
-      "type": "baEdge",
-      "source": "341",
-      "target": "326",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "831",
-      "type": "baEdge",
-      "source": "300",
-      "target": "326",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "832",
-      "type": "baEdge",
-      "source": "326",
-      "target": "322",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "833",
+      "id": "790",
       "type": "baEdge",
       "source": "300",
       "target": "322",
@@ -16195,7 +13566,7 @@
       }
     },
     {
-      "id": "834",
+      "id": "791",
       "type": "baEdge",
       "source": "104",
       "target": "322",
@@ -16211,7 +13582,7 @@
       }
     },
     {
-      "id": "835",
+      "id": "792",
       "type": "baEdge",
       "source": "300",
       "target": "322",
@@ -16227,9 +13598,9 @@
       }
     },
     {
-      "id": "836",
+      "id": "793",
       "type": "baEdge",
-      "source": "1025",
+      "source": "1017",
       "target": "323",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16243,23 +13614,7 @@
       }
     },
     {
-      "id": "837",
-      "type": "baEdge",
-      "source": "1021",
-      "target": "323",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "838",
+      "id": "794",
       "type": "baEdge",
       "source": "322",
       "target": "323",
@@ -16275,7 +13630,7 @@
       }
     },
     {
-      "id": "839",
+      "id": "795",
       "type": "baEdge",
       "source": "302",
       "target": "331",
@@ -16291,7 +13646,7 @@
       }
     },
     {
-      "id": "840",
+      "id": "796",
       "type": "baEdge",
       "source": "302",
       "target": "331",
@@ -16307,7 +13662,7 @@
       }
     },
     {
-      "id": "841",
+      "id": "797",
       "type": "baEdge",
       "source": "303",
       "target": "331",
@@ -16323,7 +13678,7 @@
       }
     },
     {
-      "id": "842",
+      "id": "798",
       "type": "baEdge",
       "source": "312",
       "target": "331",
@@ -16339,7 +13694,7 @@
       }
     },
     {
-      "id": "843",
+      "id": "799",
       "type": "baEdge",
       "source": "312",
       "target": "331",
@@ -16355,7 +13710,7 @@
       }
     },
     {
-      "id": "844",
+      "id": "800",
       "type": "baEdge",
       "source": "313",
       "target": "331",
@@ -16371,7 +13726,7 @@
       }
     },
     {
-      "id": "845",
+      "id": "801",
       "type": "baEdge",
       "source": "322",
       "target": "331",
@@ -16387,7 +13742,7 @@
       }
     },
     {
-      "id": "846",
+      "id": "802",
       "type": "baEdge",
       "source": "322",
       "target": "331",
@@ -16403,7 +13758,7 @@
       }
     },
     {
-      "id": "847",
+      "id": "803",
       "type": "baEdge",
       "source": "323",
       "target": "331",
@@ -16419,7 +13774,7 @@
       }
     },
     {
-      "id": "848",
+      "id": "804",
       "type": "baEdge",
       "source": "331",
       "target": "332",
@@ -16435,7 +13790,7 @@
       }
     },
     {
-      "id": "849",
+      "id": "805",
       "type": "baEdge",
       "source": "300",
       "target": "332",
@@ -16451,7 +13806,7 @@
       }
     },
     {
-      "id": "850",
+      "id": "806",
       "type": "baEdge",
       "source": "331",
       "target": "391",
@@ -16467,7 +13822,7 @@
       }
     },
     {
-      "id": "851",
+      "id": "807",
       "type": "baEdge",
       "source": "104",
       "target": "400",
@@ -16483,7 +13838,7 @@
       }
     },
     {
-      "id": "852",
+      "id": "808",
       "type": "baEdge",
       "source": "100",
       "target": "400",
@@ -16499,7 +13854,7 @@
       }
     },
     {
-      "id": "853",
+      "id": "809",
       "type": "baEdge",
       "source": "90",
       "target": "400",
@@ -16515,7 +13870,7 @@
       }
     },
     {
-      "id": "854",
+      "id": "810",
       "type": "baEdge",
       "source": "400",
       "target": "490",
@@ -16531,123 +13886,11 @@
       }
     },
     {
-      "id": "855",
-      "type": "baEdge",
-      "source": "1027",
-      "target": "440",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "856",
+      "id": "811",
       "type": "baEdge",
       "source": "400",
-      "target": "440",
-      "sourceHandle": "prompt",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "857",
-      "type": "baEdge",
-      "source": "400",
-      "target": "441",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "858",
-      "type": "baEdge",
-      "source": "104",
-      "target": "441",
-      "sourceHandle": "plan_3",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "859",
-      "type": "baEdge",
-      "source": "440",
-      "target": "441",
-      "sourceHandle": "text",
-      "targetHandle": "localization",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "860",
-      "type": "baEdge",
-      "source": "400",
-      "target": "441",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "861",
-      "type": "baEdge",
-      "source": "441",
-      "target": "492",
-      "sourceHandle": "guide_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "862",
-      "type": "baEdge",
-      "source": "441",
       "target": "401",
-      "sourceHandle": "guide_prompt",
+      "sourceHandle": "prompt",
       "targetHandle": "prompt",
       "data": {
         "type": "STRING",
@@ -16659,9 +13902,9 @@
       }
     },
     {
-      "id": "863",
+      "id": "812",
       "type": "baEdge",
-      "source": "1029",
+      "source": "1019",
       "target": "401",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16675,10 +13918,10 @@
       }
     },
     {
-      "id": "864",
+      "id": "813",
       "type": "baEdge",
       "source": "401",
-      "target": "406",
+      "target": "402",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -16691,71 +13934,7 @@
       }
     },
     {
-      "id": "865",
-      "type": "baEdge",
-      "source": "441",
-      "target": "406",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "866",
-      "type": "baEdge",
-      "source": "441",
-      "target": "406",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "867",
-      "type": "baEdge",
-      "source": "400",
-      "target": "406",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "868",
-      "type": "baEdge",
-      "source": "406",
-      "target": "402",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "869",
+      "id": "814",
       "type": "baEdge",
       "source": "400",
       "target": "402",
@@ -16771,7 +13950,7 @@
       }
     },
     {
-      "id": "870",
+      "id": "815",
       "type": "baEdge",
       "source": "104",
       "target": "402",
@@ -16787,7 +13966,7 @@
       }
     },
     {
-      "id": "871",
+      "id": "816",
       "type": "baEdge",
       "source": "400",
       "target": "402",
@@ -16803,9 +13982,9 @@
       }
     },
     {
-      "id": "872",
+      "id": "817",
       "type": "baEdge",
-      "source": "1031",
+      "source": "1021",
       "target": "403",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16819,23 +13998,7 @@
       }
     },
     {
-      "id": "873",
-      "type": "baEdge",
-      "source": "1033",
-      "target": "403",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "874",
+      "id": "818",
       "type": "baEdge",
       "source": "402",
       "target": "403",
@@ -16851,7 +14014,7 @@
       }
     },
     {
-      "id": "875",
+      "id": "819",
       "type": "baEdge",
       "source": "104",
       "target": "404",
@@ -16867,7 +14030,7 @@
       }
     },
     {
-      "id": "876",
+      "id": "820",
       "type": "baEdge",
       "source": "400",
       "target": "404",
@@ -16883,7 +14046,7 @@
       }
     },
     {
-      "id": "877",
+      "id": "821",
       "type": "baEdge",
       "source": "402",
       "target": "404",
@@ -16899,7 +14062,7 @@
       }
     },
     {
-      "id": "878",
+      "id": "822",
       "type": "baEdge",
       "source": "403",
       "target": "404",
@@ -16915,7 +14078,7 @@
       }
     },
     {
-      "id": "879",
+      "id": "823",
       "type": "baEdge",
       "source": "404",
       "target": "411",
@@ -16931,9 +14094,9 @@
       }
     },
     {
-      "id": "880",
+      "id": "824",
       "type": "baEdge",
-      "source": "1029",
+      "source": "1019",
       "target": "411",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16947,10 +14110,10 @@
       }
     },
     {
-      "id": "881",
+      "id": "825",
       "type": "baEdge",
       "source": "411",
-      "target": "416",
+      "target": "412",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -16963,71 +14126,7 @@
       }
     },
     {
-      "id": "882",
-      "type": "baEdge",
-      "source": "441",
-      "target": "416",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "883",
-      "type": "baEdge",
-      "source": "441",
-      "target": "416",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "884",
-      "type": "baEdge",
-      "source": "400",
-      "target": "416",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "885",
-      "type": "baEdge",
-      "source": "416",
-      "target": "412",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "886",
+      "id": "826",
       "type": "baEdge",
       "source": "400",
       "target": "412",
@@ -17043,7 +14142,7 @@
       }
     },
     {
-      "id": "887",
+      "id": "827",
       "type": "baEdge",
       "source": "104",
       "target": "412",
@@ -17059,7 +14158,7 @@
       }
     },
     {
-      "id": "888",
+      "id": "828",
       "type": "baEdge",
       "source": "400",
       "target": "412",
@@ -17075,9 +14174,9 @@
       }
     },
     {
-      "id": "889",
+      "id": "829",
       "type": "baEdge",
-      "source": "1035",
+      "source": "1023",
       "target": "413",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -17091,23 +14190,7 @@
       }
     },
     {
-      "id": "890",
-      "type": "baEdge",
-      "source": "1033",
-      "target": "413",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "891",
+      "id": "830",
       "type": "baEdge",
       "source": "412",
       "target": "413",
@@ -17123,7 +14206,7 @@
       }
     },
     {
-      "id": "892",
+      "id": "831",
       "type": "baEdge",
       "source": "104",
       "target": "414",
@@ -17139,7 +14222,7 @@
       }
     },
     {
-      "id": "893",
+      "id": "832",
       "type": "baEdge",
       "source": "400",
       "target": "414",
@@ -17155,7 +14238,7 @@
       }
     },
     {
-      "id": "894",
+      "id": "833",
       "type": "baEdge",
       "source": "412",
       "target": "414",
@@ -17171,7 +14254,7 @@
       }
     },
     {
-      "id": "895",
+      "id": "834",
       "type": "baEdge",
       "source": "413",
       "target": "414",
@@ -17187,7 +14270,7 @@
       }
     },
     {
-      "id": "896",
+      "id": "835",
       "type": "baEdge",
       "source": "414",
       "target": "421",
@@ -17203,9 +14286,9 @@
       }
     },
     {
-      "id": "897",
+      "id": "836",
       "type": "baEdge",
-      "source": "1029",
+      "source": "1019",
       "target": "421",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -17219,10 +14302,10 @@
       }
     },
     {
-      "id": "898",
+      "id": "837",
       "type": "baEdge",
       "source": "421",
-      "target": "426",
+      "target": "422",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -17235,71 +14318,7 @@
       }
     },
     {
-      "id": "899",
-      "type": "baEdge",
-      "source": "441",
-      "target": "426",
-      "sourceHandle": "guide_image",
-      "targetHandle": "source_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "900",
-      "type": "baEdge",
-      "source": "441",
-      "target": "426",
-      "sourceHandle": "foot_mask",
-      "targetHandle": "foot_mask",
-      "data": {
-        "type": "MASK",
-        "sourceType": "MASK",
-        "targetType": "MASK",
-        "extra": {
-          "type": "MASK"
-        }
-      }
-    },
-    {
-      "id": "901",
-      "type": "baEdge",
-      "source": "400",
-      "target": "426",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "902",
-      "type": "baEdge",
-      "source": "426",
-      "target": "422",
-      "sourceHandle": "completed_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "903",
+      "id": "838",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -17315,7 +14334,7 @@
       }
     },
     {
-      "id": "904",
+      "id": "839",
       "type": "baEdge",
       "source": "104",
       "target": "422",
@@ -17331,7 +14350,7 @@
       }
     },
     {
-      "id": "905",
+      "id": "840",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -17347,9 +14366,9 @@
       }
     },
     {
-      "id": "906",
+      "id": "841",
       "type": "baEdge",
-      "source": "1037",
+      "source": "1025",
       "target": "423",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -17363,23 +14382,7 @@
       }
     },
     {
-      "id": "907",
-      "type": "baEdge",
-      "source": "1033",
-      "target": "423",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "908",
+      "id": "842",
       "type": "baEdge",
       "source": "422",
       "target": "423",
@@ -17395,7 +14398,7 @@
       }
     },
     {
-      "id": "909",
+      "id": "843",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -17411,7 +14414,7 @@
       }
     },
     {
-      "id": "910",
+      "id": "844",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -17427,7 +14430,7 @@
       }
     },
     {
-      "id": "911",
+      "id": "845",
       "type": "baEdge",
       "source": "403",
       "target": "431",
@@ -17443,7 +14446,7 @@
       }
     },
     {
-      "id": "912",
+      "id": "846",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -17459,7 +14462,7 @@
       }
     },
     {
-      "id": "913",
+      "id": "847",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -17475,7 +14478,7 @@
       }
     },
     {
-      "id": "914",
+      "id": "848",
       "type": "baEdge",
       "source": "413",
       "target": "431",
@@ -17491,7 +14494,7 @@
       }
     },
     {
-      "id": "915",
+      "id": "849",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -17507,7 +14510,7 @@
       }
     },
     {
-      "id": "916",
+      "id": "850",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -17523,7 +14526,7 @@
       }
     },
     {
-      "id": "917",
+      "id": "851",
       "type": "baEdge",
       "source": "423",
       "target": "431",
@@ -17539,7 +14542,7 @@
       }
     },
     {
-      "id": "918",
+      "id": "852",
       "type": "baEdge",
       "source": "431",
       "target": "432",
@@ -17555,7 +14558,7 @@
       }
     },
     {
-      "id": "919",
+      "id": "853",
       "type": "baEdge",
       "source": "400",
       "target": "432",
@@ -17571,7 +14574,7 @@
       }
     },
     {
-      "id": "920",
+      "id": "854",
       "type": "baEdge",
       "source": "431",
       "target": "491",
@@ -17587,7 +14590,7 @@
       }
     },
     {
-      "id": "921",
+      "id": "855",
       "type": "baEdge",
       "source": "102",
       "target": "1000",
@@ -17603,7 +14606,7 @@
       }
     },
     {
-      "id": "922",
+      "id": "856",
       "type": "baEdge",
       "source": "1000",
       "target": "1001",
@@ -17619,7 +14622,7 @@
       }
     },
     {
-      "id": "923",
+      "id": "857",
       "type": "baEdge",
       "source": "200",
       "target": "1002",
@@ -17635,7 +14638,7 @@
       }
     },
     {
-      "id": "924",
+      "id": "858",
       "type": "baEdge",
       "source": "1002",
       "target": "1003",
@@ -17651,11 +14654,11 @@
       }
     },
     {
-      "id": "925",
+      "id": "859",
       "type": "baEdge",
-      "source": "241",
+      "source": "202",
       "target": "1004",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17667,7 +14670,7 @@
       }
     },
     {
-      "id": "926",
+      "id": "860",
       "type": "baEdge",
       "source": "1004",
       "target": "1005",
@@ -17683,9 +14686,9 @@
       }
     },
     {
-      "id": "927",
+      "id": "861",
       "type": "baEdge",
-      "source": "202",
+      "source": "212",
       "target": "1006",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -17699,7 +14702,7 @@
       }
     },
     {
-      "id": "928",
+      "id": "862",
       "type": "baEdge",
       "source": "1006",
       "target": "1007",
@@ -17715,11 +14718,11 @@
       }
     },
     {
-      "id": "929",
+      "id": "863",
       "type": "baEdge",
-      "source": "241",
+      "source": "222",
       "target": "1008",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17731,7 +14734,7 @@
       }
     },
     {
-      "id": "930",
+      "id": "864",
       "type": "baEdge",
       "source": "1008",
       "target": "1009",
@@ -17747,11 +14750,11 @@
       }
     },
     {
-      "id": "931",
+      "id": "865",
       "type": "baEdge",
-      "source": "212",
+      "source": "300",
       "target": "1010",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "reference_crop",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17763,7 +14766,7 @@
       }
     },
     {
-      "id": "932",
+      "id": "866",
       "type": "baEdge",
       "source": "1010",
       "target": "1011",
@@ -17779,9 +14782,9 @@
       }
     },
     {
-      "id": "933",
+      "id": "867",
       "type": "baEdge",
-      "source": "222",
+      "source": "302",
       "target": "1012",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -17795,7 +14798,7 @@
       }
     },
     {
-      "id": "934",
+      "id": "868",
       "type": "baEdge",
       "source": "1012",
       "target": "1013",
@@ -17811,11 +14814,11 @@
       }
     },
     {
-      "id": "935",
+      "id": "869",
       "type": "baEdge",
-      "source": "300",
+      "source": "312",
       "target": "1014",
-      "sourceHandle": "reference_crop",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17827,7 +14830,7 @@
       }
     },
     {
-      "id": "936",
+      "id": "870",
       "type": "baEdge",
       "source": "1014",
       "target": "1015",
@@ -17843,11 +14846,11 @@
       }
     },
     {
-      "id": "937",
+      "id": "871",
       "type": "baEdge",
-      "source": "341",
+      "source": "322",
       "target": "1016",
-      "sourceHandle": "completion_guide",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17859,7 +14862,7 @@
       }
     },
     {
-      "id": "938",
+      "id": "872",
       "type": "baEdge",
       "source": "1016",
       "target": "1017",
@@ -17875,11 +14878,11 @@
       }
     },
     {
-      "id": "939",
+      "id": "873",
       "type": "baEdge",
-      "source": "302",
+      "source": "400",
       "target": "1018",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "reference_crop",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17891,7 +14894,7 @@
       }
     },
     {
-      "id": "940",
+      "id": "874",
       "type": "baEdge",
       "source": "1018",
       "target": "1019",
@@ -17907,11 +14910,11 @@
       }
     },
     {
-      "id": "941",
+      "id": "875",
       "type": "baEdge",
-      "source": "341",
+      "source": "402",
       "target": "1020",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17923,7 +14926,7 @@
       }
     },
     {
-      "id": "942",
+      "id": "876",
       "type": "baEdge",
       "source": "1020",
       "target": "1021",
@@ -17939,9 +14942,9 @@
       }
     },
     {
-      "id": "943",
+      "id": "877",
       "type": "baEdge",
-      "source": "312",
+      "source": "412",
       "target": "1022",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -17955,7 +14958,7 @@
       }
     },
     {
-      "id": "944",
+      "id": "878",
       "type": "baEdge",
       "source": "1022",
       "target": "1023",
@@ -17971,9 +14974,9 @@
       }
     },
     {
-      "id": "945",
+      "id": "879",
       "type": "baEdge",
-      "source": "322",
+      "source": "422",
       "target": "1024",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -17987,202 +14990,10 @@
       }
     },
     {
-      "id": "946",
+      "id": "880",
       "type": "baEdge",
       "source": "1024",
       "target": "1025",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "947",
-      "type": "baEdge",
-      "source": "400",
-      "target": "1026",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "948",
-      "type": "baEdge",
-      "source": "1026",
-      "target": "1027",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "949",
-      "type": "baEdge",
-      "source": "441",
-      "target": "1028",
-      "sourceHandle": "completion_guide",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "950",
-      "type": "baEdge",
-      "source": "1028",
-      "target": "1029",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "951",
-      "type": "baEdge",
-      "source": "402",
-      "target": "1030",
-      "sourceHandle": "inspection_sheet",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "952",
-      "type": "baEdge",
-      "source": "1030",
-      "target": "1031",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "953",
-      "type": "baEdge",
-      "source": "441",
-      "target": "1032",
-      "sourceHandle": "guide_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "954",
-      "type": "baEdge",
-      "source": "1032",
-      "target": "1033",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "955",
-      "type": "baEdge",
-      "source": "412",
-      "target": "1034",
-      "sourceHandle": "inspection_sheet",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "956",
-      "type": "baEdge",
-      "source": "1034",
-      "target": "1035",
-      "sourceHandle": "image_file",
-      "targetHandle": "image",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "957",
-      "type": "baEdge",
-      "source": "422",
-      "target": "1036",
-      "sourceHandle": "inspection_sheet",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "958",
-      "type": "baEdge",
-      "source": "1036",
-      "target": "1037",
       "sourceHandle": "image_file",
       "targetHandle": "image",
       "data": {

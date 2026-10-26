@@ -337,6 +337,18 @@ class AuditTests(unittest.TestCase):
             self.assertIn(phrase, prompt)
         self.assertIn("missing attached peak", prompt)
 
+    def test_repair_can_correct_upper_geometry_instead_of_freezing_a_bad_guide(self):
+        _, numeric = self.good_candidate()
+        visual = verdict(target_match=False, connected_parts_preserved=False,
+                         issues=["unrelated curled upper fragment", "missing side peak"])
+        prompt = audit.repair_prompt(plan(), "#00FF00", numeric, visual, 1)
+        self.assertIn("actual original reference crop", prompt)
+        self.assertIn("Correct the entire target silhouette", prompt)
+        self.assertNotIn("Only that lower hidden region", prompt)
+        self.assertNotIn("只编辑朱红范围", prompt)
+        self.assertIn("unrelated curled upper fragment", prompt)
+        self.assertIn("missing side peak", prompt)
+
     def test_clipping_repair_calls_for_scale_down_and_all_side_margins(self):
         _, _, _, numeric = self.inspect(generated(cut=True))
         prompt = audit.repair_prompt(plan(), "#00FF00", numeric, verdict(), 2)

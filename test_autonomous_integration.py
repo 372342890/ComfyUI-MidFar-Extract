@@ -114,9 +114,8 @@ class GraphContract(unittest.TestCase):
                       "user_id", "localhost", "127.0.0.1"):
             self.assertNotIn(token, raw)
 
-    def test_every_generator_uses_current_target_guide_without_previous_bad_image(self):
-        self.assertEqual(len(self.of_type("BAMidFarTargetGuide")), 3)
-        self.assertEqual(len(self.of_type("BAMidFarCompleteFoot")), 9)
+    def test_every_generator_returns_to_actual_source_crop_without_frozen_bad_geometry(self):
+        self.assertEqual(len(self.of_type("BAMidFarCompleteFoot")), 0)
         for generator in self.of_type("BALLMImage"):
             images = [e for e in self.edges
                       if e["target"] == generator["id"] and e["targetHandle"] == "image"]
@@ -127,8 +126,13 @@ class GraphContract(unittest.TestCase):
             handoff_id = next(e["source"] for e in self.edges if e["target"] == loader["id"])
             self.assertEqual(self.nodes[handoff_id]["data"]["type"], "BAMidFarNativeImageFile")
             origin = next(e for e in self.edges if e["target"] == handoff_id)
-            self.assertEqual(self.nodes[origin["source"]]["data"]["type"], "BAMidFarTargetGuide")
-            self.assertEqual(origin["sourceHandle"], "completion_guide")
+            self.assertEqual(self.nodes[origin["source"]]["data"]["type"], "BAMidFarAutonomousReference")
+            self.assertEqual(origin["sourceHandle"], "reference_crop")
+        for inspector in self.of_type("BAMidFarAssetInspect"):
+            image = next(e for e in self.edges
+                         if e["target"] == inspector["id"] and e["targetHandle"] == "image")
+            self.assertEqual(self.nodes[image["source"]]["data"]["type"], "BALLMImage")
+            self.assertEqual(image["sourceHandle"], "image")
 
     def test_every_model_reference_uses_standard_native_loading(self):
         carriers = {n["id"] for n in self.of_type("BALLMImage")+self.of_type("BALLMText")}

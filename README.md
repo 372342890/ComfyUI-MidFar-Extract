@@ -10,7 +10,7 @@
 不需要再次导入展开结果。所有图片节点固定使用 **Seedream 5.0 pro**，
 2048×2048、PNG、关闭水印。视觉判断分成候选分析、交叉复核和逐版审查，
 按阶段限制 JSON 回复长度，避免原生文本 carrier 长思考超过服务时限；
-图像生成仍保留 Seedream 的提示思考设置。
+图像生成使用标准提示模式。
 
 流程：原图 → 多候选分析 → 原图边界硬过滤与真实局部图表 →
 视觉复核三份不同完整单元 → 三个独立生成分支 →
@@ -179,27 +179,26 @@ python -m unittest test_core -v
 
 MIT License. No credentials, service endpoints, private workflows or project assets are included.
 
-## Automatic three-asset workflow with target localization
+## Automatic three-asset workflow with original-crop repairs
 
 Import `midfar-three-autonomous.byteartist.json` in ByteArtist, replace the
 reference image, then click global run once. The fixed graph examines candidate
-connections and occlusions, selects three units, localizes each visible target
-with a separate vision judgment, and isolates source pixels as a generation
-guide. Guides are intermediate references only, never final assets.
+connections and occlusions, selects three units, and makes a real source crop for
+each target. Every generation and repair uses that same original crop through a
+standard `LoadImage` handoff, never a previous wrong output or frozen polygon.
 
 Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
-original isolated guide, avoiding repeated copying of a previous wrong image.
-The guide marks the occluded lower foot as a local edit region. A scoped
-completion node composites only that region from the native generated image,
-preserving the visible source upper geometry and background inside the workflow.
-Every composite still requires fresh numeric and visual inspection; it is not
-accepted merely because the upper reference geometry was retained.
+original source so they can remove unrelated upper fragments, restore connected
+side peaks, and complete natural hidden feet. Source fidelity is checked against
+the actual original crop. Global scene locations are not reinterpreted as
+positions within that crop. The deployed graph does not freeze or composite an
+incorrect localization mask into the final generated asset.
 Final selection still requires every numeric and visual gate to pass, including
 all attached parts, a natural complete base, reference style and clean alpha.
 Tiny disconnected key-colored compression noise is recorded separately; real
 detached foreground parts remain blocking defects.
 
-The graph contains 9 image calls and 14 text calls. Generation may fail its
+The graph contains 9 image calls and 11 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard
@@ -208,9 +207,9 @@ pixels and use content-addressed paths under the ComfyUI input directory. This
 also makes native model references independently inspectable; it does not relax
 the numeric or visual acceptance gates.
 
-Lower-foot edit regions automatically expand above inward occluder notches.
-Transition colors are matched inside the edit region; a geometric lower-profile
-check rejects deep unfilled occlusion cutouts even if a visual model misses them.
+A geometric lower-profile check rejects deep unfilled occlusion cutouts even
+if a visual model misses them. Legacy target-guide and foot-completion nodes
+remain available for other graphs; they are not used by this repaired workflow.
 
 ## Reference-guided natural terrain assets
 
