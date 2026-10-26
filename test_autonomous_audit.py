@@ -181,6 +181,18 @@ class AuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "removed"):
             audit.choose_asset([rgba], [numeric], [verdict()])
 
+    def test_remote_key_colored_compression_noise_is_classified_before_matte(self):
+        image = generated(soft=False)
+        foreground = image[..., 0] > .1
+        image[~foreground] = [.97, .02, .96]
+        image[:, 7:9, 7:9] = [143/255, 0., 201/255]
+        _, _, rgba, numeric = audit.inspect_asset(image, reference(), plan(), "#FF00FF")
+        report = json.loads(numeric)
+        self.assertTrue(report["valid"], report["problems"])
+        self.assertEqual(report["removed_remote_pixels"], 0)
+        self.assertEqual(report["suppressed_screen_noise_pixels"], 4)
+        audit.choose_asset([rgba], [numeric], [verdict()])
+
     def test_existing_input_alpha_and_magenta_key_are_preserved(self):
         image = generated(soft=False)
         image[..., 1] = np.where(image[..., 0] < .1, .05, image[..., 1])

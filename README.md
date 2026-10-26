@@ -179,6 +179,24 @@ python -m unittest test_core -v
 
 MIT License. No credentials, service endpoints, private workflows or project assets are included.
 
+## Automatic three-asset workflow with target localization
+
+Import `midfar-three-autonomous.byteartist.json` in ByteArtist, replace the
+reference image, then click global run once. The fixed graph examines candidate
+connections and occlusions, selects three units, localizes each visible target
+with a separate vision judgment, and isolates source pixels as a generation
+guide. Guides are intermediate references only, never final assets.
+
+Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
+original isolated guide, avoiding repeated copying of a previous wrong image.
+Final selection still requires every numeric and visual gate to pass, including
+all attached parts, a natural complete base, reference style and clean alpha.
+Tiny disconnected key-colored compression noise is recorded separately; real
+detached foreground parts remain blocking defects.
+
+The graph contains 9 image calls and 14 text calls. Generation may fail its
+quality gates; an unsuccessful run never delivers a rejected image as success.
+
 ## Reference-guided natural terrain assets
 
 `Style image + shape image + brief → vision LLM assets JSON → BATerrainWorkflowExpand → import JSON → independent image carriers → RGBA PNGs`

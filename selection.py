@@ -242,6 +242,21 @@ def selected_matte(image, key, softness=.06, padding=24, strict=True):
     alpha = np.clip(np.sum((rgb-screen_color)*direction, axis=-1)/np.maximum(denominator, 1e-6), 0, 1)
     alpha[screen] = 0
     alpha[solid & (distance == 0)] = 1
+    # Isolated, tiny key-colored islands without any stable foreground support
+    # are compression/screen noise, not detached object parts. Keep every
+    # non-key island for crop_asset's fail-closed detached-part audit.
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        (alpha > .01).astype(np.uint8), 8)
+    screen_noise = np.zeros_like(screen)
+    raw_key = dominance(rgb, key)
+    for label in range(1, count):
+        if stats[label, cv2.CC_STAT_AREA] > 16:
+            continue
+        island = labels == label
+        if (np.all(raw_key[island] > .35) and
+                np.all(distance[island] > max(12, min(h, w)*.03))):
+            screen_noise |= island
+    alpha[screen_noise] = 0
     color = np.clip((rgb-(1-alpha[..., None])*screen_color)/np.maximum(alpha[..., None], 1e-5), 0, 1)
     screen_distance = cv2.distanceTransform((~screen).astype(np.uint8), cv2.DIST_L2, 5)
     edge = (alpha > .01) & (screen_distance <= 5) & (distance <= 20)
@@ -254,6 +269,7 @@ def selected_matte(image, key, softness=.06, padding=24, strict=True):
     rgba, quality = crop_asset(rgba, padding)
     quality.update({"observed_screen_rgb": np.round(observed*255).astype(int).tolist(),
                     "key_color": key, "mask_convention": "1=foreground opaque, 0=transparent",
+                    "suppressed_screen_noise_pixels": int(screen_noise.sum()),
                     "soft_edge_pixels": int(((rgba[..., 3] > 0) & (rgba[..., 3] < 1)).sum())})
     if strict and quality["warning"]:
         raise ValueError(quality["warning"])

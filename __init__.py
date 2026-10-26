@@ -6,7 +6,7 @@ from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_
 from .selection import parse_selection, crop_reference, selected_prompt, expand_selection, selected_matte
 from .autonomous_nodes import (
     BAMidFarCandidateReview, BAMidFarThreePlans, BAMidFarAutonomousReference,
-    BAMidFarAssetInspect, BAMidFarRepairPrompt, BAMidFarChooseAsset,
+    BAMidFarAssetInspect, BAMidFarRepairPrompt, BAMidFarChooseAsset, BAMidFarTargetGuide,
 )
 
 
@@ -296,6 +296,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarAssetInspect": BAMidFarAssetInspect,
     "BAMidFarRepairPrompt": BAMidFarRepairPrompt,
     "BAMidFarChooseAsset": BAMidFarChooseAsset,
+    "BAMidFarTargetGuide": BAMidFarTargetGuide,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -314,4 +315,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarAssetInspect": "MidFar Asset Inspect / 完整性与透明检查",
     "BAMidFarRepairPrompt": "MidFar Repair Prompt / 自动审查反馈修正",
     "BAMidFarChooseAsset": "MidFar Choose Asset / 仅输出合格透明素材",
+    "BAMidFarTargetGuide": "MidFar Target Guide / 自动轮廓定位参考",
 }

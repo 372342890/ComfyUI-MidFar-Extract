@@ -3,6 +3,7 @@ import torch
 
 from .autonomous_plan import candidate_review, split_three, asset_reference
 from .autonomous_audit import inspect_asset, repair_prompt, choose_asset
+from .target_guide import target_guide
 
 
 def _array(image):
@@ -81,6 +82,24 @@ class BAMidFarAssetInspect:
         sheet, prompt, rgba, numeric = inspect_asset(
             _array(image), _array(reference_crop), plan, key_color, softness, padding)
         return torch.from_numpy(sheet), prompt, torch.from_numpy(rgba), numeric
+
+
+class BAMidFarTargetGuide:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "reference_crop": ("IMAGE",), "plan": ("STRING", {"forceInput": True}),
+            "localization": ("STRING", {"forceInput": True}),
+            "key_color": ("STRING", {"forceInput": True}),
+        }}
+    RETURN_TYPES = ("IMAGE", "STRING", "STRING")
+    RETURN_NAMES = ("guide_image", "guide_prompt", "guide_record")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Autonomous"
+
+    def run(self, reference_crop, plan, localization, key_color):
+        image, prompt, record = target_guide(_array(reference_crop), plan, localization, key_color)
+        return torch.from_numpy(image), prompt, record
 
 
 class BAMidFarRepairPrompt:

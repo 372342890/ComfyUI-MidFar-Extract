@@ -8,6 +8,7 @@ NEW_TYPES = {
     "BAMidFarCandidateReview", "BAMidFarThreePlans",
     "BAMidFarAutonomousReference", "BAMidFarAssetInspect",
     "BAMidFarRepairPrompt", "BAMidFarChooseAsset",
+    "BAMidFarTargetGuide",
 }
 
 
@@ -108,6 +109,14 @@ class GraphContract(unittest.TestCase):
         for token in ("client_id", "authorization", "api_key", "bench-", "workspace_id",
                       "user_id", "localhost", "127.0.0.1"):
             self.assertNotIn(token, raw)
+
+    def test_every_generator_uses_current_target_guide_without_previous_bad_image(self):
+        self.assertEqual(len(self.of_type("BAMidFarTargetGuide")), 3)
+        for generator in self.of_type("BALLMImage"):
+            images = [e for e in self.edges
+                      if e["target"] == generator["id"] and e["targetHandle"] == "image"]
+            self.assertEqual(len(images), 1)
+            self.assertEqual(self.nodes[images[0]["source"]]["data"]["type"], "BAMidFarTargetGuide")
 
 
 if __name__ == "__main__":
