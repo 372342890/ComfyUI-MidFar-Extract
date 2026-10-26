@@ -1,9 +1,11 @@
 """Scalar ComfyUI wrappers; native ByteArtist nodes perform all model calls."""
+import json
 import torch
 
 from .autonomous_plan import candidate_review, split_three, asset_reference
 from .autonomous_audit import inspect_asset, repair_prompt, choose_asset
 from .target_guide import target_guide
+from .foot_completion import completion_context, complete_foot
 
 
 def _array(image):
@@ -92,14 +94,33 @@ class BAMidFarTargetGuide:
             "localization": ("STRING", {"forceInput": True}),
             "key_color": ("STRING", {"forceInput": True}),
         }}
-    RETURN_TYPES = ("IMAGE", "STRING", "STRING")
-    RETURN_NAMES = ("guide_image", "guide_prompt", "guide_record")
+    RETURN_TYPES = ("IMAGE", "STRING", "STRING", "IMAGE", "MASK")
+    RETURN_NAMES = ("guide_image", "guide_prompt", "guide_record", "completion_guide", "foot_mask")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
     def run(self, reference_crop, plan, localization, key_color):
         image, prompt, record = target_guide(_array(reference_crop), plan, localization, key_color)
-        return torch.from_numpy(image), prompt, record
+        marked, mask = completion_context(image, key_color)
+        return torch.from_numpy(image), prompt, record, torch.from_numpy(marked), torch.from_numpy(mask)
+
+
+class BAMidFarCompleteFoot:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "image": ("IMAGE",), "source_guide": ("IMAGE",), "foot_mask": ("MASK",),
+            "key_color": ("STRING", {"forceInput": True}),
+        }}
+    RETURN_TYPES = ("IMAGE", "STRING")
+    RETURN_NAMES = ("completed_image", "completion_record")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Autonomous"
+
+    def run(self, image, source_guide, foot_mask, key_color):
+        completed, record = complete_foot(_array(image), _array(source_guide),
+                                         _array(foot_mask), key_color)
+        return torch.from_numpy(completed), json.dumps(record)
 
 
 class BAMidFarRepairPrompt:

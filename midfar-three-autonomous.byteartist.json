@@ -1314,6 +1314,16 @@
             "name": "guide_record",
             "label": "guide_record",
             "type": "STRING"
+          },
+          {
+            "name": "completion_guide",
+            "label": "completion_guide",
+            "type": "IMAGE"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK"
           }
         ],
         "extra": {
@@ -1404,7 +1414,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。\n遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
           },
           {
             "name": "model",
@@ -2021,15 +2031,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
                 }
               ]
             }
@@ -2043,6 +2045,63 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
+    },
+    {
+      "id": "206",
+      "type": "baNode",
+      "position": {
+        "x": 3060,
+        "y": 480
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
     },
     {
       "id": "202",
@@ -2388,7 +2447,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -3005,7 +3064,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -3070,6 +3129,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "216",
+      "type": "baNode",
+      "position": {
+        "x": 4900,
+        "y": 480
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -3422,7 +3538,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -4039,7 +4155,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -4104,6 +4220,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "226",
+      "type": "baNode",
+      "position": {
+        "x": 6740,
+        "y": 480
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -5041,6 +5214,16 @@
             "name": "guide_record",
             "label": "guide_record",
             "type": "STRING"
+          },
+          {
+            "name": "completion_guide",
+            "label": "completion_guide",
+            "type": "IMAGE"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK"
           }
         ],
         "extra": {
@@ -5131,7 +5314,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。\n遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
           },
           {
             "name": "model",
@@ -5748,15 +5931,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
                 }
               ]
             }
@@ -5770,6 +5945,63 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
+    },
+    {
+      "id": "306",
+      "type": "baNode",
+      "position": {
+        "x": 3060,
+        "y": 1580
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
     },
     {
       "id": "302",
@@ -6115,7 +6347,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -6732,7 +6964,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -6797,6 +7029,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "316",
+      "type": "baNode",
+      "position": {
+        "x": 4900,
+        "y": 1580
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -7149,7 +7438,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -7766,7 +8055,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -7831,6 +8120,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "326",
+      "type": "baNode",
+      "position": {
+        "x": 6740,
+        "y": 1580
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -8768,6 +9114,16 @@
             "name": "guide_record",
             "label": "guide_record",
             "type": "STRING"
+          },
+          {
+            "name": "completion_guide",
+            "label": "completion_guide",
+            "type": "IMAGE"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK"
           }
         ],
         "extra": {
@@ -8858,7 +9214,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。\n遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+            "value": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
           },
           {
             "name": "model",
@@ -9475,15 +9831,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "遵照连接的当前目标指令和参考裁图，只出一张完整单元。保持原图结构、峰柱数量、连接关系、比例、颜色材质和视角，保留全部相连部件；准确排除其他深度物体。"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "遮挡处补全目标自己的短自然山脚，不加其他山、树林、草堆、地面条、托盘或盆地。完整居中，主体最长边不超过画布70%，四边至少15%均匀纯色空白；底部为自然完整轮廓，不能平切。背景严格为指令色键，无阴影渐变、无文字、无多视图。"
+                  "text": "局部图片编辑。唯一输入图已定位目标，朱红#FF380A区域是需要重绘的遮挡山脚。只改朱红区域，替换为目标自身完整自然的短山脚和周围纯色键背景；其他区域原样保留。遵照连接指令的准确色键、峰形、材质、颜色，不移动、缩放或重构整座山。无朱红残留、无新峰、树林、草堆、地面托盘、阴影或浮空底座。只输出同画布同位置的编辑结果。"
                 }
               ]
             }
@@ -9497,6 +9845,63 @@
       "type": "baNode",
       "zIndex": 0,
       "selected": false
+    },
+    {
+      "id": "406",
+      "type": "baNode",
+      "position": {
+        "x": 3060,
+        "y": 2680
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
     },
     {
       "id": "402",
@@ -9842,7 +10247,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -10459,7 +10864,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -10524,6 +10929,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "416",
+      "type": "baNode",
+      "position": {
+        "x": 4900,
+        "y": 2680
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -10876,7 +11338,7 @@
             "name": "user_prompt",
             "label": "user_prompt",
             "type": "STRING",
-            "value": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+            "value": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
           },
           {
             "name": "model",
@@ -11493,7 +11955,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "按真实审查意见重新生成同一目标。本次唯一图片是从原始裁图自动定位的粗轮廓参考，已经删去其他深度的遮挡物；不是上一版成品。只保留其中的目标形态，不能把粗遮罩的下边缘照搬成平切底部。用目标自身结构补齐自然短山脚和被遮挡部分，保留全部相连峰与岩肩，不新加峰、不加入地面托盘或前排其他山。严格按连接的缺陷反馈纠正，完整居中，四边15%均匀纯色键空白，无阴影反光。"
+                  "text": "局部图片编辑的审查修正。本次输入仍是原始目标上半部加朱红山脚编辑区。只在朱红范围内按连接的缺陷反馈补齐目标自己的短自然完整山脚，上半部峰顶、岩肩、积雪与纹理保持原样。同画布、同位置、同比例，背景严格使用连接色键，无朱红残留，不加新峰、树木、前排其他山或地面托盘，不平切，不画浮空底座。"
                 }
               ]
             }
@@ -11558,6 +12020,63 @@
           {
             "name": "repair_prompt",
             "label": "repair_prompt",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "426",
+      "type": "baNode",
+      "position": {
+        "x": 6740,
+        "y": 2680
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompleteFoot",
+        "title": "仅合成山脚 · 原始上半部固定保留",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "source_guide",
+            "label": "source_guide",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "foot_mask",
+            "label": "foot_mask",
+            "type": "MASK",
+            "format": "slot"
+          },
+          {
+            "name": "key_color",
+            "label": "key_color",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "completed_image",
+            "label": "completed_image",
+            "type": "IMAGE"
+          },
+          {
+            "name": "completion_record",
+            "label": "completion_record",
             "type": "STRING"
           }
         ],
@@ -12445,7 +12964,7 @@
       "type": "baEdge",
       "source": "241",
       "target": "201",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -12460,7 +12979,7 @@
       "id": "724",
       "type": "baEdge",
       "source": "201",
-      "target": "202",
+      "target": "206",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -12474,6 +12993,70 @@
     },
     {
       "id": "725",
+      "type": "baEdge",
+      "source": "241",
+      "target": "206",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "726",
+      "type": "baEdge",
+      "source": "241",
+      "target": "206",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "727",
+      "type": "baEdge",
+      "source": "200",
+      "target": "206",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "728",
+      "type": "baEdge",
+      "source": "206",
+      "target": "202",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "729",
       "type": "baEdge",
       "source": "200",
       "target": "202",
@@ -12489,7 +13072,7 @@
       }
     },
     {
-      "id": "726",
+      "id": "730",
       "type": "baEdge",
       "source": "104",
       "target": "202",
@@ -12505,7 +13088,7 @@
       }
     },
     {
-      "id": "727",
+      "id": "731",
       "type": "baEdge",
       "source": "200",
       "target": "202",
@@ -12521,7 +13104,7 @@
       }
     },
     {
-      "id": "728",
+      "id": "732",
       "type": "baEdge",
       "source": "202",
       "target": "203",
@@ -12537,7 +13120,7 @@
       }
     },
     {
-      "id": "729",
+      "id": "733",
       "type": "baEdge",
       "source": "241",
       "target": "203",
@@ -12553,7 +13136,7 @@
       }
     },
     {
-      "id": "730",
+      "id": "734",
       "type": "baEdge",
       "source": "202",
       "target": "203",
@@ -12569,7 +13152,7 @@
       }
     },
     {
-      "id": "731",
+      "id": "735",
       "type": "baEdge",
       "source": "104",
       "target": "204",
@@ -12585,7 +13168,7 @@
       }
     },
     {
-      "id": "732",
+      "id": "736",
       "type": "baEdge",
       "source": "200",
       "target": "204",
@@ -12601,7 +13184,7 @@
       }
     },
     {
-      "id": "733",
+      "id": "737",
       "type": "baEdge",
       "source": "202",
       "target": "204",
@@ -12617,7 +13200,7 @@
       }
     },
     {
-      "id": "734",
+      "id": "738",
       "type": "baEdge",
       "source": "203",
       "target": "204",
@@ -12633,7 +13216,7 @@
       }
     },
     {
-      "id": "735",
+      "id": "739",
       "type": "baEdge",
       "source": "204",
       "target": "211",
@@ -12649,11 +13232,11 @@
       }
     },
     {
-      "id": "736",
+      "id": "740",
       "type": "baEdge",
       "source": "241",
       "target": "211",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -12665,10 +13248,10 @@
       }
     },
     {
-      "id": "737",
+      "id": "741",
       "type": "baEdge",
       "source": "211",
-      "target": "212",
+      "target": "216",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -12681,7 +13264,71 @@
       }
     },
     {
-      "id": "738",
+      "id": "742",
+      "type": "baEdge",
+      "source": "241",
+      "target": "216",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "743",
+      "type": "baEdge",
+      "source": "241",
+      "target": "216",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "744",
+      "type": "baEdge",
+      "source": "200",
+      "target": "216",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "745",
+      "type": "baEdge",
+      "source": "216",
+      "target": "212",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "746",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -12697,7 +13344,7 @@
       }
     },
     {
-      "id": "739",
+      "id": "747",
       "type": "baEdge",
       "source": "104",
       "target": "212",
@@ -12713,7 +13360,7 @@
       }
     },
     {
-      "id": "740",
+      "id": "748",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -12729,7 +13376,7 @@
       }
     },
     {
-      "id": "741",
+      "id": "749",
       "type": "baEdge",
       "source": "212",
       "target": "213",
@@ -12745,7 +13392,7 @@
       }
     },
     {
-      "id": "742",
+      "id": "750",
       "type": "baEdge",
       "source": "241",
       "target": "213",
@@ -12761,7 +13408,7 @@
       }
     },
     {
-      "id": "743",
+      "id": "751",
       "type": "baEdge",
       "source": "212",
       "target": "213",
@@ -12777,138 +13424,10 @@
       }
     },
     {
-      "id": "744",
-      "type": "baEdge",
-      "source": "104",
-      "target": "214",
-      "sourceHandle": "plan_1",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "745",
-      "type": "baEdge",
-      "source": "200",
-      "target": "214",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "746",
-      "type": "baEdge",
-      "source": "212",
-      "target": "214",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "747",
-      "type": "baEdge",
-      "source": "213",
-      "target": "214",
-      "sourceHandle": "text",
-      "targetHandle": "visual_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "748",
-      "type": "baEdge",
-      "source": "214",
-      "target": "221",
-      "sourceHandle": "repair_prompt",
-      "targetHandle": "prompt",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "749",
-      "type": "baEdge",
-      "source": "241",
-      "target": "221",
-      "sourceHandle": "guide_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "750",
-      "type": "baEdge",
-      "source": "221",
-      "target": "222",
-      "sourceHandle": "image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "751",
-      "type": "baEdge",
-      "source": "200",
-      "target": "222",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
       "id": "752",
       "type": "baEdge",
       "source": "104",
-      "target": "222",
+      "target": "214",
       "sourceHandle": "plan_1",
       "targetHandle": "plan",
       "data": {
@@ -12924,7 +13443,7 @@
       "id": "753",
       "type": "baEdge",
       "source": "200",
-      "target": "222",
+      "target": "214",
       "sourceHandle": "key_color",
       "targetHandle": "key_color",
       "data": {
@@ -12938,6 +13457,198 @@
     },
     {
       "id": "754",
+      "type": "baEdge",
+      "source": "212",
+      "target": "214",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "755",
+      "type": "baEdge",
+      "source": "213",
+      "target": "214",
+      "sourceHandle": "text",
+      "targetHandle": "visual_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "756",
+      "type": "baEdge",
+      "source": "214",
+      "target": "221",
+      "sourceHandle": "repair_prompt",
+      "targetHandle": "prompt",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "757",
+      "type": "baEdge",
+      "source": "241",
+      "target": "221",
+      "sourceHandle": "completion_guide",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "758",
+      "type": "baEdge",
+      "source": "221",
+      "target": "226",
+      "sourceHandle": "image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "759",
+      "type": "baEdge",
+      "source": "241",
+      "target": "226",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "760",
+      "type": "baEdge",
+      "source": "241",
+      "target": "226",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "761",
+      "type": "baEdge",
+      "source": "200",
+      "target": "226",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "762",
+      "type": "baEdge",
+      "source": "226",
+      "target": "222",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "763",
+      "type": "baEdge",
+      "source": "200",
+      "target": "222",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "reference_crop",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "764",
+      "type": "baEdge",
+      "source": "104",
+      "target": "222",
+      "sourceHandle": "plan_1",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "765",
+      "type": "baEdge",
+      "source": "200",
+      "target": "222",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "766",
       "type": "baEdge",
       "source": "222",
       "target": "223",
@@ -12953,7 +13664,7 @@
       }
     },
     {
-      "id": "755",
+      "id": "767",
       "type": "baEdge",
       "source": "241",
       "target": "223",
@@ -12969,7 +13680,7 @@
       }
     },
     {
-      "id": "756",
+      "id": "768",
       "type": "baEdge",
       "source": "222",
       "target": "223",
@@ -12985,7 +13696,7 @@
       }
     },
     {
-      "id": "757",
+      "id": "769",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -13001,7 +13712,7 @@
       }
     },
     {
-      "id": "758",
+      "id": "770",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -13017,7 +13728,7 @@
       }
     },
     {
-      "id": "759",
+      "id": "771",
       "type": "baEdge",
       "source": "203",
       "target": "231",
@@ -13033,7 +13744,7 @@
       }
     },
     {
-      "id": "760",
+      "id": "772",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -13049,7 +13760,7 @@
       }
     },
     {
-      "id": "761",
+      "id": "773",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -13065,7 +13776,7 @@
       }
     },
     {
-      "id": "762",
+      "id": "774",
       "type": "baEdge",
       "source": "213",
       "target": "231",
@@ -13081,7 +13792,7 @@
       }
     },
     {
-      "id": "763",
+      "id": "775",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -13097,7 +13808,7 @@
       }
     },
     {
-      "id": "764",
+      "id": "776",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -13113,7 +13824,7 @@
       }
     },
     {
-      "id": "765",
+      "id": "777",
       "type": "baEdge",
       "source": "223",
       "target": "231",
@@ -13129,7 +13840,7 @@
       }
     },
     {
-      "id": "766",
+      "id": "778",
       "type": "baEdge",
       "source": "231",
       "target": "232",
@@ -13145,7 +13856,7 @@
       }
     },
     {
-      "id": "767",
+      "id": "779",
       "type": "baEdge",
       "source": "200",
       "target": "232",
@@ -13161,7 +13872,7 @@
       }
     },
     {
-      "id": "768",
+      "id": "780",
       "type": "baEdge",
       "source": "231",
       "target": "291",
@@ -13177,7 +13888,7 @@
       }
     },
     {
-      "id": "769",
+      "id": "781",
       "type": "baEdge",
       "source": "104",
       "target": "300",
@@ -13193,7 +13904,7 @@
       }
     },
     {
-      "id": "770",
+      "id": "782",
       "type": "baEdge",
       "source": "100",
       "target": "300",
@@ -13209,7 +13920,7 @@
       }
     },
     {
-      "id": "771",
+      "id": "783",
       "type": "baEdge",
       "source": "90",
       "target": "300",
@@ -13225,7 +13936,7 @@
       }
     },
     {
-      "id": "772",
+      "id": "784",
       "type": "baEdge",
       "source": "300",
       "target": "390",
@@ -13241,7 +13952,7 @@
       }
     },
     {
-      "id": "773",
+      "id": "785",
       "type": "baEdge",
       "source": "300",
       "target": "340",
@@ -13257,7 +13968,7 @@
       }
     },
     {
-      "id": "774",
+      "id": "786",
       "type": "baEdge",
       "source": "300",
       "target": "340",
@@ -13273,7 +13984,7 @@
       }
     },
     {
-      "id": "775",
+      "id": "787",
       "type": "baEdge",
       "source": "300",
       "target": "341",
@@ -13289,7 +14000,7 @@
       }
     },
     {
-      "id": "776",
+      "id": "788",
       "type": "baEdge",
       "source": "104",
       "target": "341",
@@ -13305,7 +14016,7 @@
       }
     },
     {
-      "id": "777",
+      "id": "789",
       "type": "baEdge",
       "source": "340",
       "target": "341",
@@ -13321,7 +14032,7 @@
       }
     },
     {
-      "id": "778",
+      "id": "790",
       "type": "baEdge",
       "source": "300",
       "target": "341",
@@ -13337,7 +14048,7 @@
       }
     },
     {
-      "id": "779",
+      "id": "791",
       "type": "baEdge",
       "source": "341",
       "target": "392",
@@ -13353,7 +14064,7 @@
       }
     },
     {
-      "id": "780",
+      "id": "792",
       "type": "baEdge",
       "source": "341",
       "target": "301",
@@ -13369,11 +14080,11 @@
       }
     },
     {
-      "id": "781",
+      "id": "793",
       "type": "baEdge",
       "source": "341",
       "target": "301",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13385,10 +14096,10 @@
       }
     },
     {
-      "id": "782",
+      "id": "794",
       "type": "baEdge",
       "source": "301",
-      "target": "302",
+      "target": "306",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -13401,7 +14112,71 @@
       }
     },
     {
-      "id": "783",
+      "id": "795",
+      "type": "baEdge",
+      "source": "341",
+      "target": "306",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "796",
+      "type": "baEdge",
+      "source": "341",
+      "target": "306",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "797",
+      "type": "baEdge",
+      "source": "300",
+      "target": "306",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "798",
+      "type": "baEdge",
+      "source": "306",
+      "target": "302",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "799",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -13417,7 +14192,7 @@
       }
     },
     {
-      "id": "784",
+      "id": "800",
       "type": "baEdge",
       "source": "104",
       "target": "302",
@@ -13433,7 +14208,7 @@
       }
     },
     {
-      "id": "785",
+      "id": "801",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -13449,7 +14224,7 @@
       }
     },
     {
-      "id": "786",
+      "id": "802",
       "type": "baEdge",
       "source": "302",
       "target": "303",
@@ -13465,7 +14240,7 @@
       }
     },
     {
-      "id": "787",
+      "id": "803",
       "type": "baEdge",
       "source": "341",
       "target": "303",
@@ -13481,7 +14256,7 @@
       }
     },
     {
-      "id": "788",
+      "id": "804",
       "type": "baEdge",
       "source": "302",
       "target": "303",
@@ -13497,7 +14272,7 @@
       }
     },
     {
-      "id": "789",
+      "id": "805",
       "type": "baEdge",
       "source": "104",
       "target": "304",
@@ -13513,7 +14288,7 @@
       }
     },
     {
-      "id": "790",
+      "id": "806",
       "type": "baEdge",
       "source": "300",
       "target": "304",
@@ -13529,7 +14304,7 @@
       }
     },
     {
-      "id": "791",
+      "id": "807",
       "type": "baEdge",
       "source": "302",
       "target": "304",
@@ -13545,7 +14320,7 @@
       }
     },
     {
-      "id": "792",
+      "id": "808",
       "type": "baEdge",
       "source": "303",
       "target": "304",
@@ -13561,7 +14336,7 @@
       }
     },
     {
-      "id": "793",
+      "id": "809",
       "type": "baEdge",
       "source": "304",
       "target": "311",
@@ -13577,11 +14352,11 @@
       }
     },
     {
-      "id": "794",
+      "id": "810",
       "type": "baEdge",
       "source": "341",
       "target": "311",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13593,10 +14368,10 @@
       }
     },
     {
-      "id": "795",
+      "id": "811",
       "type": "baEdge",
       "source": "311",
-      "target": "312",
+      "target": "316",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -13609,7 +14384,71 @@
       }
     },
     {
-      "id": "796",
+      "id": "812",
+      "type": "baEdge",
+      "source": "341",
+      "target": "316",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "813",
+      "type": "baEdge",
+      "source": "341",
+      "target": "316",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "814",
+      "type": "baEdge",
+      "source": "300",
+      "target": "316",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "815",
+      "type": "baEdge",
+      "source": "316",
+      "target": "312",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "816",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -13625,7 +14464,7 @@
       }
     },
     {
-      "id": "797",
+      "id": "817",
       "type": "baEdge",
       "source": "104",
       "target": "312",
@@ -13641,7 +14480,7 @@
       }
     },
     {
-      "id": "798",
+      "id": "818",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -13657,7 +14496,7 @@
       }
     },
     {
-      "id": "799",
+      "id": "819",
       "type": "baEdge",
       "source": "312",
       "target": "313",
@@ -13673,7 +14512,7 @@
       }
     },
     {
-      "id": "800",
+      "id": "820",
       "type": "baEdge",
       "source": "341",
       "target": "313",
@@ -13689,7 +14528,7 @@
       }
     },
     {
-      "id": "801",
+      "id": "821",
       "type": "baEdge",
       "source": "312",
       "target": "313",
@@ -13705,7 +14544,7 @@
       }
     },
     {
-      "id": "802",
+      "id": "822",
       "type": "baEdge",
       "source": "104",
       "target": "314",
@@ -13721,7 +14560,7 @@
       }
     },
     {
-      "id": "803",
+      "id": "823",
       "type": "baEdge",
       "source": "300",
       "target": "314",
@@ -13737,7 +14576,7 @@
       }
     },
     {
-      "id": "804",
+      "id": "824",
       "type": "baEdge",
       "source": "312",
       "target": "314",
@@ -13753,7 +14592,7 @@
       }
     },
     {
-      "id": "805",
+      "id": "825",
       "type": "baEdge",
       "source": "313",
       "target": "314",
@@ -13769,7 +14608,7 @@
       }
     },
     {
-      "id": "806",
+      "id": "826",
       "type": "baEdge",
       "source": "314",
       "target": "321",
@@ -13785,11 +14624,11 @@
       }
     },
     {
-      "id": "807",
+      "id": "827",
       "type": "baEdge",
       "source": "341",
       "target": "321",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -13801,10 +14640,10 @@
       }
     },
     {
-      "id": "808",
+      "id": "828",
       "type": "baEdge",
       "source": "321",
-      "target": "322",
+      "target": "326",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -13817,12 +14656,12 @@
       }
     },
     {
-      "id": "809",
+      "id": "829",
       "type": "baEdge",
-      "source": "300",
-      "target": "322",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
+      "source": "341",
+      "target": "326",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
       "data": {
         "type": "IMAGE",
         "sourceType": "IMAGE",
@@ -13833,26 +14672,26 @@
       }
     },
     {
-      "id": "810",
+      "id": "830",
       "type": "baEdge",
-      "source": "104",
-      "target": "322",
-      "sourceHandle": "plan_2",
-      "targetHandle": "plan",
+      "source": "341",
+      "target": "326",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
       "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
         "extra": {
-          "type": "STRING"
+          "type": "MASK"
         }
       }
     },
     {
-      "id": "811",
+      "id": "831",
       "type": "baEdge",
       "source": "300",
-      "target": "322",
+      "target": "326",
       "sourceHandle": "key_color",
       "targetHandle": "key_color",
       "data": {
@@ -13865,346 +14704,26 @@
       }
     },
     {
-      "id": "812",
-      "type": "baEdge",
-      "source": "322",
-      "target": "323",
-      "sourceHandle": "inspection_sheet",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "813",
-      "type": "baEdge",
-      "source": "341",
-      "target": "323",
-      "sourceHandle": "guide_image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "814",
-      "type": "baEdge",
-      "source": "322",
-      "target": "323",
-      "sourceHandle": "review_prompt",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "815",
-      "type": "baEdge",
-      "source": "302",
-      "target": "331",
-      "sourceHandle": "candidate_rgba",
-      "targetHandle": "rgba_1",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "816",
-      "type": "baEdge",
-      "source": "302",
-      "target": "331",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_1",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "817",
-      "type": "baEdge",
-      "source": "303",
-      "target": "331",
-      "sourceHandle": "text",
-      "targetHandle": "visual_1",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "818",
-      "type": "baEdge",
-      "source": "312",
-      "target": "331",
-      "sourceHandle": "candidate_rgba",
-      "targetHandle": "rgba_2",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "819",
-      "type": "baEdge",
-      "source": "312",
-      "target": "331",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_2",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "820",
-      "type": "baEdge",
-      "source": "313",
-      "target": "331",
-      "sourceHandle": "text",
-      "targetHandle": "visual_2",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "821",
-      "type": "baEdge",
-      "source": "322",
-      "target": "331",
-      "sourceHandle": "candidate_rgba",
-      "targetHandle": "rgba_3",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "822",
-      "type": "baEdge",
-      "source": "322",
-      "target": "331",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_3",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "823",
-      "type": "baEdge",
-      "source": "323",
-      "target": "331",
-      "sourceHandle": "text",
-      "targetHandle": "visual_3",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "824",
-      "type": "baEdge",
-      "source": "331",
-      "target": "332",
-      "sourceHandle": "rgba",
-      "targetHandle": "images",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "825",
-      "type": "baEdge",
-      "source": "300",
-      "target": "332",
-      "sourceHandle": "filename_prefix",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "826",
-      "type": "baEdge",
-      "source": "331",
-      "target": "391",
-      "sourceHandle": "selection_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "827",
-      "type": "baEdge",
-      "source": "104",
-      "target": "400",
-      "sourceHandle": "plan_3",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "828",
-      "type": "baEdge",
-      "source": "100",
-      "target": "400",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "reference",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "829",
-      "type": "baEdge",
-      "source": "90",
-      "target": "400",
-      "sourceHandle": "STRING",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "830",
-      "type": "baEdge",
-      "source": "400",
-      "target": "490",
-      "sourceHandle": "source_record",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "831",
-      "type": "baEdge",
-      "source": "400",
-      "target": "440",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
       "id": "832",
       "type": "baEdge",
-      "source": "400",
-      "target": "440",
-      "sourceHandle": "prompt",
-      "targetHandle": "text",
+      "source": "326",
+      "target": "322",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
       "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
         "extra": {
-          "type": "STRING"
+          "type": "IMAGE"
         }
       }
     },
     {
       "id": "833",
       "type": "baEdge",
-      "source": "400",
-      "target": "441",
+      "source": "300",
+      "target": "322",
       "sourceHandle": "reference_crop",
       "targetHandle": "reference_crop",
       "data": {
@@ -14220,6 +14739,390 @@
       "id": "834",
       "type": "baEdge",
       "source": "104",
+      "target": "322",
+      "sourceHandle": "plan_2",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "835",
+      "type": "baEdge",
+      "source": "300",
+      "target": "322",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "836",
+      "type": "baEdge",
+      "source": "322",
+      "target": "323",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "837",
+      "type": "baEdge",
+      "source": "341",
+      "target": "323",
+      "sourceHandle": "guide_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "838",
+      "type": "baEdge",
+      "source": "322",
+      "target": "323",
+      "sourceHandle": "review_prompt",
+      "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "839",
+      "type": "baEdge",
+      "source": "302",
+      "target": "331",
+      "sourceHandle": "candidate_rgba",
+      "targetHandle": "rgba_1",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "840",
+      "type": "baEdge",
+      "source": "302",
+      "target": "331",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_1",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "841",
+      "type": "baEdge",
+      "source": "303",
+      "target": "331",
+      "sourceHandle": "text",
+      "targetHandle": "visual_1",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "842",
+      "type": "baEdge",
+      "source": "312",
+      "target": "331",
+      "sourceHandle": "candidate_rgba",
+      "targetHandle": "rgba_2",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "843",
+      "type": "baEdge",
+      "source": "312",
+      "target": "331",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_2",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "844",
+      "type": "baEdge",
+      "source": "313",
+      "target": "331",
+      "sourceHandle": "text",
+      "targetHandle": "visual_2",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "845",
+      "type": "baEdge",
+      "source": "322",
+      "target": "331",
+      "sourceHandle": "candidate_rgba",
+      "targetHandle": "rgba_3",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "846",
+      "type": "baEdge",
+      "source": "322",
+      "target": "331",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_3",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "847",
+      "type": "baEdge",
+      "source": "323",
+      "target": "331",
+      "sourceHandle": "text",
+      "targetHandle": "visual_3",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "848",
+      "type": "baEdge",
+      "source": "331",
+      "target": "332",
+      "sourceHandle": "rgba",
+      "targetHandle": "images",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "849",
+      "type": "baEdge",
+      "source": "300",
+      "target": "332",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "850",
+      "type": "baEdge",
+      "source": "331",
+      "target": "391",
+      "sourceHandle": "selection_record",
+      "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "851",
+      "type": "baEdge",
+      "source": "104",
+      "target": "400",
+      "sourceHandle": "plan_3",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "852",
+      "type": "baEdge",
+      "source": "100",
+      "target": "400",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "853",
+      "type": "baEdge",
+      "source": "90",
+      "target": "400",
+      "sourceHandle": "STRING",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "854",
+      "type": "baEdge",
+      "source": "400",
+      "target": "490",
+      "sourceHandle": "source_record",
+      "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "855",
+      "type": "baEdge",
+      "source": "400",
+      "target": "440",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "856",
+      "type": "baEdge",
+      "source": "400",
+      "target": "440",
+      "sourceHandle": "prompt",
+      "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "857",
+      "type": "baEdge",
+      "source": "400",
+      "target": "441",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "reference_crop",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "858",
+      "type": "baEdge",
+      "source": "104",
       "target": "441",
       "sourceHandle": "plan_3",
       "targetHandle": "plan",
@@ -14233,7 +15136,7 @@
       }
     },
     {
-      "id": "835",
+      "id": "859",
       "type": "baEdge",
       "source": "440",
       "target": "441",
@@ -14249,7 +15152,7 @@
       }
     },
     {
-      "id": "836",
+      "id": "860",
       "type": "baEdge",
       "source": "400",
       "target": "441",
@@ -14265,7 +15168,7 @@
       }
     },
     {
-      "id": "837",
+      "id": "861",
       "type": "baEdge",
       "source": "441",
       "target": "492",
@@ -14281,7 +15184,7 @@
       }
     },
     {
-      "id": "838",
+      "id": "862",
       "type": "baEdge",
       "source": "441",
       "target": "401",
@@ -14297,11 +15200,11 @@
       }
     },
     {
-      "id": "839",
+      "id": "863",
       "type": "baEdge",
       "source": "441",
       "target": "401",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14313,10 +15216,10 @@
       }
     },
     {
-      "id": "840",
+      "id": "864",
       "type": "baEdge",
       "source": "401",
-      "target": "402",
+      "target": "406",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -14329,7 +15232,71 @@
       }
     },
     {
-      "id": "841",
+      "id": "865",
+      "type": "baEdge",
+      "source": "441",
+      "target": "406",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "866",
+      "type": "baEdge",
+      "source": "441",
+      "target": "406",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "867",
+      "type": "baEdge",
+      "source": "400",
+      "target": "406",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "868",
+      "type": "baEdge",
+      "source": "406",
+      "target": "402",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "869",
       "type": "baEdge",
       "source": "400",
       "target": "402",
@@ -14345,7 +15312,7 @@
       }
     },
     {
-      "id": "842",
+      "id": "870",
       "type": "baEdge",
       "source": "104",
       "target": "402",
@@ -14361,7 +15328,7 @@
       }
     },
     {
-      "id": "843",
+      "id": "871",
       "type": "baEdge",
       "source": "400",
       "target": "402",
@@ -14377,7 +15344,7 @@
       }
     },
     {
-      "id": "844",
+      "id": "872",
       "type": "baEdge",
       "source": "402",
       "target": "403",
@@ -14393,7 +15360,7 @@
       }
     },
     {
-      "id": "845",
+      "id": "873",
       "type": "baEdge",
       "source": "441",
       "target": "403",
@@ -14409,7 +15376,7 @@
       }
     },
     {
-      "id": "846",
+      "id": "874",
       "type": "baEdge",
       "source": "402",
       "target": "403",
@@ -14425,7 +15392,7 @@
       }
     },
     {
-      "id": "847",
+      "id": "875",
       "type": "baEdge",
       "source": "104",
       "target": "404",
@@ -14441,7 +15408,7 @@
       }
     },
     {
-      "id": "848",
+      "id": "876",
       "type": "baEdge",
       "source": "400",
       "target": "404",
@@ -14457,7 +15424,7 @@
       }
     },
     {
-      "id": "849",
+      "id": "877",
       "type": "baEdge",
       "source": "402",
       "target": "404",
@@ -14473,7 +15440,7 @@
       }
     },
     {
-      "id": "850",
+      "id": "878",
       "type": "baEdge",
       "source": "403",
       "target": "404",
@@ -14489,7 +15456,7 @@
       }
     },
     {
-      "id": "851",
+      "id": "879",
       "type": "baEdge",
       "source": "404",
       "target": "411",
@@ -14505,11 +15472,11 @@
       }
     },
     {
-      "id": "852",
+      "id": "880",
       "type": "baEdge",
       "source": "441",
       "target": "411",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14521,10 +15488,10 @@
       }
     },
     {
-      "id": "853",
+      "id": "881",
       "type": "baEdge",
       "source": "411",
-      "target": "412",
+      "target": "416",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -14537,7 +15504,71 @@
       }
     },
     {
-      "id": "854",
+      "id": "882",
+      "type": "baEdge",
+      "source": "441",
+      "target": "416",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "883",
+      "type": "baEdge",
+      "source": "441",
+      "target": "416",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "884",
+      "type": "baEdge",
+      "source": "400",
+      "target": "416",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "885",
+      "type": "baEdge",
+      "source": "416",
+      "target": "412",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "886",
       "type": "baEdge",
       "source": "400",
       "target": "412",
@@ -14553,7 +15584,7 @@
       }
     },
     {
-      "id": "855",
+      "id": "887",
       "type": "baEdge",
       "source": "104",
       "target": "412",
@@ -14569,7 +15600,7 @@
       }
     },
     {
-      "id": "856",
+      "id": "888",
       "type": "baEdge",
       "source": "400",
       "target": "412",
@@ -14585,7 +15616,7 @@
       }
     },
     {
-      "id": "857",
+      "id": "889",
       "type": "baEdge",
       "source": "412",
       "target": "413",
@@ -14601,7 +15632,7 @@
       }
     },
     {
-      "id": "858",
+      "id": "890",
       "type": "baEdge",
       "source": "441",
       "target": "413",
@@ -14617,7 +15648,7 @@
       }
     },
     {
-      "id": "859",
+      "id": "891",
       "type": "baEdge",
       "source": "412",
       "target": "413",
@@ -14633,7 +15664,7 @@
       }
     },
     {
-      "id": "860",
+      "id": "892",
       "type": "baEdge",
       "source": "104",
       "target": "414",
@@ -14649,7 +15680,7 @@
       }
     },
     {
-      "id": "861",
+      "id": "893",
       "type": "baEdge",
       "source": "400",
       "target": "414",
@@ -14665,7 +15696,7 @@
       }
     },
     {
-      "id": "862",
+      "id": "894",
       "type": "baEdge",
       "source": "412",
       "target": "414",
@@ -14681,7 +15712,7 @@
       }
     },
     {
-      "id": "863",
+      "id": "895",
       "type": "baEdge",
       "source": "413",
       "target": "414",
@@ -14697,7 +15728,7 @@
       }
     },
     {
-      "id": "864",
+      "id": "896",
       "type": "baEdge",
       "source": "414",
       "target": "421",
@@ -14713,11 +15744,11 @@
       }
     },
     {
-      "id": "865",
+      "id": "897",
       "type": "baEdge",
       "source": "441",
       "target": "421",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "completion_guide",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -14729,10 +15760,10 @@
       }
     },
     {
-      "id": "866",
+      "id": "898",
       "type": "baEdge",
       "source": "421",
-      "target": "422",
+      "target": "426",
       "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
@@ -14745,7 +15776,71 @@
       }
     },
     {
-      "id": "867",
+      "id": "899",
+      "type": "baEdge",
+      "source": "441",
+      "target": "426",
+      "sourceHandle": "guide_image",
+      "targetHandle": "source_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "900",
+      "type": "baEdge",
+      "source": "441",
+      "target": "426",
+      "sourceHandle": "foot_mask",
+      "targetHandle": "foot_mask",
+      "data": {
+        "type": "MASK",
+        "sourceType": "MASK",
+        "targetType": "MASK",
+        "extra": {
+          "type": "MASK"
+        }
+      }
+    },
+    {
+      "id": "901",
+      "type": "baEdge",
+      "source": "400",
+      "target": "426",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "902",
+      "type": "baEdge",
+      "source": "426",
+      "target": "422",
+      "sourceHandle": "completed_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "903",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -14761,7 +15856,7 @@
       }
     },
     {
-      "id": "868",
+      "id": "904",
       "type": "baEdge",
       "source": "104",
       "target": "422",
@@ -14777,7 +15872,7 @@
       }
     },
     {
-      "id": "869",
+      "id": "905",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -14793,7 +15888,7 @@
       }
     },
     {
-      "id": "870",
+      "id": "906",
       "type": "baEdge",
       "source": "422",
       "target": "423",
@@ -14809,7 +15904,7 @@
       }
     },
     {
-      "id": "871",
+      "id": "907",
       "type": "baEdge",
       "source": "441",
       "target": "423",
@@ -14825,7 +15920,7 @@
       }
     },
     {
-      "id": "872",
+      "id": "908",
       "type": "baEdge",
       "source": "422",
       "target": "423",
@@ -14841,7 +15936,7 @@
       }
     },
     {
-      "id": "873",
+      "id": "909",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -14857,7 +15952,7 @@
       }
     },
     {
-      "id": "874",
+      "id": "910",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -14873,7 +15968,7 @@
       }
     },
     {
-      "id": "875",
+      "id": "911",
       "type": "baEdge",
       "source": "403",
       "target": "431",
@@ -14889,7 +15984,7 @@
       }
     },
     {
-      "id": "876",
+      "id": "912",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -14905,7 +16000,7 @@
       }
     },
     {
-      "id": "877",
+      "id": "913",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -14921,7 +16016,7 @@
       }
     },
     {
-      "id": "878",
+      "id": "914",
       "type": "baEdge",
       "source": "413",
       "target": "431",
@@ -14937,7 +16032,7 @@
       }
     },
     {
-      "id": "879",
+      "id": "915",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -14953,7 +16048,7 @@
       }
     },
     {
-      "id": "880",
+      "id": "916",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -14969,7 +16064,7 @@
       }
     },
     {
-      "id": "881",
+      "id": "917",
       "type": "baEdge",
       "source": "423",
       "target": "431",
@@ -14985,7 +16080,7 @@
       }
     },
     {
-      "id": "882",
+      "id": "918",
       "type": "baEdge",
       "source": "431",
       "target": "432",
@@ -15001,7 +16096,7 @@
       }
     },
     {
-      "id": "883",
+      "id": "919",
       "type": "baEdge",
       "source": "400",
       "target": "432",
@@ -15017,7 +16112,7 @@
       }
     },
     {
-      "id": "884",
+      "id": "920",
       "type": "baEdge",
       "source": "431",
       "target": "491",

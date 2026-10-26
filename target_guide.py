@@ -51,6 +51,14 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     left, top = (side-dw)//2, (side-dh)//2
     guide[top:top+dh, left:left+dw] = cut*cut_mask+color*(1-cut_mask)
     prompt = (
+        f"局部图片编辑任务。图中朱红色#FF380A区域是待补全的遮挡山脚标记，"
+        f"把朱红区域改绘成目标自身完整、自然、不平切的短山脚，以及周围均匀纯色{key}背景。"
+        f"输出背景必须是纯色{key}。只重绘朱红标记覆盖的下缘，朱红区域之外的峰顶、"
+        "岩肩、颜色、积雪、纹理与位置全部保持原样；画布大小、主体位置和比例均不变。"
+        "不要裁图、放大、换背景色、增加树木、新峰、岩柱或浮空下垂底座。"
+        "脚部顺着上半部坡面向下短距离收束，末端有自然圆缓的不规则岩脚体积，"
+        "没有整条直线切口、薄纸底、矩形凹口、独立地面托盘。朱红是编辑标记，不是主体颜色，"
+        "完成后不能残留朱红。只输出编辑后的图片。\n"
         f"The input is a rough source-pixel localization GUIDE for {target['name']} "
         f"(asset_id {target['id']}), not a finished asset. It already excludes neighboring "
         "depth objects. Keep precisely the visible target silhouette, peaks and attached "

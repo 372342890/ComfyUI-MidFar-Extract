@@ -189,6 +189,11 @@ guide. Guides are intermediate references only, never final assets.
 
 Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
 original isolated guide, avoiding repeated copying of a previous wrong image.
+The guide marks the occluded lower foot as a local edit region. A scoped
+completion node composites only that region from the native generated image,
+preserving the visible source upper geometry and background inside the workflow.
+Every composite still requires fresh numeric and visual inspection; it is not
+accepted merely because the upper reference geometry was retained.
 Final selection still requires every numeric and visual gate to pass, including
 all attached parts, a natural complete base, reference style and clean alpha.
 Tiny disconnected key-colored compression noise is recorded separately; real
