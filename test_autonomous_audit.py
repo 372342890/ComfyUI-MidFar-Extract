@@ -128,6 +128,22 @@ class AuditTests(unittest.TestCase):
                             "reference", "numeric", "blocking"):
             self.assertIn(instruction, prompt)
 
+    def test_review_allows_expected_asset_isolation_and_hidden_base_completion(self):
+        _, prompt, _, _ = self.inspect()
+        for phrase in ("Expected transformations", "isolation", "hidden base",
+                       "not a defect by itself", "actually visible", "not a hypothetical risk"):
+            self.assertIn(phrase, prompt)
+
+    def test_repair_prompt_does_not_introduce_unobserved_pillars_or_caps(self):
+        one = plan(name="one smooth mountain", connected_parts=["single peak", "low slope"])
+        _, numeric = self.good_candidate()
+        prompt = audit.repair_prompt(one, "#00FF00", numeric,
+                                    verdict(natural_base=False, issues=["flat base"]), 1)
+        self.assertNotIn("attached pillar", prompt)
+        self.assertNotIn("multiple peaks", prompt)
+        self.assertIn("single peak", prompt)
+        self.assertIn("natural", prompt)
+
     def test_canvas_cut_is_feedback_not_an_inspection_exception(self):
         sheet, prompt, rgba, numeric = self.inspect(generated(cut=True))
         report = json.loads(numeric)

@@ -251,6 +251,18 @@ def _review_prompt(plan, target, report):
         "Review one connected terrain asset against its actual reference crop. "
         "Panels: SOURCE CROP, RAW GENERATED, RECOVERED ALPHA (checker composite). "
         "Compare all three, not just the cleaned alpha; a diagnostic tensor is not an asset.\n"
+        "Expected transformations: isolation on a screen/transparent background, centering and "
+        "uniform rescaling are intended. A hidden base must be plausibly completed: AI inference "
+        "is required and is not a defect by itself. Do not require original foreground occluders, "
+        "trees, water, sky, clouds or distant formations to remain. Judge the visible target's "
+        "own silhouette, peak count, slopes, material and light; judge completed areas for "
+        "plausibility, smooth natural feet and no new peaks, sharp cut plane or ground tray. "
+        "A separate localized guide may accompany the sheet; its polygon lower boundary is "
+        "not a finished outline and must not be copied as a flat cut. "
+        "Report only a defect actually visible in these images, not a hypothetical risk. "
+        "A chroma background alone is not spill; compare the recovered alpha edges. "
+        "The panels contain nonblack image pixels when numeric source/output dimensions are "
+        "positive; look closely before claiming that they are entirely black.\n"
         "Return only this fixed JSON schema (no aliases, extra fields or prose; a single "
         "JSON code fence is allowed). Use true booleans, never strings or integers; "
         "score is a finite numeric value in 0..100, and issues is a concrete list:\n" +
@@ -341,8 +353,17 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         visual, visual_problems = None, [str(error)]
     feedback = {"numeric_problems": numeric_problems, "visual_problems": visual_problems,
                 "visual_report": visual}
+    contract = {field: target[field] for field in (
+        "name", "appearance", "occlusion", "connected_parts", "excluded_objects")}
     return (
-        selected_prompt(plan, target, key) + "\n"
+        "Regenerate exactly this reference target from its source-pixel guide, with the same "
+        "visible peak count, slopes, proportions, viewpoint, color and soft aerial perspective. "
+        "The source-pixel guide is not a complete asset; its lower edge was cut by an occluder. "
+        "Complete ONLY that lower hidden region with a short natural sloping foot, not a "
+        "straight or paper-thin cut. Keep visible upper geometry unchanged. "
+        "Do not sharpen, darken, increase contrast, add vertical columns, new peaks or redesign "
+        "the formation. Preserve painted reference texture. Target contract:\n" +
+        _dump(contract) + "\nOriginal style: " + plan["style"] + "\n"
         f"Repair attempt {attempt}. Previous candidate is not accepted as final until "
         "every numeric and semantic gate passes. Treat the following as structured "
         "blocking feedback, not permission to weaken checks:\n" + _dump(feedback) + "\n"
@@ -350,8 +371,8 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "scale down/recenter the whole connected unit. Keep width and height at most 70% "
         "of the canvas, with at least 15% pure screen margin on all four sides. "
         "Do not crop off defects or pad a cut fragment to pretend it is complete.\n"
-        "Restore any missing connected peak, attached pillar and shared natural ledge in "
-        "their original relative positions, proportions and depth relationships. "
+        "Restore any missing connected peak or shared natural ledge ONLY when listed in "
+        "the target contract, in their original relative positions, proportions and depth relationships. "
         "Complete only the target's own short natural base and rock foot using its structure. "
         "Avoid rectangular notches, occluder-shaped holes, flat sliced bases, thin paper bases "
         "and invented wide ground platforms.\n"
