@@ -264,11 +264,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 6000
             },
             "temperature": {
               "switch": true,
@@ -571,11 +571,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 4500
             },
             "temperature": {
               "switch": true,
@@ -1936,11 +1936,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -2954,11 +2954,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -3972,11 +3972,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -5255,11 +5255,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -6273,11 +6273,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -7291,11 +7291,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -8574,11 +8574,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -9592,11 +9592,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
@@ -10610,11 +10610,11 @@
           "modelConfig": {
             "thinking": {
               "switch": true,
-              "value": "enabled"
+              "value": "disabled"
             },
             "max_tokens": {
               "switch": true,
-              "value": 10000
+              "value": 1800
             },
             "temperature": {
               "switch": true,
