@@ -1,0 +1,85 @@
+"""Pinned model download; no network/model work happens during plugin import."""
+import hashlib
+import json
+from pathlib import Path
+import time
+import urllib.request
+
+HUNYUAN = {
+    "repository": "Comfy-Org/Hunyuan-3D-2.1",
+    "revision": "606def5076d38b387b005caf93b5336c56ca99f9",
+    "filename": "hunyuan_3d_v2.1.safetensors",
+    "bytes": 7365943290,
+    "sha256": "5f21e98a6cb99b13b5e224abaee33929570fff7af2b6a0060001559a04ba9d72",
+}
+HUNYUAN["url"] = ("https://huggingface.co/" + HUNYUAN["repository"] +
+                  "/resolve/" + HUNYUAN["revision"] + "/" + HUNYUAN["filename"])
+
+
+def _verified(path, expected_size, expected_sha):
+    if path.stat().st_size != expected_size:
+        raise ValueError("Checkpoint length verification failed")
+    sha = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            sha.update(block)
+    if sha.hexdigest() != expected_sha:
+        raise ValueError("Checkpoint SHA256 verification failed")
+
+
+def verified_download(url, destination, expected_size, expected_sha, progress_path=None):
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    progress_path = Path(progress_path) if progress_path else None
+
+    def progress(status, received):
+        if progress_path:
+            progress_path.parent.mkdir(parents=True, exist_ok=True)
+            record = {"status": status, "received": received,
+                      "expected": expected_size, "filename": destination.name,
+                      "time": time.time()}
+            temp = progress_path.with_suffix(".tmp")
+            temp.write_text(json.dumps(record), encoding="utf-8")
+            temp.replace(progress_path)
+
+    if destination.exists():
+        progress("verifying-existing", destination.stat().st_size)
+        _verified(destination, expected_size, expected_sha)
+        progress("verified", expected_size)
+        return destination
+    part = destination.with_suffix(destination.suffix + ".part")
+    received = 0
+    progress("downloading", received)
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "MidFar-3D/1.0"})
+        sha, last = hashlib.sha256(), 0
+        with urllib.request.urlopen(request, timeout=120) as response, part.open("wb") as out:
+            while True:
+                block = response.read(8 * 1024 * 1024)
+                if not block:
+                    break
+                received += len(block)
+                if received > expected_size:
+                    raise ValueError("Checkpoint exceeds pinned length")
+                out.write(block)
+                sha.update(block)
+                if time.monotonic() - last > 2:
+                    progress("downloading", received)
+                    last = time.monotonic()
+        if received != expected_size or sha.hexdigest() != expected_sha:
+            raise ValueError("Downloaded checkpoint length/SHA256 verification failed")
+        part.replace(destination)
+        progress("verified", received)
+        return destination
+    except Exception as error:
+        progress("failed", received)
+        # Redirect URLs can contain access tokens; never include them in exceptions.
+        raise ValueError("Pinned checkpoint transfer failed: " + type(error).__name__) from None
+
+
+def ensure_hunyuan_checkpoint(models_directory, progress_path=None):
+    models_directory = Path(models_directory)
+    destination = models_directory/"checkpoints"/"midfar"/HUNYUAN["filename"]
+    verified_download(HUNYUAN["url"], destination, HUNYUAN["bytes"],
+                      HUNYUAN["sha256"], progress_path)
+    return "midfar/" + HUNYUAN["filename"]

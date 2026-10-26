@@ -9,6 +9,7 @@ from .autonomous_nodes import (
     BAMidFarAssetInspect, BAMidFarRepairPrompt, BAMidFarChooseAsset, BAMidFarTargetGuide,
     BAMidFarCompleteFoot, BAMidFarNativeImageFile, BAMidFarLocalizationView,
 )
+from .three_d_nodes import BAMidFar3DModel, BAMidFar3DGenerate, BAMidFarGLBExport
 
 
 class BAMidFarPlanPrompt:
@@ -301,6 +302,9 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarCompleteFoot": BAMidFarCompleteFoot,
     "BAMidFarNativeImageFile": BAMidFarNativeImageFile,
     "BAMidFarLocalizationView": BAMidFarLocalizationView,
+    "BAMidFar3DModel": BAMidFar3DModel,
+    "BAMidFar3DGenerate": BAMidFar3DGenerate,
+    "BAMidFarGLBExport": BAMidFarGLBExport,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -323,4 +327,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarCompleteFoot": "MidFar Complete Foot / 保留原形只合成山脚",
     "BAMidFarNativeImageFile": "MidFar Native Image File / 原生图片传递",
     "BAMidFarLocalizationView": "MidFar Localization View / 明确当前图目标",
+    "BAMidFar3DModel": "MidFar 3D Model / 共享混元3D模型",
+    "BAMidFar3DGenerate": "MidFar 3D Generate / 完整体积生成",
+    "BAMidFarGLBExport": "MidFar GLB Export / 内嵌贴图GLB导出",
 }
