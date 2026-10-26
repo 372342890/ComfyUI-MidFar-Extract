@@ -3,6 +3,7 @@ import torch
 from .core import parse_plan, choose_key, compile_prompt, matte
 from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
 from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_workflow
+from .selection import parse_selection, crop_reference, selected_prompt, expand_selection, selected_matte
 
 
 class BAMidFarPlanPrompt:
@@ -193,6 +194,87 @@ class BATerrainWorkflowExpand:
         return json.dumps(expanded, ensure_ascii=False), json.dumps(parsed, ensure_ascii=False)
 
 
+class BAMidFarSelectionExpand:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "plan": ("STRING", {"forceInput": True}),
+            "workflow_template": ("STRING", {"multiline": True}),
+            "reference_filename": ("STRING", {"default": "reference.png"}),
+            "max_assets": ("INT", {"default": 3, "min": 2, "max": 3}),
+        }}
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("workflow_json", "manifest")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Selected Assets"
+    DESCRIPTION = "Select 2–3 ranked connected units and create independent cropped-reference carriers."
+
+    def run(self, plan, workflow_template, reference_filename, max_assets):
+        parsed = parse_selection(plan, max_assets)
+        workflow = expand_selection(parsed, json.loads(workflow_template), reference_filename)
+        return json.dumps(workflow, ensure_ascii=False), json.dumps(parsed, ensure_ascii=False)
+
+
+class BAMidFarSelectedAsset:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "plan": ("STRING", {"multiline": True}),
+            "reference": ("IMAGE",),
+            "key_mode": (["auto", "green", "magenta", "blue"],),
+            "filename_prefix": ("STRING", {"default": "midfar-selected"}),
+            "crop_context": ("FLOAT", {"default": .02, "min": 0.0, "max": .15, "step": .01}),
+        }}
+
+    RETURN_TYPES = ("STRING", "IMAGE", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("prompt", "reference_crop", "key_color", "filename_prefix", "manifest")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Selected Assets"
+    DESCRIPTION = "One whole connected asset; crop from this image rather than editing the entire old scene."
+
+    def run(self, plan, reference, key_mode, filename_prefix, crop_context):
+        parsed = parse_selection(plan)
+        if len(parsed["objects"]) != 1:
+            raise ValueError("Use SelectionExpand first: exactly one selected asset per carrier.")
+        target = parsed["objects"][0]
+        crop, info = crop_reference(reference.detach().cpu().numpy(), target["bbox"], crop_context)
+        key = choose_key(crop, key_mode)
+        record = {"style": parsed["style"], "object": target, "crop": info}
+        return (selected_prompt(parsed, target, key), torch.from_numpy(crop), key,
+                object_filename(target, filename_prefix), json.dumps(record, ensure_ascii=False))
+
+
+class BAMidFarSelectedMatte:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "image": ("IMAGE",),
+            "key_color": ("STRING", {"forceInput": True}),
+            "filename_prefix": ("STRING", {"forceInput": True}),
+            "softness": ("FLOAT", {"default": .06, "min": 0.0, "max": .2, "step": .01}),
+            "padding": ("INT", {"default": 24, "min": 0, "max": 256}),
+            "strict": ("BOOLEAN", {"default": True}),
+        }}
+
+    RETURN_TYPES = ("IMAGE", "IMAGE", "STRING", "STRING")
+    RETURN_NAMES = ("rgba", "preview", "filename_prefix", "quality")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Selected Assets"
+    DESCRIPTION = "Observed-screen alpha recovery; preserve soft edges and reject incomplete/disjoint outputs."
+
+    def run(self, image, key_color, filename_prefix, softness, padding, strict):
+        import numpy as np
+        rgba, quality = selected_matte(image.detach().cpu().numpy(), key_color, softness, padding, strict)
+        quality["filename_prefix"] = filename_prefix
+        alpha = rgba[..., 3:4]
+        yy, xx = np.indices(alpha.shape[1:3])
+        check = np.where(((xx//24+yy//24) % 2)[None, ..., None] == 0, .72, .92)
+        preview = rgba[..., :3]*alpha+check*(1-alpha)
+        return (torch.from_numpy(rgba), torch.from_numpy(preview.astype("float32")),
+                filename_prefix, json.dumps(quality, ensure_ascii=False))
+
+
 NODE_CLASS_MAPPINGS = {
     "BAMidFarPlanPrompt": BAMidFarPlanPrompt,
     "BAMidFarMatte": BAMidFarMatte,
@@ -201,6 +283,9 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarWorkflowExpand": BAMidFarWorkflowExpand,
     "BATerrainAssetPrompt": BATerrainAssetPrompt,
     "BATerrainWorkflowExpand": BATerrainWorkflowExpand,
+    "BAMidFarSelectionExpand": BAMidFarSelectionExpand,
+    "BAMidFarSelectedAsset": BAMidFarSelectedAsset,
+    "BAMidFarSelectedMatte": BAMidFarSelectedMatte,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -210,4 +295,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarWorkflowExpand": "MidFar Workflow Expand / 单物体工作流自动展开",
     "BATerrainAssetPrompt": "Terrain Asset Prompt / 单体山石草丘提示",
     "BATerrainWorkflowExpand": "Terrain Workflow Expand / 双参考地形资产展开",
+    "BAMidFarSelectionExpand": "MidFar Selection Expand / 精选2–3个完整资产",
+    "BAMidFarSelectedAsset": "MidFar Selected Asset / 连体局部定位与提取",
+    "BAMidFarSelectedMatte": "MidFar Selected Matte / 连体素材软边透明裁切",
 }

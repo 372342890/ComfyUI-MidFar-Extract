@@ -2,6 +2,41 @@
 
 通用的中景 / 远景**单个物体**提取、软边抠图及透明裁切节点。建筑、树、独立山体等按照参考图识别结果逐个处理，没有固定景物名单，不需要下载额外分割模型。旧版整层节点仍保留兼容。
 
+## Selected connected mid/far assets
+
+For reusable natural scenery, use the selected-assets nodes:
+
+`Current image → vision selection JSON → BAMidFarSelectionExpand → save/import exported JSON → independent cropped-reference carriers → BAMidFarSelectedMatte → PNG`
+
+The selector takes at most 2 or 3 suitable rocks, hills or mountains. Connected pillars,
+cap rocks and peaks sharing a natural base are **one complete asset**, not separate
+targets. Grass tufts and scattering details are excluded in this mode; a hill keeps
+its own grass cover. The older instance and terrain-generation modes remain available.
+
+Each selection has `id`, `unit_id`, `name`, `kind` (`rock/hill/mountain`), `layer`
+(`midground/background`), `location`, `appearance`, `occlusion`, normalized `bbox`,
+`asset_unit` (`connected_formation/independent`), `connected_parts`, `selection_reason`,
+`priority` (0–100), and `is_single:true`. Parts with the same `unit_id` are merged
+before ranking; overlapping boxes alone do not merge separate objects. Available
+mid/far layers are both covered before taking the next highest-priority unit.
+Fewer than two suitable targets are reported instead of invented.
+
+`BAMidFarSelectedAsset` accepts exactly one target plus the current image. Its
+`reference_crop` is the corresponding bbox crop without rescaling; connect both
+`prompt` and `reference_crop` to the same image editor. This avoids neighboring
+large formations replacing smaller targets. Changed images require a fresh plan.
+Keep the prompt node's key and filename connected to `BAMidFarSelectedMatte`.
+
+The matte uses the observed background color, including tinted/compressed green,
+magenta or blue screens, to solve soft Alpha and recover boundary colors.
+It rejects a missing screen, empty subject, multiple substantial disconnected
+subjects and canvas-cut output in strict mode. These numeric checks still need
+visual review for semantic grouping, source fidelity and appearance.
+
+```sh
+python -m unittest test_core test_objects test_terrain test_selection -v
+```
+
 ## Individual objects (recommended)
 
 `Reference → vision LLM objects JSON → BAMidFarObjectPlan → image editor → BAMidFarObjectMatte → SaveImage`
@@ -110,6 +145,8 @@ MIT License. No credentials, service endpoints, private workflows or project ass
 This mode **generates** individual rocks, grassy hills, grass tufts and mountains. It is separate from strict existing-instance extraction. A hill keeps its own grass cover and soil/rock volume; a tuft keeps its connected roots. Neither receives an additional platform or landscape strip.
 
 The scene image controls palette, texture and rendering style. A single-object view or four-view sheet controls silhouette and proportions. The generator receives the style image as image 1 and shape image as image 2. A four-view sheet is a shape reference, not the requested output; every generated PNG contains one object in one view.
+
+**ByteArtist clipboard format:** connect both references to the **same** image aggregation handle, in style-then-shape order. The frontend serializes these as `image0` and `image1`. Do not invent a separate UI input named `image1`; it is silently omitted on import. The same rule applies to the visual planner and the image generator.
 
 The visual planner must produce the following schema from the **current images and user brief**, with variable target names, shapes, surfaces and variations. Valid kinds: `rock`, `hill`, `grass_tuft`, `mountain`.
 
