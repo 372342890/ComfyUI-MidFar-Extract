@@ -222,27 +222,54 @@ def _comparison(source, raw, rgba, guide=None):
     if guide is not None:
         pictures = (source[0, ..., :3], guide[0, ..., :3], raw[0, ..., :3], recovered)
         labels = ("SOURCE CROP", "EDITABLE TARGET GUIDE", "RAW GENERATED", "RECOVERED ALPHA")
+    # Two columns avoid shrinking a 3168px strip at the vision carrier limit.
+    # The extra full-width foot view magnifies defects; candidate pixels are untouched.
     width = max(256, min(768, max(p.shape[1] for p in pictures)))
-    height = max(128, min(768, max(p.shape[0] for p in pictures)))
+    height = max(128, min(560, max(p.shape[0] for p in pictures)))
     margin, header = 12, 36
     cell = width + 2*margin
-    sheet = np.full((height + header + 2*margin, len(pictures)*cell, 3), .16, np.float32)
-    label_strip = np.full((header, len(pictures)*cell, 3), 41, np.uint8)
+    row_height = height + header + 2*margin
+    rows = (len(pictures)+1)//2
+    ys, xs = np.where(alpha[..., 0] > .05)
+    if len(ys):
+        x0, x1, y1 = max(0, int(xs.min())-8), min(alpha.shape[1], int(xs.max())+9), min(
+            alpha.shape[0], int(ys.max())+9)
+        y0 = max(0, int(ys.min()) + int(.58*(int(ys.max())-int(ys.min())+1)))
+    else:
+        x0, x1, y0, y1 = 0, alpha.shape[1], alpha.shape[0]//2, alpha.shape[0]
+    detail = recovered[y0:y1, x0:x1]
+    detail_width = 2*cell-2*margin
+    scale = min(1., detail_width/detail.shape[1], 460/detail.shape[0])
+    dw, dh = max(1, round(detail.shape[1]*scale)), max(1, round(detail.shape[0]*scale))
+    sheet = np.full((rows*row_height+header+2*margin+dh, 2*cell, 3), .16, np.float32)
     panels = []
     for index, (picture, label) in enumerate(zip(pictures, labels)):
         h, w = picture.shape[:2]
         scale = min(1., width/w, height/h)
         dw, dh = max(1, round(w*scale)), max(1, round(h*scale))
-        x = index*cell + margin + (width-dw)//2
-        y = header + margin + (height-dh)//2
+        col, row = index % 2, index // 2
+        x = col*cell + margin + (width-dw)//2
+        y = row*row_height + header + margin + (height-dh)//2
         resized = picture if (dw, dh) == (w, h) else cv2.resize(
             picture, (dw, dh), interpolation=cv2.INTER_AREA)
         sheet[y:y+dh, x:x+dw] = resized
-        cv2.putText(label_strip, label, (index*cell+margin, 25), cv2.FONT_HERSHEY_SIMPLEX,
+        strip = np.full((header, cell, 3), 41, np.uint8)
+        cv2.putText(strip, label, (margin, 25), cv2.FONT_HERSHEY_SIMPLEX,
                     .5, (242, 242, 242), 1, cv2.LINE_AA)
+        sheet[row*row_height:row*row_height+header, col*cell:(col+1)*cell] = strip/255
         panels.append({"label": label, "input_size": [w, h],
                        "display_bbox": [x, y, x+dw, y+dh]})
-    sheet[:header] = label_strip.astype(np.float32)/255
+    scale = min(1., detail_width/detail.shape[1], 460/detail.shape[0])
+    dw, dh = max(1, round(detail.shape[1]*scale)), max(1, round(detail.shape[0]*scale))
+    x, y = (2*cell-dw)//2, rows*row_height+header+margin
+    sheet[y:y+dh, x:x+dw] = cv2.resize(detail, (dw, dh), interpolation=cv2.INTER_AREA)
+    strip = np.full((header, 2*cell, 3), 41, np.uint8)
+    cv2.putText(strip, "LOWER FOOT DETAIL - check trees, cut planes and base volume",
+                (margin, 25), cv2.FONT_HERSHEY_SIMPLEX, .5, (242, 242, 242), 1, cv2.LINE_AA)
+    sheet[rows*row_height:rows*row_height+header] = strip/255
+    panels.append({"label": "LOWER FOOT DETAIL", "source_panel": "RECOVERED ALPHA",
+                   "source_bbox": [x0, y0, x1, y1], "input_size": [x1-x0, y1-y0],
+                   "display_bbox": [x, y, x+dw, y+dh]})
     return sheet[None], panels
 
 
@@ -254,6 +281,18 @@ def _review_prompt(plan, target, report):
     contract["excluded_objects"] = target["excluded_objects"]
     return (
         "Review one connected terrain asset against its actual reference crop. "
+        "Inspect LOWER FOOT DETAIL first, then compare the two-column full views. "
+        "The detail is an unchanged enlarged crop of recovered alpha, not a separate asset. "
+        "Look for a forest silhouette: rows of tiny conifer crowns, jagged tree silhouettes "
+        "or a blue/green forest ribbon across the lower slopes. These are unrelated trees "
+        "even when pale, fog-colored, touching the mountain or copied from the source. "
+        "If actually visible, no_unrelated_objects=false; do not label them rock texture. "
+        "Inspect left and right feet for side cut planes, a paper-thin polygon slice, "
+        "straight chopped endpoints or a foreground occlusion border. Such actual cuts "
+        "require natural_base=false and complete_outline=false even when the object has "
+        "transparent margins and is not touching the canvas. Reconstructing a foot means "
+        "continuous sloping rock/snow volume, not adding margin around a cutout. "
+        "A visible horizontal pasted color strip or seam requires style_match=false. "
         "Panels: SOURCE CROP, RAW GENERATED, RECOVERED ALPHA (checker composite). "
         "An EDITABLE TARGET GUIDE panel, when present, identifies the selected source "
         "mountain; the source crop includes other-depth neighbors. Do not substitute "
@@ -407,7 +446,11 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "the target contract, in their original relative positions, proportions and depth relationships. "
         "Complete only the target's own short natural base and rock foot using its structure. "
         "Avoid rectangular notches, occluder-shaped holes, flat sliced bases, thin paper bases "
-        "and invented wide ground platforms.\n"
+        "and invented wide ground platforms. Remove any forest silhouette or tree-crown "
+        "ribbon across the lower slope, including pale blue distant trees touching the "
+        "mountain. Reconstruct the area beneath them as continuous target rock/snow. "
+        "Remove artificial side cut planes and reconstruct both lower shoulders as "
+        "short curved natural rock feet with thickness; no straight chopped endpoints.\n"
         "Remove trees, depth-mismatched terrain, separate overlapping formations, external "
         "ground and unrelated objects. Do not remove attached rock parts or the target's own "
         "natural surface. Explicit excluded_objects: " + _dump(target["excluded_objects"]) + "\n"

@@ -107,7 +107,7 @@ class AuditTests(unittest.TestCase):
         unchanged_source, unchanged_image = source.copy(), image.copy()
         sheet, _, rgba, numeric = self.inspect(image)
         panels = json.loads(numeric)["comparison_panels"]
-        self.assertEqual([p["label"] for p in panels],
+        self.assertEqual([p["label"] for p in panels[:3]],
                          ["SOURCE CROP", "RAW GENERATED", "RECOVERED ALPHA"])
         for panel, original in zip(panels, (source, image, rgba)):
             x0, y0, x1, y1 = panel["display_bbox"]
@@ -118,6 +118,54 @@ class AuditTests(unittest.TestCase):
                 np.testing.assert_allclose(sheet[:, y0:y1, x0:x1], original[..., :3], atol=1e-6)
         np.testing.assert_array_equal(source, unchanged_source)
         np.testing.assert_array_equal(image, unchanged_image)
+
+    def test_large_comparison_keeps_foot_detail_readable_without_wide_strip_shrink(self):
+        source = np.zeros((1, 400, 500, 3), np.float32)
+        raw = np.zeros((1, 2048, 2048, 3), np.float32)
+        rgba = np.ones((1, 1200, 1800, 4), np.float32)
+        rgba[0, 900:, :, :3] = [.2, .4, .7]
+        guide = np.zeros((1, 500, 500, 3), np.float32)
+        before = rgba.copy()
+        sheet, panels = audit._comparison(source, raw, rgba, guide)
+        self.assertLessEqual(sheet.shape[2], 1600)
+        self.assertLessEqual(sheet.shape[1], 2048)
+        self.assertEqual(len(panels), 5)
+        detail = panels[-1]
+        self.assertEqual(detail["label"], "LOWER FOOT DETAIL")
+        self.assertEqual(detail["source_panel"], "RECOVERED ALPHA")
+        bx0, by0, bx1, by1 = detail["source_bbox"]
+        self.assertEqual((bx0, bx1, by1), (0, 1800, 1200))
+        self.assertGreater(by0, 600)
+        dx0, dy0, dx1, dy1 = detail["display_bbox"]
+        self.assertGreater(dx1-dx0, 1400)
+        expected = cv2.resize(rgba[0, by0:by1, bx0:bx1, :3],
+                              (dx1-dx0, dy1-dy0), interpolation=cv2.INTER_AREA)
+        np.testing.assert_allclose(sheet[0, dy0:dy1, dx0:dx1], expected, atol=1e-6)
+        np.testing.assert_array_equal(rgba, before)
+        boxes = [p["display_bbox"] for p in panels]
+        for i, (x0, y0, x1, y1) in enumerate(boxes):
+            for ox0, oy0, ox1, oy1 in boxes[i+1:]:
+                self.assertFalse(x0 < ox1 and ox0 < x1 and y0 < oy1 and oy0 < y1)
+
+    def test_detail_handles_empty_diagnostic_alpha_without_changing_candidate(self):
+        rgba = np.zeros((1, 80, 160, 4), np.float32)
+        sheet, panels = audit._comparison(reference(), generated(), rgba)
+        self.assertTrue(np.isfinite(sheet).all())
+        self.assertEqual(panels[-1]["label"], "LOWER FOOT DETAIL")
+        self.assertGreater(panels[-1]["input_size"][1], 0)
+        self.assertEqual(float(rgba.max()), 0)
+
+    def test_review_and_repair_explicitly_reject_foreground_forest_and_crop_planes(self):
+        _, prompt, _, numeric = self.inspect()
+        repair = audit.repair_prompt(plan(), "#00FF00", numeric,
+                                    verdict(no_unrelated_objects=False,
+                                            issues=["forest silhouette across lower foot"]), 1)
+        for phrase in ("LOWER FOOT DETAIL", "forest silhouette", "side cut planes",
+                       "even when", "paper-thin"):
+            self.assertIn(phrase, prompt)
+        self.assertIn("forest silhouette", repair)
+        self.assertIn("side cut planes", repair)
+        self.assertIn("reconstruct", repair)
 
     def test_review_prompt_explicitly_demands_fixed_schema_and_reference_fidelity(self):
         _, prompt, _, _ = self.inspect()

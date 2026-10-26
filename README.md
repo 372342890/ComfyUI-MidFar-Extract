@@ -203,8 +203,17 @@ The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
 The graph includes 98 nodes and 220 connections. Three redundant guide-record
 save nodes were removed without changing generation or acceptance. The full
-graph currently stalls during clipboard import in the tested workbench;
-native engine execution and clipboard UI compatibility are separate checks.
+graph loads slowly during clipboard import in the tested workbench; all 98
+nodes and 220 connections were verified after loading completed. Allow the
+workbench time to mount the graph before replacing or re-importing it.
+
+Visual review uses a two-column comparison plus a full-width lower-foot detail
+to retain the visibility of small foreground tree silhouettes, chopped side
+planes and thin polygon bases. These are blocking defects even when alpha
+recovery succeeds and the asset has transparent canvas margins. The generation
+and repair prompts explicitly remove forest ribbons and reconstruct continuous
+short rock/snow feet. Review images are diagnostic views only; no output pixels
+are retouched or replaced outside the generative workflow.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard
 `LoadImage` before reaching native image/text models. PNG files preserve RGB
