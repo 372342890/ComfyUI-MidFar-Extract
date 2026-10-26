@@ -2,6 +2,7 @@ import json
 import torch
 from .core import parse_plan, choose_key, compile_prompt, matte
 from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
+from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_workflow
 
 
 class BAMidFarPlanPrompt:
@@ -136,12 +137,70 @@ class BAMidFarWorkflowExpand:
         return json.dumps(workflow, ensure_ascii=False), json.dumps(parsed, ensure_ascii=False)
 
 
+class BATerrainAssetPrompt:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "plan": ("STRING", {"multiline": True}),
+            "style_reference": ("IMAGE",),
+            "shape_reference": ("IMAGE",),
+            "key_mode": (["auto", "green", "magenta", "blue"],),
+            "filename_prefix": ("STRING", {"default": "terrain-assets"}),
+        }}
+
+    RETURN_TYPES = ("STRING", "IMAGE", "IMAGE", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("prompt", "style_reference", "shape_reference", "key_color", "filename_prefix", "manifest")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Terrain Assets"
+    DESCRIPTION = "One natural object. Image 1 controls style, image 2 controls silhouette and proportions."
+
+    def run(self, plan, style_reference, shape_reference, key_mode, filename_prefix):
+        parsed = parse_assets(plan)
+        if parsed["total"] != 1:
+            raise ValueError("Use BATerrainWorkflowExpand first: exactly one asset per image carrier.")
+        target = parsed["assets"][0]
+        # Both references participate in key selection, even when resolutions differ.
+        import numpy as np
+        samples = []
+        for ref in (style_reference, shape_reference):
+            pixels = ref.detach().cpu().numpy()[..., :3].reshape(-1, 3)
+            samples.append(pixels[::max(1, len(pixels)//100000)])
+        key = choose_key(np.concatenate(samples)[None, None, :, :], key_mode)
+        return (asset_prompt(parsed, target, key), style_reference, shape_reference, key,
+                asset_filename(target, filename_prefix), json.dumps(parsed, ensure_ascii=False))
+
+
+class BATerrainWorkflowExpand:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "plan": ("STRING", {"forceInput": True}),
+            "workflow_template": ("STRING", {"multiline": True}),
+            "style_filename": ("STRING", {"default": "style-reference.png"}),
+            "shape_filename": ("STRING", {"default": "shape-reference.png"}),
+            "max_assets": ("INT", {"default": 6, "min": 1, "max": 32}),
+        }}
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("workflow_json", "manifest")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Terrain Assets"
+    DESCRIPTION = "Expand a reference-guided asset plan into one independent two-image carrier per target."
+
+    def run(self, plan, workflow_template, style_filename, shape_filename, max_assets):
+        parsed = parse_assets(plan, max_assets)
+        expanded = expand_terrain_workflow(parsed, json.loads(workflow_template), style_filename, shape_filename)
+        return json.dumps(expanded, ensure_ascii=False), json.dumps(parsed, ensure_ascii=False)
+
+
 NODE_CLASS_MAPPINGS = {
     "BAMidFarPlanPrompt": BAMidFarPlanPrompt,
     "BAMidFarMatte": BAMidFarMatte,
     "BAMidFarObjectPlan": BAMidFarObjectPlan,
     "BAMidFarObjectMatte": BAMidFarObjectMatte,
     "BAMidFarWorkflowExpand": BAMidFarWorkflowExpand,
+    "BATerrainAssetPrompt": BATerrainAssetPrompt,
+    "BATerrainWorkflowExpand": BATerrainWorkflowExpand,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -149,4 +208,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarObjectPlan": "MidFar Individual Objects / 逐物体动态提取",
     "BAMidFarObjectMatte": "MidFar Single Asset Matte / 单物体透明裁切",
     "BAMidFarWorkflowExpand": "MidFar Workflow Expand / 单物体工作流自动展开",
+    "BATerrainAssetPrompt": "Terrain Asset Prompt / 单体山石草丘提示",
+    "BATerrainWorkflowExpand": "Terrain Workflow Expand / 双参考地形资产展开",
 }
