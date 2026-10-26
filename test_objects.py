@@ -4,6 +4,7 @@ import unittest
 import numpy as np
 
 from objects import parse_objects, object_prompt, object_filename, crop_asset
+import objects as object_module
 
 
 def plan_text(objects):
@@ -46,9 +47,10 @@ class ObjectTests(unittest.TestCase):
 
     def test_invalid_group_and_water_are_logged_without_losing_valid_objects(self):
         p = parse_objects(plan_text([instance(1), instance(2, "沿江绿化带树丛"),
-                                     instance(3, "江面"), instance(4, "独立山峰", "background")]))
+                                     instance(3, "江面"), instance(4, "独立山峰", "background"),
+                                     instance(5, "湖心小岛")]))
         self.assertEqual([o["id"] for o in p["objects"]], ["o1", "o4"])
-        self.assertEqual(len(p["rejected_objects"]), 2)
+        self.assertEqual(len(p["rejected_objects"]), 3)
         self.assertEqual(p["total"], 2)
 
     def test_single_prompt_excludes_neighbor_and_recovers_hidden_base(self):
@@ -91,12 +93,51 @@ class ObjectTests(unittest.TestCase):
         _, q = crop_asset(rgba, 5)
         self.assertTrue(q["touches_border"])
 
+    def test_remote_key_dust_is_removed_without_losing_nearby_thin_features(self):
+        rgba = np.zeros((1, 200, 200, 4), np.float32)
+        rgba[0, 60:150, 60:150, :] = 1
+        rgba[0, 50:55, 85:90, :] = 1
+        rgba[0, 0:2, 0:2, :] = 1
+        out, q = crop_asset(rgba, 5)
+        self.assertFalse(q["touches_border"])
+        self.assertEqual(q["source_bbox"], [60, 50, 150, 150])
+        self.assertEqual(q["removed_remote_pixels"], 4)
+        self.assertEqual(out.shape, (1, 110, 100, 4))
+
     def test_empty_output_and_invalid_alpha_fail(self):
         for rgba in [np.zeros((1, 20, 20, 4), np.float32),
                      np.zeros((1, 20, 20, 3), np.float32),
                      np.full((1, 20, 20, 4), np.nan, np.float32)]:
             with self.subTest(shape=rgba.shape), self.assertRaises(ValueError):
                 crop_asset(rgba)
+
+    def test_byteartist_workflow_has_one_generation_node_per_instance(self):
+        p = parse_objects(plan_text([instance(1), instance(2), instance(3, "钟楼", "background")]))
+        seed = {"name": "ba-clipboard", "version": 1, "nodes": [
+            {"id": "100", "data": {"type": "LoadImage", "inputs": [{"name": "image", "value": "ref.png"}]}},
+            {"id": "102", "data": {"type": "BAMidFarObjectPlan", "inputs": [
+                {"name": "plan"}, {"name": "max_objects", "value": 8},
+                {"name": "filename_prefix", "value": "objects/test"}]}},
+            {"id": "103", "data": {"type": "BALLMImage", "inputs": [], "extra": {"model": "actual"}}},
+            {"id": "104", "data": {"type": "BAMidFarObjectMatte", "inputs": []}},
+            {"id": "105", "data": {"type": "SaveImage", "inputs": []}},
+        ], "edges": [
+            {"source": "100", "target": "102"},
+            {"source": "102", "target": "103"},
+            {"source": "103", "target": "104"},
+            {"source": "104", "target": "105"}]}
+        fn = getattr(object_module, "expand_workflow", lambda *a: {"nodes": [], "edges": []})
+        result = fn(p, seed, "uploaded.png")
+        self.assertEqual(len([n for n in result["nodes"] if n["data"]["type"] == "BALLMImage"]), 3)
+        self.assertEqual(len(result["nodes"]), 13)
+        self.assertEqual(len({n["id"] for n in result["nodes"]}), 13)
+        self.assertEqual(len(result["edges"]), 12)
+        roots = [n for n in result["nodes"] if n["data"]["type"] == "LoadImage"]
+        self.assertEqual(roots[0]["data"]["inputs"][0]["value"], "uploaded.png")
+        for n in result["nodes"]:
+            if n["data"]["type"] == "BAMidFarObjectPlan":
+                text = next(i["value"] for i in n["data"]["inputs"] if i["name"] == "plan")
+                self.assertEqual(len(json.loads(text)["objects"]), 1)
 
 
 if __name__ == "__main__":

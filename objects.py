@@ -1,6 +1,7 @@
 """Instance planning and transparent asset cropping."""
 import json
 import re
+import copy
 
 import cv2
 import numpy as np
@@ -39,7 +40,7 @@ def parse_objects(text, layer="both", max_objects=8):
         if obj.get("layer") not in ("midground", "background"):
             raise ValueError("Object layer must be midground or background.")
         if re.search(r"树丛|树群|树林|森林|天际线|建筑群|群山|山脉|绿化带|地面|草地|草坪|"
-                     r"\b(forest|skyline|grove|mountain range|building cluster|ground plane)\b",
+                     r"小岛|湖心岛|\b(forest|skyline|grove|mountain range|building cluster|ground plane|island)\b",
                      obj["name"], re.IGNORECASE) or obj["name"].strip() in (
                          "江面", "水面", "湖面", "湖泊", "河流", "天空", "地形", "water", "sky"):
             rejected.append({"id": obj["id"], "name": obj["name"],
@@ -85,9 +86,11 @@ def object_prompt(plan, target, key):
         f"归一化位置框（左上右下）：[{box}]。外观：{target['appearance']}。\n"
         "依据参考图定位这一个实例，保持其可见部分的形状、原颜色、纹理、材质、照明、"
         "相机朝向与透视。将这一个物体移动到画布中心并放大到合适的素材尺寸，"
-        "四边均保留空白安全区，保证屋顶、树冠、底座、侧面等完整且不被画布切断。\n"
+        "主体宽高均不得超过画布70%，四边至少15%纯色键空白安全区，"
+        "保证屋顶、树冠、树干脚部、建筑基础和侧面等完整且不被画布切断。\n"
         f"遮挡情况：{target['occlusion']}。只用本物体已有结构合理补全被遮挡部位；"
-        "楼只补它自己的墙和基础，树只补自己的枝干树冠，山只保留该独立山体的轮廓。"
+        "楼只补它自己的墙和基础，树只补自己的枝干树冠并露出完整短树干，"
+        "山只保留该独立山体的轮廓并用山岩结构补齐原云雾遮挡处。"
         "保留细枝、建筑栏杆和自然软边，不能遗留遮挡者形状的缺口。\n"
         f"其他实例全部移除，包括同类相邻物体：{others or '所有其他物体'}。"
         "禁止把建筑群、树丛、整片树林、连续山脉、天际线或整片地面一起带入。"
@@ -110,7 +113,23 @@ def crop_asset(rgba, padding=24):
         raise ValueError("Expected one finite RGBA image [1,H,W,4].")
     if not isinstance(padding, int) or not 0 <= padding <= 256:
         raise ValueError("padding must be an integer between 0 and 256.")
+    rgba = rgba.copy()
     alpha = rgba[0, ..., 3]
+    count, labels, stats, _ = cv2.connectedComponentsWithStats((alpha > .01).astype(np.uint8), 8)
+    areas = stats[1:, cv2.CC_STAT_AREA]
+    removed = 0
+    if len(areas) and areas.max() > 0:
+        substantial = np.flatnonzero(areas >= max(16, float(areas.max())*.01)) + 1
+        if len(substantial):
+            distance = cv2.distanceTransform((~np.isin(labels, substantial)).astype(np.uint8), cv2.DIST_L2, 5)
+            minimum = np.full(count, np.inf, np.float32)
+            np.minimum.at(minimum, labels.ravel(), distance.ravel())
+            candidates = ~np.isin(np.arange(count), substantial)
+            candidates[0] = False
+            remote_labels = np.flatnonzero(candidates & (minimum > max(12, min(alpha.shape)*.03)))
+            remote = np.isin(labels, remote_labels)
+            removed = int(remote.sum())
+            rgba[0, remote] = 0
     ys, xs = np.where(alpha > .01)
     if not len(xs):
         raise ValueError("Single-object extraction is empty. Review plan or chroma key.")
@@ -133,6 +152,45 @@ def crop_asset(rgba, padding=24):
     return out, {"source_size": [w, h], "source_bbox": [x0, y0, x1, y1],
                  "output_size": [out.shape[2], out.shape[1]],
                  "meaningful_components": components, "touches_border": touches,
+                 "removed_remote_pixels": removed,
                  "foreground_coverage": round(float((out[..., 3] > .05).mean()), 5),
                  "warning": " ".join(warnings),
                  "occlusion_completion": "AI inference; hidden texture is not ground truth."}
+
+
+def expand_workflow(plan, template, reference_filename):
+    """ByteArtist maps a generation carrier once; give each instance its own carrier."""
+    nodes = template["nodes"]
+    root = copy.deepcopy(next(n for n in nodes if n["data"]["type"] == "LoadImage"))
+    root_id = root["id"]
+    next(i for i in root["data"]["inputs"] if i["name"] == "image")["value"] = reference_filename
+    branch_types = ("BAMidFarObjectPlan", "BALLMImage", "BAMidFarObjectMatte", "SaveImage")
+    branches = [next(n for n in nodes if n["data"]["type"] == t) for t in branch_types]
+    branch_ids = {n["id"] for n in branches}
+    edges = [e for e in template["edges"] if e["target"] in branch_ids and
+             e["source"] in (branch_ids | {root_id})]
+    result = {"name": "ba-clipboard", "version": 1, "nodes": [root], "edges": []}
+    for j, target in enumerate(plan["objects"]):
+        mapping = {n["id"]: str(1000+j*10+k) for k, n in enumerate(branches)}
+        for k, source in enumerate(branches):
+            n = copy.deepcopy(source)
+            n["id"] = mapping[source["id"]]
+            n["position"] = {"x": 420+k*440, "y": j*550}
+            n["selected"] = False
+            n["data"]["title"] = f"{target['id']} · {target['name']} · {branch_types[k]}"
+            if k == 0:
+                inputs = n["data"]["inputs"]
+                plan_input = next(i for i in inputs if i["name"] == "plan")
+                plan_input["value"] = json.dumps({"style": plan.get("style", ""),
+                                                  "objects": [target]}, ensure_ascii=False)
+                plan_input.pop("format", None)
+                next(i for i in inputs if i["name"] == "max_objects")["value"] = 1
+                n["data"]["extra"] = {"output_preview_names": []}
+            result["nodes"].append(n)
+        for source in edges:
+            e = copy.deepcopy(source)
+            e["id"] = str(8000+len(result["edges"]))
+            e["source"] = mapping.get(e["source"], e["source"])
+            e["target"] = mapping[e["target"]]
+            result["edges"].append(e)
+    return result

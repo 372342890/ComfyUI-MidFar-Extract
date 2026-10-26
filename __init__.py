@@ -1,7 +1,7 @@
 import json
 import torch
 from .core import parse_plan, choose_key, compile_prompt, matte
-from .objects import parse_objects, object_prompt, object_filename, crop_asset
+from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
 
 
 class BAMidFarPlanPrompt:
@@ -112,15 +112,41 @@ class BAMidFarObjectMatte:
                 filename_prefix, json.dumps(quality, ensure_ascii=False))
 
 
+class BAMidFarWorkflowExpand:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "plan": ("STRING", {"forceInput": True}),
+            "workflow_template": ("STRING", {"multiline": True}),
+            "reference_filename": ("STRING", {"default": "reference.png"}),
+            "layer": (["both", "midground", "background"],),
+            "max_objects": ("INT", {"default": 8, "min": 1, "max": 32}),
+        }}
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("workflow_json", "manifest")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract"
+    DESCRIPTION = "ByteArtist compatibility: expand one independent image-generation carrier per detected object."
+
+    def run(self, plan, workflow_template, reference_filename, layer, max_objects):
+        parsed = parse_objects(plan, layer, max_objects)
+        template = json.loads(workflow_template)
+        workflow = expand_workflow(parsed, template, reference_filename)
+        return json.dumps(workflow, ensure_ascii=False), json.dumps(parsed, ensure_ascii=False)
+
+
 NODE_CLASS_MAPPINGS = {
     "BAMidFarPlanPrompt": BAMidFarPlanPrompt,
     "BAMidFarMatte": BAMidFarMatte,
     "BAMidFarObjectPlan": BAMidFarObjectPlan,
     "BAMidFarObjectMatte": BAMidFarObjectMatte,
+    "BAMidFarWorkflowExpand": BAMidFarWorkflowExpand,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
     "BAMidFarMatte": "MidFar Soft Matte / 中远景软边抠图",
     "BAMidFarObjectPlan": "MidFar Individual Objects / 逐物体动态提取",
     "BAMidFarObjectMatte": "MidFar Single Asset Matte / 单物体透明裁切",
+    "BAMidFarWorkflowExpand": "MidFar Workflow Expand / 单物体工作流自动展开",
 }
