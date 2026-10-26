@@ -11,6 +11,15 @@ except ImportError:
     from autonomous_audit import _one_plan, _object
 
 
+def _polygon(value, label):
+    if (not isinstance(value, list) or not 3 <= len(value) <= 256 or
+            any(not isinstance(point, list) or len(point) != 2 or
+                any(type(v) is not int or not 0 <= v <= 1000 for v in point)
+                for point in value)):
+        raise ValueError(label + " requires 3..256 points on an integer 0..1000 grid.")
+    return value
+
+
 def target_guide(reference_crop, plan_text, localization_text, key):
     reference = validate_image(reference_crop)
     if reference.shape[0] != 1:
@@ -19,12 +28,7 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     localization = _object(localization_text, "localization")
     if localization.get("asset_id") != target["id"]:
         raise ValueError("Localization asset_id must match the actual target.")
-    polygon = localization.get("visible_polygon")
-    if (not isinstance(polygon, list) or not 3 <= len(polygon) <= 256 or
-            any(not isinstance(point, list) or len(point) != 2 or
-                any(type(v) is not int or not 0 <= v <= 1000 for v in point)
-                for point in polygon)):
-        raise ValueError("visible_polygon requires 3..256 points on an integer 0..1000 grid.")
+    polygon = _polygon(localization.get("visible_polygon"), "visible_polygon")
     for field in ("description", "hidden_base"):
         if not isinstance(localization.get(field), str) or not localization[field].strip():
             raise ValueError("Localization needs " + field)
@@ -34,6 +38,29 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     cv2.fillPoly(mask, [points], 1)
     if not .015 <= float(mask.mean()) <= .94:
         raise ValueError("Localization polygon has implausible target coverage.")
+    occluders = localization.get("occluder_polygons", [])
+    if not isinstance(occluders, list) or len(occluders) > 100:
+        raise ValueError("occluder_polygons must be a list of at most 100 exclusions.")
+    allowed = {"tree", "forest", "grass_tuft", "other_depth_terrain", "water", "sky", "cloud"}
+    protected = {v.casefold() for v in target["connected_parts"] + [target["name"]]}
+    excluded = np.zeros_like(mask)
+    for item in occluders:
+        if not isinstance(item, dict) or item.get("kind") not in allowed:
+            raise ValueError("occluder kind cannot be target rock or mountain.")
+        for field in ("name", "reason"):
+            if not isinstance(item.get(field), str) or not 0 < len(item[field].strip()) <= 2000:
+                raise ValueError("occluder requires concise " + field)
+        if item["name"].strip().casefold() in protected:
+            raise ValueError("occluder cannot exclude a connected target part.")
+        shape = _polygon(item.get("polygon"), "occluder polygon")
+        pts = np.round(np.asarray(shape)*[w-1, h-1]/1000).astype(np.int32)
+        cv2.fillPoly(excluded, [pts], 1)
+    removed = int(np.count_nonzero(mask & excluded))
+    if removed > .45*int(mask.sum()):
+        raise ValueError("Occluder removal exceeds 45% of target coverage.")
+    mask[excluded > 0] = 0
+    if float(mask.mean()) < .015:
+        raise ValueError("Occluder removal leaves insufficient target coverage.")
     # Place only source pixels on a square screen; no texture is invented here.
     # Generative completion happens in the subsequent native Seedream node.
     ys, xs = np.where(mask)
@@ -46,10 +73,10 @@ def target_guide(reference_crop, plan_text, localization_text, key):
     cut = reference[0, y0:y1, x0:x1, :3]
     cut_mask = mask[y0:y1, x0:x1].astype(np.float32)
     dw, dh = max(1, round(extent_w*scale)), max(1, round(extent_h*scale))
-    cut = cv2.resize(cut, (dw, dh), interpolation=cv2.INTER_AREA)
-    cut_mask = cv2.resize(cut_mask, (dw, dh), interpolation=cv2.INTER_NEAREST)[..., None]
+    cut = cv2.resize(cut*cut_mask[..., None], (dw, dh), interpolation=cv2.INTER_AREA)
+    cut_mask = cv2.resize(cut_mask, (dw, dh), interpolation=cv2.INTER_AREA)[..., None]
     left, top = (side-dw)//2, (side-dh)//2
-    guide[top:top+dh, left:left+dw] = cut*cut_mask+color*(1-cut_mask)
+    guide[top:top+dh, left:left+dw] = cut+color*(1-cut_mask)
     prompt = (
         f"编辑当前原图像素构成的粗轮廓参考，输出一座完整素材，背景均匀纯色{key}。"
         "优先保留原图目标自己的浅色、空气透视、笔触、峰形和相连岩肩，不重新设计。"
@@ -75,7 +102,9 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         "Inspect the lower guide carefully before editing: any forest silhouette, "
         "tiny jagged conifer crowns or distant blue tree ribbon is an occluder, not "
         "mountain texture, even if its color matches the rock. Remove the entire "
-        "forest strip and reconstruct continuous rock/snow slopes in its place. "
+        "forest strip, including branches and trunks, and reconstruct continuous rock/snow slopes "
+        "in its place. Erase tree silhouette geometry, not merely recolor it blue or turn "
+        "its pointed crowns into artificial rock spikes. "
         "Complete both lower side shoulders and the base as short curved volumetric "
         "feet; never terminate them at straight side cut planes or a paper-thin polygon.\n"
         f"Local target observation: {localization['description']}\n"
@@ -87,7 +116,8 @@ def target_guide(reference_crop, plan_text, localization_text, key):
         f"with 15% empty margin on every side, on uniform pure {key}. No cast shadows, "
         "reflections, text, panels or environmental ground. Only output the completed image."
     )
-    record = {**localization, "schema_version": 1, "guidance_only": True,
+    record = {**localization, "occluder_polygons": occluders,
+              "removed_occluder_pixels": removed, "schema_version": 1, "guidance_only": True,
               "source_crop_size": [w, h], "key_color": key,
               "coverage": float(mask.mean()), "output_size": [side, side],
               "source_texture_preserved": True}

@@ -218,6 +218,16 @@ and repair prompts explicitly remove forest ribbons and reconstruct continuous
 short rock/snow feet. Review images are diagnostic views only; no output pixels
 are retouched or replaced outside the generative workflow.
 
+Localization also identifies `occluder_polygons`, including small crossing tree
+crowns and internal occluders. Their source pixels are excluded from the guide;
+premultiplied RGB and mask use the same resize filter to prevent excluded tree
+colors bleeding back in. More than 45% removal is rejected, and attached target
+rock cannot be an occluder kind. Automatic screen selection checks hue collisions
+even in dark trees while ignoring nearly neutral snow/stone hues.
+When suspicious screen-hue pixels occur inside recovered foreground, visual
+review receives an unchanged magnified `KEY COLOR DETAIL` and compares it to
+the original material. Repairs must erase tree geometry, rather than recolor it.
+
 Optional diagnostic prefixes retain raw candidates, alpha review images and
 the original numeric/visual replies under the output directory even if final
 selection raises. These are inspection records, not accepted asset outputs.

@@ -22,12 +22,12 @@ import cv2
 import numpy as np
 
 try:
-    from .core import key_rgb, validate_image
+    from .core import key_rgb, validate_image, dominance
     from .objects import crop_asset
     from .selection import parse_selection, selected_matte, selected_prompt
     from .foot_completion import foot_profile_problem
 except ImportError:
-    from core import key_rgb, validate_image
+    from core import key_rgb, validate_image, dominance
     from objects import crop_asset
     from selection import parse_selection, selected_matte, selected_prompt
     from foot_completion import foot_profile_problem
@@ -212,7 +212,7 @@ def _numeric(value, rgba=None):
     return report, list(dict.fromkeys(problems))
 
 
-def _comparison(source, raw, rgba, guide=None):
+def _comparison(source, raw, rgba, guide=None, key=None):
     alpha = rgba[0, ..., 3:4]
     yy, xx = np.indices(alpha.shape[:2])
     checker = np.where(((xx//16 + yy//16) % 2)[..., None], .88, .65)
@@ -270,6 +270,34 @@ def _comparison(source, raw, rgba, guide=None):
     panels.append({"label": "LOWER FOOT DETAIL", "source_panel": "RECOVERED ALPHA",
                    "source_bbox": [x0, y0, x1, y1], "input_size": [x1-x0, y1-y0],
                    "display_bbox": [x, y, x+dw, y+dh]})
+    if key is not None:
+        key_rgb(key)
+        interior = cv2.distanceTransform((alpha[..., 0] > .5).astype(np.uint8),
+                                         cv2.DIST_L2, 5) > 4
+        excess = dominance(rgba[0, ..., :3], key)
+        suspicious = interior & (excess > .1)
+        if suspicious.any():
+            cy, cx = np.unravel_index(np.argmax(np.where(suspicious, excess, -1)), excess.shape)
+            cw, ch = min(512, excess.shape[1]), min(112, excess.shape[0])
+            bx = min(max(0, int(cx)-cw//2), excess.shape[1]-cw)
+            by = min(max(0, int(cy)-ch//2), excess.shape[0]-ch)
+            detail = recovered[by:by+ch, bx:bx+cw]
+            dw, dh = cw*2, ch*2
+            old_height = sheet.shape[0]
+            expanded = np.full((old_height+header+2*margin+dh, 2*cell, 3), .16, np.float32)
+            expanded[:old_height] = sheet
+            strip = np.full((header, 2*cell, 3), 41, np.uint8)
+            cv2.putText(strip, "KEY COLOR DETAIL - compare actual surface colors with source",
+                        (margin, 25), cv2.FONT_HERSHEY_SIMPLEX, .5,
+                        (242, 242, 242), 1, cv2.LINE_AA)
+            expanded[old_height:old_height+header] = strip/255
+            x, y = (2*cell-dw)//2, old_height+header+margin
+            expanded[y:y+dh, x:x+dw] = cv2.resize(detail, (dw, dh),
+                                                 interpolation=cv2.INTER_NEAREST)
+            panels.append({"label": "KEY COLOR DETAIL", "source_panel": "RECOVERED ALPHA",
+                           "source_bbox": [bx, by, bx+cw, by+ch],
+                           "input_size": [cw, ch], "display_bbox": [x, y, x+dw, y+dh]})
+            sheet = expanded
     return sheet[None], panels
 
 
@@ -283,6 +311,12 @@ def _review_prompt(plan, target, report):
         "Review one connected terrain asset against its actual reference crop. "
         "Inspect LOWER FOOT DETAIL first, then compare the two-column full views. "
         "The detail is an unchanged enlarged crop of recovered alpha, not a separate asset. "
+        "When KEY COLOR DETAIL is present, inspect its enlarged actual foreground pixels "
+        "for neon dots, stripes or blotches matching the screen hue. Compare SOURCE CROP "
+        "material colors: visible key contamination absent from the source requires "
+        "clean_background=false and style_match=false. Real original surface colors "
+        "are not automatically defects. The detail points to suspicious pixels, not a "
+        "predetermined rejection. "
         "Look for a forest silhouette: rows of tiny conifer crowns, jagged tree silhouettes "
         "or a blue/green forest ribbon across the lower slopes. These are unrelated trees "
         "even when pale, fog-colored, touching the mountain or copied from the source. "
@@ -382,7 +416,7 @@ def inspect_asset(image, reference_crop, plan_text, key, softness=.06, padding=2
         target_guide = validate_image(target_guide)
         if target_guide.shape[0] != 1:
             raise ValueError("Exactly one current editable target guide is required.")
-    sheet, panels = _comparison(reference_crop, image, rgba, target_guide)
+    sheet, panels = _comparison(reference_crop, image, rgba, target_guide, key)
     report = {
         **quality, "schema_version": 1, "asset_id": target["id"], "key_color": key,
         "valid": not problems, "diagnostic_only": bool(problems),
@@ -457,6 +491,9 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
         "and invented wide ground platforms. Remove any forest silhouette or tree-crown "
         "ribbon across the lower slope, including pale blue distant trees touching the "
         "mountain. Reconstruct the area beneath them as continuous target rock/snow. "
+        "Erase every tree crown, branch and trunks silhouette: not merely recolor trees "
+        "blue, disguise them as tiny rock spikes or leave their pointed outlines in place. "
+        "Replace that geometry with continuous sloping reference material. "
         "Remove artificial side cut planes and reconstruct both lower shoulders as "
         "short curved natural rock feet with thickness; no straight chopped endpoints.\n"
         "Remove trees, depth-mismatched terrain, separate overlapping formations, external "

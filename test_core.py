@@ -36,6 +36,14 @@ class PlanTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             choose_key(green, "invalid")
 
+    def test_auto_key_accounts_for_dark_green_occluders_and_blue_rock_hues(self):
+        image = np.full((1, 100, 100, 3), [.72, .69, .74], np.float32)
+        image[:, :30] = [.25, .4, .7]
+        image[:, 30:32] = [.02, .12, .06]
+        self.assertEqual(choose_key(image, "auto"), "#FF00FF")
+        self.assertEqual(choose_key(image, "green"), "#00FF00")
+        self.assertEqual(choose_key(np.full_like(image, .5), "auto"), "#00FF00")
+
 
 class MatteTests(unittest.TestCase):
     def test_green_antialias_on_magenta_is_not_mistaken_for_opaque(self):

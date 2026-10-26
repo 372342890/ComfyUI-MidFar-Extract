@@ -155,6 +155,37 @@ class AuditTests(unittest.TestCase):
         self.assertGreater(panels[-1]["input_size"][1], 0)
         self.assertEqual(float(rgba.max()), 0)
 
+    def test_key_detail_magnifies_actual_interior_blotches_without_mutating_rgba(self):
+        rgba = np.zeros((1, 1000, 1400, 4), np.float32)
+        rgba[0, 100:900, 100:1300] = [.7, .7, .75, 1]
+        rgba[0, 350:356, 420:431, :3] = [.1, .9, .2]
+        before = rgba.copy()
+        source = np.zeros((1, 600, 600, 3), np.float32)
+        raw = np.zeros((1, 2048, 2048, 3), np.float32)
+        sheet, panels = audit._comparison(source, raw, rgba, source, key="#00FF00")
+        self.assertLessEqual(sheet.shape[1], 2048)
+        self.assertLessEqual(sheet.shape[2], 1600)
+        detail = panels[-1]
+        self.assertEqual(detail["label"], "KEY COLOR DETAIL")
+        x0, y0, x1, y1 = detail["source_bbox"]
+        self.assertTrue(x0 <= 420 < x1 and y0 <= 350 < y1)
+        dx0, dy0, dx1, dy1 = detail["display_bbox"]
+        expected = cv2.resize(before[0, y0:y1, x0:x1, :3], (dx1-dx0, dy1-dy0),
+                              interpolation=cv2.INTER_NEAREST)
+        np.testing.assert_allclose(sheet[0, dy0:dy1, dx0:dx1], expected, atol=1e-6)
+        np.testing.assert_array_equal(rgba, before)
+        _, clean_panels = audit._comparison(source, raw, rgba, key="#FF00FF")
+        self.assertEqual(clean_panels[-1]["label"], "LOWER FOOT DETAIL")
+
+    def test_prompts_require_tree_geometry_removal_and_visible_spill_review(self):
+        _, prompt, _, numeric = self.inspect()
+        repair = audit.repair_prompt(plan(), "#00FF00", numeric,
+                                     verdict(issues=["tree silhouettes"]), 1)
+        self.assertIn("KEY COLOR DETAIL", prompt)
+        self.assertIn("neon", prompt)
+        self.assertIn("trunks", repair)
+        self.assertIn("not merely recolor", repair)
+
     def test_review_and_repair_explicitly_reject_foreground_forest_and_crop_planes(self):
         _, prompt, _, numeric = self.inspect()
         repair = audit.repair_prompt(plan(), "#00FF00", numeric,

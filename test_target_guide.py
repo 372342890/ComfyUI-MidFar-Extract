@@ -11,6 +11,44 @@ except ImportError:
 from test_autonomous_audit import plan
 
 class TargetGuideTests(unittest.TestCase):
+    def test_localized_occluders_are_removed_without_resampling_their_colors(self):
+        reference = np.full((1, 100, 120, 3), [.8, .7, .6], np.float32)
+        reference[0, 45:71, 50:70] = [0, 1, 0]
+        localization = {
+            "asset_id": "unit_a", "visible_polygon": [[100, 100], [900, 100],
+                                                       [900, 900], [100, 900]],
+            "description": "connected stone", "hidden_base": "short foot",
+            "occluder_polygons": [{"kind": "tree", "name": "crossing crown",
+                "polygon": [[400, 430], [600, 430], [600, 730], [400, 730]],
+                "reason": "foreground tree crosses rock"}],
+        }
+        before = reference.copy()
+        guide, _, record = target_guide(reference, plan(), localization, "#FF00FF")
+        self.assertGreater(json.loads(record)["removed_occluder_pixels"], 400)
+        self.assertEqual(json.loads(record)["occluder_polygons"], localization["occluder_polygons"])
+        # All guide colors must be mixtures of stone and key, never excluded green.
+        np.testing.assert_allclose(guide[0, ..., 0] + guide[0, ..., 1]*(.2/.7), 1, atol=1e-5)
+        np.testing.assert_array_equal(reference, before)
+
+    def test_occluder_schema_cannot_remove_attached_rock_or_most_of_target(self):
+        good = {"asset_id": "unit_a", "visible_polygon": [[100, 100], [900, 100],
+                 [900, 900], [100, 900]], "description": "stone", "hidden_base": "foot"}
+        exclusions = [{"kind": "rock", "name": "attached peak",
+                       "polygon": [[300, 300], [500, 300], [500, 500]], "reason": "wrong"},
+                      {"kind": "tree", "name": "", "polygon": [[300, 300],
+                       [500, 300], [500, 500]], "reason": "occluded"},
+                      {"kind": "tree", "name": "tree", "polygon": [[.3, .3],
+                       [.5, .3], [.5, .5]], "reason": "occluded"},
+                      {"kind": "forest", "name": "whole target",
+                       "polygon": good["visible_polygon"], "reason": "occluded"}]
+        reference = np.full((1, 100, 120, 3), .4, np.float32)
+        for item in exclusions:
+            with self.subTest(item=item), self.assertRaises(ValueError):
+                target_guide(reference, plan(), {**good, "occluder_polygons": [item]}, "#FF00FF")
+        _, _, record = target_guide(reference, plan(), good, "#FF00FF")
+        self.assertEqual(json.loads(record)["occluder_polygons"], [])
+        self.assertEqual(json.loads(record)["removed_occluder_pixels"], 0)
+
     def test_detailed_model_polygon_preserves_all_vertices(self):
         angles = np.linspace(0, 2*np.pi, 96, endpoint=False)
         points = np.round(np.stack((500+280*np.cos(angles),

@@ -67,6 +67,19 @@ def choose_key(reference, mode):
         raise ValueError("Unknown key mode.")
     # Sampling bounds memory while considering all reference images in a batch.
     rgb = image[..., :3].reshape(-1, 3)[::max(1, image[..., 0].size // 200000)]
+    hsv = cv2.cvtColor(rgb[None], cv2.COLOR_RGB2HSV)[0]
+    eligible = (hsv[:, 1] >= .15) & (hsv[:, 2] >= .03)
+    if eligible.any():
+        # Hue collisions matter even for dark trees with low absolute RGB dominance.
+        # Nearly neutral painted snow/rock does not make its unstable hue meaningful.
+        hues = hsv[eligible, 0]
+        palette = (("#00FF00", 120), ("#FF00FF", 300), ("#0000FF", 240))
+        scores = []
+        for key, hue in palette:
+            delta = np.abs(hues-hue)
+            delta = np.minimum(delta, 360-delta)
+            scores.append((float(np.mean(np.exp(-(delta/25)**2))), key))
+        return min(scores, key=lambda pair: pair[0])[1]
     scores = [(float(np.mean(np.maximum(dominance(rgb, k), 0)**2)), k) for k in KEYS.values()]
     return min(scores, key=lambda pair: pair[0])[1]
 
