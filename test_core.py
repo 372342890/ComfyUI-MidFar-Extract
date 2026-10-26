@@ -38,6 +38,17 @@ class PlanTests(unittest.TestCase):
 
 
 class MatteTests(unittest.TestCase):
+    def test_green_antialias_on_magenta_is_not_mistaken_for_opaque(self):
+        key = np.array([1, 0, 1], np.float32)
+        color = np.array([.45, .85, .10], np.float32)
+        alpha = np.zeros((50, 50), np.float32)
+        alpha[10:40, 10:40] = 1
+        alpha[9, 10:40] = .75
+        rgb = color*alpha[..., None] + key*(1-alpha[..., None])
+        rgba, mask, _, _ = matte(rgb[None], "#FF00FF", .04, True)
+        np.testing.assert_allclose(mask[0, 9, 15:35], .75, atol=.02)
+        np.testing.assert_allclose(rgba[0, 9, 20, :3], color, atol=.03)
+
     @staticmethod
     def composite(key="#00FF00"):
         color = np.array([0.35, 0.22, 0.12], np.float32)

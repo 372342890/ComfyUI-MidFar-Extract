@@ -156,8 +156,33 @@ def matte(image, key, softness=0.04, despill=True):
         alpha[alpha < .008] = 0
         alpha[screen] = 0
         alpha[opaque] = 1
+        # Strong complementary foreground colors can dominate an antialiased
+        # mixture and make it look "opaque" to a chroma-only test. Use confident
+        # interior samples to solve only the narrow band next to the screen.
+        # Erosion selects color seeds; it does not erode the output silhouette.
+        stable = cv2.erode(opaque.astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
+        edge_color = None
+        if screen.any() and stable.any():
+            screen_distance = cv2.distanceTransform((~screen).astype(np.uint8), cv2.DIST_L2, 5)
+            inside_distance, interior = nearest_colors(stable, rgb)
+            vector = interior-screen_key
+            denominator = np.sum(vector*vector, axis=-1)
+            solved = np.sum((rgb-screen_key)*vector, axis=-1)/np.maximum(denominator, 1e-6)
+            predicted = solved[..., None]*interior + (1-solved[..., None])*screen_key
+            edge = (~screen & (screen_distance <= 4) & (inside_distance <= 6) &
+                    (denominator > .01) & (solved > 0) & (solved < .995) &
+                    (np.linalg.norm(predicted-rgb, axis=-1) < .10))
+            alpha[edge] = np.clip(solved[edge], 0, 1)
+            # Compression ringing need not lie on a perfect two-color mixing
+            # line. Keep its alpha, but use a nearby confident object color in
+            # the outer two-pixel band to avoid cyan/magenta unmixing overshoot.
+            edge_color = (~screen & (screen_distance <= 4) & (inside_distance <= 16) &
+                          (alpha > .008))
+        alpha[alpha < .008] = 0
         if despill:
             rgb = np.clip((rgb-(1-alpha[..., None])*screen_key)/np.maximum(alpha[..., None], 1e-5), 0, 1)
+            if edge_color is not None:
+                rgb[edge_color] = interior[edge_color]
         if source.shape[-1] == 4:
             alpha *= source[..., 3]
         rgb[alpha < 1e-5] = 0
