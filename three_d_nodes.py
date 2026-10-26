@@ -21,6 +21,24 @@ def _native(name, **inputs):
     return result
 
 
+def _write_runtime_capabilities(destination):
+    import inspect
+    import comfy.model_detection
+    import comfy.supported_models
+    detection = inspect.getsource(comfy.model_detection).splitlines()
+    keep = set()
+    for i, line in enumerate(detection):
+        if "hunyuan" in line.lower():
+            keep.update(range(max(0, i-3), min(len(detection), i+12)))
+    classes = [cls for cls in comfy.supported_models.models
+               if "hunyuan" in cls.__name__.lower()]
+    report = {"hunyuan_detection": "\n".join(detection[i] for i in sorted(keep)),
+              "supported_hunyuan_classes": {cls.__name__: inspect.getsource(cls) for cls in classes}}
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(report, indent=2), encoding="utf-8")
+
+
 class BAMidFar3DModel:
     @classmethod
     def INPUT_TYPES(cls):
@@ -33,6 +51,8 @@ class BAMidFar3DModel:
 
     def run(self):
         import folder_paths
+        _write_runtime_capabilities(
+            Path(folder_paths.get_output_directory())/"midfar-3d"/"hunyuan-runtime.json")
         checkpoint = ensure_hunyuan_checkpoint(
             folder_paths.models_dir,
             Path(folder_paths.get_output_directory())/"midfar-3d"/"hunyuan-download.json")
