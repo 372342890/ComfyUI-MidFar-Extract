@@ -1,6 +1,45 @@
 # ComfyUI MidFar Extract
 
-轻量、通用的中景 / 远景分层提示编译与软边抠图节点。没有固定景物名单或远景高度限制，不需要下载额外分割模型。
+通用的中景 / 远景**单个物体**提取、软边抠图及透明裁切节点。建筑、树、独立山体等按照参考图识别结果逐个处理，没有固定景物名单，不需要下载额外分割模型。旧版整层节点仍保留兼容。
+
+## Individual objects (recommended)
+
+`Reference → vision LLM objects JSON → BAMidFarObjectPlan → image editor → BAMidFarObjectMatte → SaveImage`
+
+视觉模型必须识别**实例**：两栋楼是两项，不把建筑群、整片树林、连续山脉写成一项。每项的 id 唯一，bbox 为归一化的 `[left, top, right, bottom]`：
+
+```json
+{
+  "style": "原图画风、照明、透视",
+  "objects": [
+    {
+      "id": "o01",
+      "name": "左侧红砖楼",
+      "layer": "midground",
+      "location": "原图左侧，拱桥后方",
+      "appearance": "瓦顶、三层红砖墙",
+      "occlusion": "底部被近处栏杆遮挡",
+      "bbox": [0.12, 0.3, 0.34, 0.8],
+      "is_single": true
+    }
+  ]
+}
+```
+
+ObjectPlan 输出 `object_prompt`、`reference`、`key_color`、`filename_prefix` 四个**对齐的动态列表**。ComfyUI 自动逐项映射，无需手工复制生成节点。连接：
+
+- ObjectPlan.object_prompt → 图片编辑.prompt（ByteArtist API 名称 `prompt0`）
+- ObjectPlan.reference → 图片编辑.image（ByteArtist API 名称 `image0`）
+- 图片编辑.image → ObjectMatte.image
+- ObjectPlan.key_color、filename_prefix → ObjectMatte 对应输入
+- ObjectMatte.rgba → SaveImage.images
+- ObjectMatte.filename_prefix → SaveImage.filename_prefix
+
+每个物体居中、完整输出，保留原视角并补全合理的遮挡部分，不带相邻实例和地面底座。图片编辑模型必须只生成一张变体。ObjectMatte 保留 RGBA 与柔边，只裁掉空白，不改变主体像素。每张素材尺寸可不同，因此不把素材强制合为同尺寸 batch。
+
+`layer=both` 提取中景与远景，亦可只选其中一层。`max_objects` 默认 8，范围 1–32；超过上限的数量在 `manifest.truncated` 中明确显示。无可辨认实例则报错，不编造物体。`strict=true` 拒绝空图、多个显著分离主体或触及画布边界的结果；检测不能识别全部语义粘连，仍需目视复核。细节本来分离的物体可人工确认后关闭 strict。
+
+遮挡补全由图片模型推断，不保证不可见纹理与真实原物体完全一致。模型质量、输入清晰度与色键冲突会影响效果。
 
 ## Install
 
@@ -11,7 +50,7 @@ git clone https://github.com/372342890/ComfyUI-MidFar-Extract.git
 python -m pip install -r ComfyUI-MidFar-Extract/requirements.txt
 ```
 
-ComfyUI 已提供 PyTorch；本插件不重装 PyTorch。安装后应出现 `BAMidFarPlanPrompt`、`BAMidFarMatte` 两个节点。
+ComfyUI 已提供 PyTorch；本插件不重装 PyTorch。安装后应出现 `BAMidFarObjectPlan`、`BAMidFarObjectMatte` 及旧版 `BAMidFarPlanPrompt`、`BAMidFarMatte`。
 
 ## Workflow
 
