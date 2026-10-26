@@ -186,7 +186,10 @@ reference image, then click global run once. The fixed graph examines candidate
 connections and occlusions, selects three units, and makes a real source crop for
 each target. A source-coordinate target point is marked automatically before
 precise polygon localization. Every generation and repair uses a fresh source-pixel
-guide through a standard `LoadImage` handoff, never a previous wrong output or frozen mask.
+guide through a standard `LoadImage` handoff. Repairs also receive the actual
+previous candidate as image 2, so the model can see and edit the defects cited by
+the review. The original guide remains image 1 for target identity and source
+style; neither image freezes an incorrect mask or overrides rejection.
 
 Every image call uses Seedream 5.0 pro. Two feedback rounds regenerate from the
 editable source guide so they can remove unrelated upper fragments, restore connected
@@ -201,11 +204,11 @@ detached foreground parts remain blocking defects.
 
 The graph contains 9 image calls and 14 text calls. Generation may fail its
 quality gates; an unsuccessful run never delivers a rejected image as success.
-The graph includes 98 nodes and 220 connections. Three redundant guide-record
-save nodes were removed without changing generation or acceptance. The full
-graph loads slowly during clipboard import in the tested workbench; all 98
-nodes and 220 connections were verified after loading completed. Allow the
-workbench time to mount the graph before replacing or re-importing it.
+The graph includes 110 nodes and 250 connections. The added native image
+handoffs deliver the exact previously reviewed candidate to each repair.
+Earlier 98-node / 220-connection clipboard loading was verified after the
+workbench completed mounting; large graphs may take time to load. Allow the
+workbench to mount the graph before replacing or re-importing it.
 
 Visual review uses a two-column comparison plus a full-width lower-foot detail
 to retain the visibility of small foreground tree silhouettes, chopped side
@@ -214,6 +217,11 @@ recovery succeeds and the asset has transparent canvas margins. The generation
 and repair prompts explicitly remove forest ribbons and reconstruct continuous
 short rock/snow feet. Review images are diagnostic views only; no output pixels
 are retouched or replaced outside the generative workflow.
+
+Optional diagnostic prefixes retain raw candidates, alpha review images and
+the original numeric/visual replies under the output directory even if final
+selection raises. These are inspection records, not accepted asset outputs.
+The workflow still has exactly three final `SaveImage` nodes.
 
 Intermediate references now pass through `BAMidFarNativeImageFile` and standard
 `LoadImage` before reaching native image/text models. PNG files preserve RGB

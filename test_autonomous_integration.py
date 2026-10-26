@@ -94,7 +94,7 @@ class GraphContract(unittest.TestCase):
         for choose in self.of_type("BAMidFarChooseAsset"):
             incoming = {e["targetHandle"] for e in self.edges if e["target"] == choose["id"]}
             self.assertEqual(incoming, {f"{k}_{i}" for k in ("rgba", "numeric", "visual")
-                                        for i in range(1, 4)})
+                                        for i in range(1, 4)} | {"diagnostic_prefix"})
 
     def test_graph_types_are_valid_acyclic_and_free_of_private_account_data(self):
         pending = set(self.nodes)
@@ -121,7 +121,9 @@ class GraphContract(unittest.TestCase):
         for generator in self.of_type("BALLMImage"):
             images = [e for e in self.edges
                       if e["target"] == generator["id"] and e["targetHandle"] == "image"]
-            self.assertEqual(len(images), 1)
+            is_repair = any(self.nodes[e["source"]]["data"]["type"] == "BAMidFarRepairPrompt"
+                            for e in self.edges if e["target"] == generator["id"])
+            self.assertEqual(len(images), 2 if is_repair else 1)
             loader = self.nodes[images[0]["source"]]
             self.assertEqual(loader["data"]["type"], "LoadImage")
             self.assertEqual(images[0]["sourceHandle"], "IMAGE")
@@ -132,6 +134,19 @@ class GraphContract(unittest.TestCase):
             self.assertEqual(origin["sourceHandle"], "guide_image")
             self.assertTrue(any(self.nodes[a]["data"]["type"] == "BAMidFarAutonomousReference"
                                 for a in self.ancestors(origin["source"])))
+            if is_repair:
+                prior_loader = images[1]["source"]
+                prior_handoff = next(e["source"] for e in self.edges if e["target"] == prior_loader)
+                prior_origin = next(e for e in self.edges if e["target"] == prior_handoff)
+                self.assertEqual(self.nodes[prior_origin["source"]]["data"]["type"], "BALLMImage")
+                repair = next(e["source"] for e in self.edges if e["target"] == generator["id"]
+                              and e["targetHandle"] == "prompt")
+                inspection = next(e["source"] for e in self.edges if e["target"] == repair
+                                  and e["targetHandle"] == "numeric_report")
+                inspected_generator = next(e["source"] for e in self.edges if e["target"] == inspection
+                                           and e["targetHandle"] == "image")
+                self.assertEqual(prior_origin["source"], inspected_generator,
+                                 "Repair must see the very candidate that its feedback reviewed.")
         for inspector in self.of_type("BAMidFarAssetInspect"):
             image = next(e for e in self.edges
                          if e["target"] == inspector["id"] and e["targetHandle"] == "image")
@@ -140,6 +155,8 @@ class GraphContract(unittest.TestCase):
             guide = next(e for e in self.edges
                          if e["target"] == inspector["id"] and e["targetHandle"] == "target_guide")
             self.assertEqual(self.nodes[guide["source"]]["data"]["type"], "BAMidFarTargetGuide")
+            self.assertTrue(any(e["target"] == inspector["id"] and e["targetHandle"] == "diagnostic_prefix"
+                                for e in self.edges), "Rejected raw candidates must remain inspectable.")
 
     def test_every_model_reference_uses_standard_native_loading(self):
         carriers = {n["id"] for n in self.of_type("BALLMImage")+self.of_type("BALLMText")}

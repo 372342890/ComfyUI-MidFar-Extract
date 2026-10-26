@@ -2118,6 +2118,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 1
           }
         ],
         "outputSlots": [
@@ -3190,6 +3202,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 2
           }
         ],
         "outputSlots": [
@@ -4262,6 +4286,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 3
           }
         ],
         "outputSlots": [
@@ -4637,6 +4673,12 @@
             "label": "min_score",
             "type": "INT",
             "value": 85
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
           }
         ],
         "outputSlots": [
@@ -5969,6 +6011,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 1
           }
         ],
         "outputSlots": [
@@ -7041,6 +7095,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 2
           }
         ],
         "outputSlots": [
@@ -8113,6 +8179,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 3
           }
         ],
         "outputSlots": [
@@ -8488,6 +8566,12 @@
             "label": "min_score",
             "type": "INT",
             "value": 85
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
           }
         ],
         "outputSlots": [
@@ -9820,6 +9904,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 1
           }
         ],
         "outputSlots": [
@@ -10892,6 +10988,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 2
           }
         ],
         "outputSlots": [
@@ -11964,6 +12072,18 @@
             "label": "target_guide",
             "type": "IMAGE",
             "format": "slot"
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "version",
+            "label": "version",
+            "type": "INT",
+            "value": 3
           }
         ],
         "outputSlots": [
@@ -12339,6 +12459,12 @@
             "label": "min_score",
             "type": "INT",
             "value": 85
+          },
+          {
+            "name": "diagnostic_prefix",
+            "label": "diagnostic_prefix",
+            "type": "STRING",
+            "format": "slot"
           }
         ],
         "outputSlots": [
@@ -12746,7 +12872,7 @@
       "id": "1008",
       "type": "baNode",
       "position": {
-        "x": 5060,
+        "x": 2760,
         "y": 350
       },
       "width": 360,
@@ -12780,7 +12906,7 @@
       "id": "1009",
       "type": "baNode",
       "position": {
-        "x": 5240,
+        "x": 2940,
         "y": 510
       },
       "width": 360,
@@ -12819,7 +12945,7 @@
       "id": "1010",
       "type": "baNode",
       "position": {
-        "x": 6900,
+        "x": 5060,
         "y": 350
       },
       "width": 360,
@@ -12853,7 +12979,7 @@
       "id": "1011",
       "type": "baNode",
       "position": {
-        "x": 7080,
+        "x": 5240,
         "y": 510
       },
       "width": 360,
@@ -12892,6 +13018,152 @@
       "id": "1012",
       "type": "baNode",
       "position": {
+        "x": 4600,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1013",
+      "type": "baNode",
+      "position": {
+        "x": 4780,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1014",
+      "type": "baNode",
+      "position": {
+        "x": 6900,
+        "y": 350
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1015",
+      "type": "baNode",
+      "position": {
+        "x": 7080,
+        "y": 510
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1016",
+      "type": "baNode",
+      "position": {
         "x": 2300,
         "y": 2100
       },
@@ -12923,7 +13195,7 @@
       }
     },
     {
-      "id": "1013",
+      "id": "1017",
       "type": "baNode",
       "position": {
         "x": 2480,
@@ -12962,7 +13234,7 @@
       }
     },
     {
-      "id": "1014",
+      "id": "1018",
       "type": "baNode",
       "position": {
         "x": 3000,
@@ -12996,7 +13268,7 @@
       }
     },
     {
-      "id": "1015",
+      "id": "1019",
       "type": "baNode",
       "position": {
         "x": 3180,
@@ -13035,7 +13307,7 @@
       }
     },
     {
-      "id": "1016",
+      "id": "1020",
       "type": "baNode",
       "position": {
         "x": 3220,
@@ -13069,156 +13341,10 @@
       }
     },
     {
-      "id": "1017",
-      "type": "baNode",
-      "position": {
-        "x": 3400,
-        "y": 1610
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1018",
-      "type": "baNode",
-      "position": {
-        "x": 5060,
-        "y": 1450
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1019",
-      "type": "baNode",
-      "position": {
-        "x": 5240,
-        "y": 1610
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "LoadImage",
-        "title": "标准加载 · 传给原生模型",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "IMAGE",
-            "label": "IMAGE",
-            "type": "IMAGE"
-          },
-          {
-            "name": "MASK",
-            "label": "MASK",
-            "type": "MASK"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
-      "id": "1020",
-      "type": "baNode",
-      "position": {
-        "x": 6900,
-        "y": 1450
-      },
-      "width": 360,
-      "initialWidth": 360,
-      "initialHeight": 420,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarNativeImageFile",
-        "title": "中间参考 · PNG原样传递",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "image_file",
-            "label": "image_file",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": []
-        }
-      }
-    },
-    {
       "id": "1021",
       "type": "baNode",
       "position": {
-        "x": 7080,
+        "x": 3400,
         "y": 1610
       },
       "width": 360,
@@ -13257,6 +13383,298 @@
       "id": "1022",
       "type": "baNode",
       "position": {
+        "x": 2760,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1023",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1024",
+      "type": "baNode",
+      "position": {
+        "x": 5060,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1025",
+      "type": "baNode",
+      "position": {
+        "x": 5240,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1026",
+      "type": "baNode",
+      "position": {
+        "x": 4600,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1027",
+      "type": "baNode",
+      "position": {
+        "x": 4780,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1028",
+      "type": "baNode",
+      "position": {
+        "x": 6900,
+        "y": 1450
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1029",
+      "type": "baNode",
+      "position": {
+        "x": 7080,
+        "y": 1610
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1030",
+      "type": "baNode",
+      "position": {
         "x": 2300,
         "y": 3200
       },
@@ -13288,7 +13706,7 @@
       }
     },
     {
-      "id": "1023",
+      "id": "1031",
       "type": "baNode",
       "position": {
         "x": 2480,
@@ -13327,7 +13745,7 @@
       }
     },
     {
-      "id": "1024",
+      "id": "1032",
       "type": "baNode",
       "position": {
         "x": 3000,
@@ -13361,7 +13779,7 @@
       }
     },
     {
-      "id": "1025",
+      "id": "1033",
       "type": "baNode",
       "position": {
         "x": 3180,
@@ -13400,7 +13818,7 @@
       }
     },
     {
-      "id": "1026",
+      "id": "1034",
       "type": "baNode",
       "position": {
         "x": 3220,
@@ -13434,7 +13852,7 @@
       }
     },
     {
-      "id": "1027",
+      "id": "1035",
       "type": "baNode",
       "position": {
         "x": 3400,
@@ -13473,7 +13891,80 @@
       }
     },
     {
-      "id": "1028",
+      "id": "1036",
+      "type": "baNode",
+      "position": {
+        "x": 2760,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1037",
+      "type": "baNode",
+      "position": {
+        "x": 2940,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1038",
       "type": "baNode",
       "position": {
         "x": 5060,
@@ -13507,7 +13998,7 @@
       }
     },
     {
-      "id": "1029",
+      "id": "1039",
       "type": "baNode",
       "position": {
         "x": 5240,
@@ -13546,7 +14037,80 @@
       }
     },
     {
-      "id": "1030",
+      "id": "1040",
+      "type": "baNode",
+      "position": {
+        "x": 4600,
+        "y": 2550
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarNativeImageFile",
+        "title": "中间参考 · PNG原样传递",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "IMAGE",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "image_file",
+            "label": "image_file",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1041",
+      "type": "baNode",
+      "position": {
+        "x": 4780,
+        "y": 2710
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "标准加载 · 传给原生模型",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "1042",
       "type": "baNode",
       "position": {
         "x": 6900,
@@ -13580,7 +14144,7 @@
       }
     },
     {
-      "id": "1031",
+      "id": "1043",
       "type": "baNode",
       "position": {
         "x": 7080,
@@ -14103,6 +14667,22 @@
     {
       "id": "730",
       "type": "baEdge",
+      "source": "200",
+      "target": "202",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "731",
+      "type": "baEdge",
       "source": "1007",
       "target": "203",
       "sourceHandle": "IMAGE",
@@ -14117,7 +14697,7 @@
       }
     },
     {
-      "id": "731",
+      "id": "732",
       "type": "baEdge",
       "source": "202",
       "target": "203",
@@ -14133,7 +14713,7 @@
       }
     },
     {
-      "id": "732",
+      "id": "733",
       "type": "baEdge",
       "source": "104",
       "target": "204",
@@ -14149,7 +14729,7 @@
       }
     },
     {
-      "id": "733",
+      "id": "734",
       "type": "baEdge",
       "source": "200",
       "target": "204",
@@ -14165,7 +14745,7 @@
       }
     },
     {
-      "id": "734",
+      "id": "735",
       "type": "baEdge",
       "source": "202",
       "target": "204",
@@ -14181,7 +14761,7 @@
       }
     },
     {
-      "id": "735",
+      "id": "736",
       "type": "baEdge",
       "source": "203",
       "target": "204",
@@ -14197,7 +14777,7 @@
       }
     },
     {
-      "id": "736",
+      "id": "737",
       "type": "baEdge",
       "source": "204",
       "target": "211",
@@ -14213,7 +14793,7 @@
       }
     },
     {
-      "id": "737",
+      "id": "738",
       "type": "baEdge",
       "source": "1005",
       "target": "211",
@@ -14229,7 +14809,23 @@
       }
     },
     {
-      "id": "738",
+      "id": "739",
+      "type": "baEdge",
+      "source": "1009",
+      "target": "211",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "740",
       "type": "baEdge",
       "source": "211",
       "target": "212",
@@ -14245,7 +14841,7 @@
       }
     },
     {
-      "id": "739",
+      "id": "741",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -14261,7 +14857,7 @@
       }
     },
     {
-      "id": "740",
+      "id": "742",
       "type": "baEdge",
       "source": "242",
       "target": "212",
@@ -14277,7 +14873,7 @@
       }
     },
     {
-      "id": "741",
+      "id": "743",
       "type": "baEdge",
       "source": "104",
       "target": "212",
@@ -14293,7 +14889,7 @@
       }
     },
     {
-      "id": "742",
+      "id": "744",
       "type": "baEdge",
       "source": "200",
       "target": "212",
@@ -14309,9 +14905,25 @@
       }
     },
     {
-      "id": "743",
+      "id": "745",
       "type": "baEdge",
-      "source": "1009",
+      "source": "200",
+      "target": "212",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "746",
+      "type": "baEdge",
+      "source": "1011",
       "target": "213",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14325,7 +14937,7 @@
       }
     },
     {
-      "id": "744",
+      "id": "747",
       "type": "baEdge",
       "source": "212",
       "target": "213",
@@ -14341,7 +14953,7 @@
       }
     },
     {
-      "id": "745",
+      "id": "748",
       "type": "baEdge",
       "source": "104",
       "target": "214",
@@ -14357,7 +14969,7 @@
       }
     },
     {
-      "id": "746",
+      "id": "749",
       "type": "baEdge",
       "source": "200",
       "target": "214",
@@ -14373,7 +14985,7 @@
       }
     },
     {
-      "id": "747",
+      "id": "750",
       "type": "baEdge",
       "source": "212",
       "target": "214",
@@ -14389,7 +15001,7 @@
       }
     },
     {
-      "id": "748",
+      "id": "751",
       "type": "baEdge",
       "source": "213",
       "target": "214",
@@ -14405,7 +15017,7 @@
       }
     },
     {
-      "id": "749",
+      "id": "752",
       "type": "baEdge",
       "source": "214",
       "target": "221",
@@ -14421,7 +15033,7 @@
       }
     },
     {
-      "id": "750",
+      "id": "753",
       "type": "baEdge",
       "source": "1005",
       "target": "221",
@@ -14437,7 +15049,23 @@
       }
     },
     {
-      "id": "751",
+      "id": "754",
+      "type": "baEdge",
+      "source": "1013",
+      "target": "221",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "755",
       "type": "baEdge",
       "source": "221",
       "target": "222",
@@ -14453,7 +15081,7 @@
       }
     },
     {
-      "id": "752",
+      "id": "756",
       "type": "baEdge",
       "source": "200",
       "target": "222",
@@ -14469,7 +15097,7 @@
       }
     },
     {
-      "id": "753",
+      "id": "757",
       "type": "baEdge",
       "source": "242",
       "target": "222",
@@ -14485,7 +15113,7 @@
       }
     },
     {
-      "id": "754",
+      "id": "758",
       "type": "baEdge",
       "source": "104",
       "target": "222",
@@ -14501,7 +15129,7 @@
       }
     },
     {
-      "id": "755",
+      "id": "759",
       "type": "baEdge",
       "source": "200",
       "target": "222",
@@ -14517,9 +15145,25 @@
       }
     },
     {
-      "id": "756",
+      "id": "760",
       "type": "baEdge",
-      "source": "1011",
+      "source": "200",
+      "target": "222",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "761",
+      "type": "baEdge",
+      "source": "1015",
       "target": "223",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14533,7 +15177,7 @@
       }
     },
     {
-      "id": "757",
+      "id": "762",
       "type": "baEdge",
       "source": "222",
       "target": "223",
@@ -14549,7 +15193,23 @@
       }
     },
     {
-      "id": "758",
+      "id": "763",
+      "type": "baEdge",
+      "source": "200",
+      "target": "231",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "764",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -14565,7 +15225,7 @@
       }
     },
     {
-      "id": "759",
+      "id": "765",
       "type": "baEdge",
       "source": "202",
       "target": "231",
@@ -14581,7 +15241,7 @@
       }
     },
     {
-      "id": "760",
+      "id": "766",
       "type": "baEdge",
       "source": "203",
       "target": "231",
@@ -14597,7 +15257,7 @@
       }
     },
     {
-      "id": "761",
+      "id": "767",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -14613,7 +15273,7 @@
       }
     },
     {
-      "id": "762",
+      "id": "768",
       "type": "baEdge",
       "source": "212",
       "target": "231",
@@ -14629,7 +15289,7 @@
       }
     },
     {
-      "id": "763",
+      "id": "769",
       "type": "baEdge",
       "source": "213",
       "target": "231",
@@ -14645,7 +15305,7 @@
       }
     },
     {
-      "id": "764",
+      "id": "770",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -14661,7 +15321,7 @@
       }
     },
     {
-      "id": "765",
+      "id": "771",
       "type": "baEdge",
       "source": "222",
       "target": "231",
@@ -14677,7 +15337,7 @@
       }
     },
     {
-      "id": "766",
+      "id": "772",
       "type": "baEdge",
       "source": "223",
       "target": "231",
@@ -14693,7 +15353,7 @@
       }
     },
     {
-      "id": "767",
+      "id": "773",
       "type": "baEdge",
       "source": "231",
       "target": "232",
@@ -14709,7 +15369,7 @@
       }
     },
     {
-      "id": "768",
+      "id": "774",
       "type": "baEdge",
       "source": "200",
       "target": "232",
@@ -14725,7 +15385,7 @@
       }
     },
     {
-      "id": "769",
+      "id": "775",
       "type": "baEdge",
       "source": "231",
       "target": "291",
@@ -14741,7 +15401,7 @@
       }
     },
     {
-      "id": "770",
+      "id": "776",
       "type": "baEdge",
       "source": "104",
       "target": "300",
@@ -14757,7 +15417,7 @@
       }
     },
     {
-      "id": "771",
+      "id": "777",
       "type": "baEdge",
       "source": "100",
       "target": "300",
@@ -14773,7 +15433,7 @@
       }
     },
     {
-      "id": "772",
+      "id": "778",
       "type": "baEdge",
       "source": "90",
       "target": "300",
@@ -14789,7 +15449,7 @@
       }
     },
     {
-      "id": "773",
+      "id": "779",
       "type": "baEdge",
       "source": "300",
       "target": "390",
@@ -14805,7 +15465,7 @@
       }
     },
     {
-      "id": "774",
+      "id": "780",
       "type": "baEdge",
       "source": "300",
       "target": "340",
@@ -14821,7 +15481,7 @@
       }
     },
     {
-      "id": "775",
+      "id": "781",
       "type": "baEdge",
       "source": "300",
       "target": "340",
@@ -14837,9 +15497,9 @@
       }
     },
     {
-      "id": "776",
+      "id": "782",
       "type": "baEdge",
-      "source": "1013",
+      "source": "1017",
       "target": "341",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14853,7 +15513,7 @@
       }
     },
     {
-      "id": "777",
+      "id": "783",
       "type": "baEdge",
       "source": "340",
       "target": "341",
@@ -14869,7 +15529,7 @@
       }
     },
     {
-      "id": "778",
+      "id": "784",
       "type": "baEdge",
       "source": "300",
       "target": "342",
@@ -14885,7 +15545,7 @@
       }
     },
     {
-      "id": "779",
+      "id": "785",
       "type": "baEdge",
       "source": "104",
       "target": "342",
@@ -14901,7 +15561,7 @@
       }
     },
     {
-      "id": "780",
+      "id": "786",
       "type": "baEdge",
       "source": "341",
       "target": "342",
@@ -14917,7 +15577,7 @@
       }
     },
     {
-      "id": "781",
+      "id": "787",
       "type": "baEdge",
       "source": "300",
       "target": "342",
@@ -14933,7 +15593,7 @@
       }
     },
     {
-      "id": "782",
+      "id": "788",
       "type": "baEdge",
       "source": "342",
       "target": "301",
@@ -14949,9 +15609,9 @@
       }
     },
     {
-      "id": "783",
+      "id": "789",
       "type": "baEdge",
-      "source": "1015",
+      "source": "1019",
       "target": "301",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -14965,7 +15625,7 @@
       }
     },
     {
-      "id": "784",
+      "id": "790",
       "type": "baEdge",
       "source": "301",
       "target": "302",
@@ -14981,7 +15641,7 @@
       }
     },
     {
-      "id": "785",
+      "id": "791",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -14997,7 +15657,7 @@
       }
     },
     {
-      "id": "786",
+      "id": "792",
       "type": "baEdge",
       "source": "342",
       "target": "302",
@@ -15013,7 +15673,7 @@
       }
     },
     {
-      "id": "787",
+      "id": "793",
       "type": "baEdge",
       "source": "104",
       "target": "302",
@@ -15029,7 +15689,7 @@
       }
     },
     {
-      "id": "788",
+      "id": "794",
       "type": "baEdge",
       "source": "300",
       "target": "302",
@@ -15045,9 +15705,25 @@
       }
     },
     {
-      "id": "789",
+      "id": "795",
       "type": "baEdge",
-      "source": "1017",
+      "source": "300",
+      "target": "302",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "796",
+      "type": "baEdge",
+      "source": "1021",
       "target": "303",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15061,7 +15737,7 @@
       }
     },
     {
-      "id": "790",
+      "id": "797",
       "type": "baEdge",
       "source": "302",
       "target": "303",
@@ -15077,7 +15753,7 @@
       }
     },
     {
-      "id": "791",
+      "id": "798",
       "type": "baEdge",
       "source": "104",
       "target": "304",
@@ -15093,7 +15769,7 @@
       }
     },
     {
-      "id": "792",
+      "id": "799",
       "type": "baEdge",
       "source": "300",
       "target": "304",
@@ -15109,7 +15785,7 @@
       }
     },
     {
-      "id": "793",
+      "id": "800",
       "type": "baEdge",
       "source": "302",
       "target": "304",
@@ -15125,7 +15801,7 @@
       }
     },
     {
-      "id": "794",
+      "id": "801",
       "type": "baEdge",
       "source": "303",
       "target": "304",
@@ -15141,7 +15817,7 @@
       }
     },
     {
-      "id": "795",
+      "id": "802",
       "type": "baEdge",
       "source": "304",
       "target": "311",
@@ -15157,9 +15833,9 @@
       }
     },
     {
-      "id": "796",
+      "id": "803",
       "type": "baEdge",
-      "source": "1015",
+      "source": "1019",
       "target": "311",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15173,7 +15849,23 @@
       }
     },
     {
-      "id": "797",
+      "id": "804",
+      "type": "baEdge",
+      "source": "1023",
+      "target": "311",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "805",
       "type": "baEdge",
       "source": "311",
       "target": "312",
@@ -15189,7 +15881,7 @@
       }
     },
     {
-      "id": "798",
+      "id": "806",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -15205,7 +15897,7 @@
       }
     },
     {
-      "id": "799",
+      "id": "807",
       "type": "baEdge",
       "source": "342",
       "target": "312",
@@ -15221,7 +15913,7 @@
       }
     },
     {
-      "id": "800",
+      "id": "808",
       "type": "baEdge",
       "source": "104",
       "target": "312",
@@ -15237,7 +15929,7 @@
       }
     },
     {
-      "id": "801",
+      "id": "809",
       "type": "baEdge",
       "source": "300",
       "target": "312",
@@ -15253,9 +15945,25 @@
       }
     },
     {
-      "id": "802",
+      "id": "810",
       "type": "baEdge",
-      "source": "1019",
+      "source": "300",
+      "target": "312",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "811",
+      "type": "baEdge",
+      "source": "1025",
       "target": "313",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15269,7 +15977,7 @@
       }
     },
     {
-      "id": "803",
+      "id": "812",
       "type": "baEdge",
       "source": "312",
       "target": "313",
@@ -15285,154 +15993,10 @@
       }
     },
     {
-      "id": "804",
-      "type": "baEdge",
-      "source": "104",
-      "target": "314",
-      "sourceHandle": "plan_2",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "805",
-      "type": "baEdge",
-      "source": "300",
-      "target": "314",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "806",
-      "type": "baEdge",
-      "source": "312",
-      "target": "314",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "807",
-      "type": "baEdge",
-      "source": "313",
-      "target": "314",
-      "sourceHandle": "text",
-      "targetHandle": "visual_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "808",
-      "type": "baEdge",
-      "source": "314",
-      "target": "321",
-      "sourceHandle": "repair_prompt",
-      "targetHandle": "prompt",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "809",
-      "type": "baEdge",
-      "source": "1015",
-      "target": "321",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "810",
-      "type": "baEdge",
-      "source": "321",
-      "target": "322",
-      "sourceHandle": "image",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "811",
-      "type": "baEdge",
-      "source": "300",
-      "target": "322",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "812",
-      "type": "baEdge",
-      "source": "342",
-      "target": "322",
-      "sourceHandle": "guide_image",
-      "targetHandle": "target_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
       "id": "813",
       "type": "baEdge",
       "source": "104",
-      "target": "322",
+      "target": "314",
       "sourceHandle": "plan_2",
       "targetHandle": "plan",
       "data": {
@@ -15448,7 +16012,7 @@
       "id": "814",
       "type": "baEdge",
       "source": "300",
-      "target": "322",
+      "target": "314",
       "sourceHandle": "key_color",
       "targetHandle": "key_color",
       "data": {
@@ -15463,7 +16027,183 @@
     {
       "id": "815",
       "type": "baEdge",
-      "source": "1021",
+      "source": "312",
+      "target": "314",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "816",
+      "type": "baEdge",
+      "source": "313",
+      "target": "314",
+      "sourceHandle": "text",
+      "targetHandle": "visual_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "817",
+      "type": "baEdge",
+      "source": "314",
+      "target": "321",
+      "sourceHandle": "repair_prompt",
+      "targetHandle": "prompt",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "818",
+      "type": "baEdge",
+      "source": "1019",
+      "target": "321",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "819",
+      "type": "baEdge",
+      "source": "1027",
+      "target": "321",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "820",
+      "type": "baEdge",
+      "source": "321",
+      "target": "322",
+      "sourceHandle": "image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "821",
+      "type": "baEdge",
+      "source": "300",
+      "target": "322",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "reference_crop",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "822",
+      "type": "baEdge",
+      "source": "342",
+      "target": "322",
+      "sourceHandle": "guide_image",
+      "targetHandle": "target_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "823",
+      "type": "baEdge",
+      "source": "104",
+      "target": "322",
+      "sourceHandle": "plan_2",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "824",
+      "type": "baEdge",
+      "source": "300",
+      "target": "322",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "825",
+      "type": "baEdge",
+      "source": "300",
+      "target": "322",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "826",
+      "type": "baEdge",
+      "source": "1029",
       "target": "323",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15477,7 +16217,7 @@
       }
     },
     {
-      "id": "816",
+      "id": "827",
       "type": "baEdge",
       "source": "322",
       "target": "323",
@@ -15493,7 +16233,23 @@
       }
     },
     {
-      "id": "817",
+      "id": "828",
+      "type": "baEdge",
+      "source": "300",
+      "target": "331",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "829",
       "type": "baEdge",
       "source": "302",
       "target": "331",
@@ -15509,7 +16265,7 @@
       }
     },
     {
-      "id": "818",
+      "id": "830",
       "type": "baEdge",
       "source": "302",
       "target": "331",
@@ -15525,7 +16281,7 @@
       }
     },
     {
-      "id": "819",
+      "id": "831",
       "type": "baEdge",
       "source": "303",
       "target": "331",
@@ -15541,7 +16297,7 @@
       }
     },
     {
-      "id": "820",
+      "id": "832",
       "type": "baEdge",
       "source": "312",
       "target": "331",
@@ -15557,7 +16313,7 @@
       }
     },
     {
-      "id": "821",
+      "id": "833",
       "type": "baEdge",
       "source": "312",
       "target": "331",
@@ -15573,7 +16329,7 @@
       }
     },
     {
-      "id": "822",
+      "id": "834",
       "type": "baEdge",
       "source": "313",
       "target": "331",
@@ -15589,7 +16345,7 @@
       }
     },
     {
-      "id": "823",
+      "id": "835",
       "type": "baEdge",
       "source": "322",
       "target": "331",
@@ -15605,7 +16361,7 @@
       }
     },
     {
-      "id": "824",
+      "id": "836",
       "type": "baEdge",
       "source": "322",
       "target": "331",
@@ -15621,7 +16377,7 @@
       }
     },
     {
-      "id": "825",
+      "id": "837",
       "type": "baEdge",
       "source": "323",
       "target": "331",
@@ -15637,7 +16393,7 @@
       }
     },
     {
-      "id": "826",
+      "id": "838",
       "type": "baEdge",
       "source": "331",
       "target": "332",
@@ -15653,7 +16409,7 @@
       }
     },
     {
-      "id": "827",
+      "id": "839",
       "type": "baEdge",
       "source": "300",
       "target": "332",
@@ -15669,7 +16425,7 @@
       }
     },
     {
-      "id": "828",
+      "id": "840",
       "type": "baEdge",
       "source": "331",
       "target": "391",
@@ -15685,7 +16441,7 @@
       }
     },
     {
-      "id": "829",
+      "id": "841",
       "type": "baEdge",
       "source": "104",
       "target": "400",
@@ -15701,7 +16457,7 @@
       }
     },
     {
-      "id": "830",
+      "id": "842",
       "type": "baEdge",
       "source": "100",
       "target": "400",
@@ -15717,7 +16473,7 @@
       }
     },
     {
-      "id": "831",
+      "id": "843",
       "type": "baEdge",
       "source": "90",
       "target": "400",
@@ -15733,7 +16489,7 @@
       }
     },
     {
-      "id": "832",
+      "id": "844",
       "type": "baEdge",
       "source": "400",
       "target": "490",
@@ -15749,7 +16505,7 @@
       }
     },
     {
-      "id": "833",
+      "id": "845",
       "type": "baEdge",
       "source": "400",
       "target": "440",
@@ -15765,7 +16521,7 @@
       }
     },
     {
-      "id": "834",
+      "id": "846",
       "type": "baEdge",
       "source": "400",
       "target": "440",
@@ -15781,9 +16537,9 @@
       }
     },
     {
-      "id": "835",
+      "id": "847",
       "type": "baEdge",
-      "source": "1023",
+      "source": "1031",
       "target": "441",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15797,7 +16553,7 @@
       }
     },
     {
-      "id": "836",
+      "id": "848",
       "type": "baEdge",
       "source": "440",
       "target": "441",
@@ -15813,7 +16569,7 @@
       }
     },
     {
-      "id": "837",
+      "id": "849",
       "type": "baEdge",
       "source": "400",
       "target": "442",
@@ -15829,7 +16585,7 @@
       }
     },
     {
-      "id": "838",
+      "id": "850",
       "type": "baEdge",
       "source": "104",
       "target": "442",
@@ -15845,7 +16601,7 @@
       }
     },
     {
-      "id": "839",
+      "id": "851",
       "type": "baEdge",
       "source": "441",
       "target": "442",
@@ -15861,7 +16617,7 @@
       }
     },
     {
-      "id": "840",
+      "id": "852",
       "type": "baEdge",
       "source": "400",
       "target": "442",
@@ -15877,7 +16633,7 @@
       }
     },
     {
-      "id": "841",
+      "id": "853",
       "type": "baEdge",
       "source": "442",
       "target": "401",
@@ -15893,9 +16649,9 @@
       }
     },
     {
-      "id": "842",
+      "id": "854",
       "type": "baEdge",
-      "source": "1025",
+      "source": "1033",
       "target": "401",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -15909,7 +16665,7 @@
       }
     },
     {
-      "id": "843",
+      "id": "855",
       "type": "baEdge",
       "source": "401",
       "target": "402",
@@ -15925,204 +16681,12 @@
       }
     },
     {
-      "id": "844",
+      "id": "856",
       "type": "baEdge",
       "source": "400",
       "target": "402",
       "sourceHandle": "reference_crop",
       "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "845",
-      "type": "baEdge",
-      "source": "442",
-      "target": "402",
-      "sourceHandle": "guide_image",
-      "targetHandle": "target_guide",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "846",
-      "type": "baEdge",
-      "source": "104",
-      "target": "402",
-      "sourceHandle": "plan_3",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "847",
-      "type": "baEdge",
-      "source": "400",
-      "target": "402",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "848",
-      "type": "baEdge",
-      "source": "1027",
-      "target": "403",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "849",
-      "type": "baEdge",
-      "source": "402",
-      "target": "403",
-      "sourceHandle": "review_prompt",
-      "targetHandle": "text",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "850",
-      "type": "baEdge",
-      "source": "104",
-      "target": "404",
-      "sourceHandle": "plan_3",
-      "targetHandle": "plan",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "851",
-      "type": "baEdge",
-      "source": "400",
-      "target": "404",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "852",
-      "type": "baEdge",
-      "source": "402",
-      "target": "404",
-      "sourceHandle": "numeric_report",
-      "targetHandle": "numeric_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "853",
-      "type": "baEdge",
-      "source": "403",
-      "target": "404",
-      "sourceHandle": "text",
-      "targetHandle": "visual_report",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "854",
-      "type": "baEdge",
-      "source": "404",
-      "target": "411",
-      "sourceHandle": "repair_prompt",
-      "targetHandle": "prompt",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "855",
-      "type": "baEdge",
-      "source": "1025",
-      "target": "411",
-      "sourceHandle": "IMAGE",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "856",
-      "type": "baEdge",
-      "source": "411",
-      "target": "412",
-      "sourceHandle": "image",
-      "targetHandle": "image",
       "data": {
         "type": "IMAGE",
         "sourceType": "IMAGE",
@@ -16135,24 +16699,8 @@
     {
       "id": "857",
       "type": "baEdge",
-      "source": "400",
-      "target": "412",
-      "sourceHandle": "reference_crop",
-      "targetHandle": "reference_crop",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "858",
-      "type": "baEdge",
       "source": "442",
-      "target": "412",
+      "target": "402",
       "sourceHandle": "guide_image",
       "targetHandle": "target_guide",
       "data": {
@@ -16165,12 +16713,28 @@
       }
     },
     {
-      "id": "859",
+      "id": "858",
       "type": "baEdge",
       "source": "104",
-      "target": "412",
+      "target": "402",
       "sourceHandle": "plan_3",
       "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "859",
+      "type": "baEdge",
+      "source": "400",
+      "target": "402",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -16184,9 +16748,9 @@
       "id": "860",
       "type": "baEdge",
       "source": "400",
-      "target": "412",
-      "sourceHandle": "key_color",
-      "targetHandle": "key_color",
+      "target": "402",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -16199,8 +16763,8 @@
     {
       "id": "861",
       "type": "baEdge",
-      "source": "1029",
-      "target": "413",
+      "source": "1035",
+      "target": "403",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
       "data": {
@@ -16215,8 +16779,8 @@
     {
       "id": "862",
       "type": "baEdge",
-      "source": "412",
-      "target": "413",
+      "source": "402",
+      "target": "403",
       "sourceHandle": "review_prompt",
       "targetHandle": "text",
       "data": {
@@ -16232,7 +16796,7 @@
       "id": "863",
       "type": "baEdge",
       "source": "104",
-      "target": "414",
+      "target": "404",
       "sourceHandle": "plan_3",
       "targetHandle": "plan",
       "data": {
@@ -16248,7 +16812,7 @@
       "id": "864",
       "type": "baEdge",
       "source": "400",
-      "target": "414",
+      "target": "404",
       "sourceHandle": "key_color",
       "targetHandle": "key_color",
       "data": {
@@ -16262,6 +16826,246 @@
     },
     {
       "id": "865",
+      "type": "baEdge",
+      "source": "402",
+      "target": "404",
+      "sourceHandle": "numeric_report",
+      "targetHandle": "numeric_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "866",
+      "type": "baEdge",
+      "source": "403",
+      "target": "404",
+      "sourceHandle": "text",
+      "targetHandle": "visual_report",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "867",
+      "type": "baEdge",
+      "source": "404",
+      "target": "411",
+      "sourceHandle": "repair_prompt",
+      "targetHandle": "prompt",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "868",
+      "type": "baEdge",
+      "source": "1033",
+      "target": "411",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "869",
+      "type": "baEdge",
+      "source": "1037",
+      "target": "411",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "870",
+      "type": "baEdge",
+      "source": "411",
+      "target": "412",
+      "sourceHandle": "image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "871",
+      "type": "baEdge",
+      "source": "400",
+      "target": "412",
+      "sourceHandle": "reference_crop",
+      "targetHandle": "reference_crop",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "872",
+      "type": "baEdge",
+      "source": "442",
+      "target": "412",
+      "sourceHandle": "guide_image",
+      "targetHandle": "target_guide",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "873",
+      "type": "baEdge",
+      "source": "104",
+      "target": "412",
+      "sourceHandle": "plan_3",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "874",
+      "type": "baEdge",
+      "source": "400",
+      "target": "412",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "875",
+      "type": "baEdge",
+      "source": "400",
+      "target": "412",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "876",
+      "type": "baEdge",
+      "source": "1039",
+      "target": "413",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "877",
+      "type": "baEdge",
+      "source": "412",
+      "target": "413",
+      "sourceHandle": "review_prompt",
+      "targetHandle": "text",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "878",
+      "type": "baEdge",
+      "source": "104",
+      "target": "414",
+      "sourceHandle": "plan_3",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "879",
+      "type": "baEdge",
+      "source": "400",
+      "target": "414",
+      "sourceHandle": "key_color",
+      "targetHandle": "key_color",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "880",
       "type": "baEdge",
       "source": "412",
       "target": "414",
@@ -16277,7 +17081,7 @@
       }
     },
     {
-      "id": "866",
+      "id": "881",
       "type": "baEdge",
       "source": "413",
       "target": "414",
@@ -16293,7 +17097,7 @@
       }
     },
     {
-      "id": "867",
+      "id": "882",
       "type": "baEdge",
       "source": "414",
       "target": "421",
@@ -16309,9 +17113,9 @@
       }
     },
     {
-      "id": "868",
+      "id": "883",
       "type": "baEdge",
-      "source": "1025",
+      "source": "1033",
       "target": "421",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16325,7 +17129,23 @@
       }
     },
     {
-      "id": "869",
+      "id": "884",
+      "type": "baEdge",
+      "source": "1041",
+      "target": "421",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "885",
       "type": "baEdge",
       "source": "421",
       "target": "422",
@@ -16341,7 +17161,7 @@
       }
     },
     {
-      "id": "870",
+      "id": "886",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -16357,7 +17177,7 @@
       }
     },
     {
-      "id": "871",
+      "id": "887",
       "type": "baEdge",
       "source": "442",
       "target": "422",
@@ -16373,7 +17193,7 @@
       }
     },
     {
-      "id": "872",
+      "id": "888",
       "type": "baEdge",
       "source": "104",
       "target": "422",
@@ -16389,7 +17209,7 @@
       }
     },
     {
-      "id": "873",
+      "id": "889",
       "type": "baEdge",
       "source": "400",
       "target": "422",
@@ -16405,9 +17225,25 @@
       }
     },
     {
-      "id": "874",
+      "id": "890",
       "type": "baEdge",
-      "source": "1031",
+      "source": "400",
+      "target": "422",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "891",
+      "type": "baEdge",
+      "source": "1043",
       "target": "423",
       "sourceHandle": "IMAGE",
       "targetHandle": "image",
@@ -16421,7 +17257,7 @@
       }
     },
     {
-      "id": "875",
+      "id": "892",
       "type": "baEdge",
       "source": "422",
       "target": "423",
@@ -16437,7 +17273,23 @@
       }
     },
     {
-      "id": "876",
+      "id": "893",
+      "type": "baEdge",
+      "source": "400",
+      "target": "431",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "diagnostic_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "894",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -16453,7 +17305,7 @@
       }
     },
     {
-      "id": "877",
+      "id": "895",
       "type": "baEdge",
       "source": "402",
       "target": "431",
@@ -16469,7 +17321,7 @@
       }
     },
     {
-      "id": "878",
+      "id": "896",
       "type": "baEdge",
       "source": "403",
       "target": "431",
@@ -16485,7 +17337,7 @@
       }
     },
     {
-      "id": "879",
+      "id": "897",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -16501,7 +17353,7 @@
       }
     },
     {
-      "id": "880",
+      "id": "898",
       "type": "baEdge",
       "source": "412",
       "target": "431",
@@ -16517,7 +17369,7 @@
       }
     },
     {
-      "id": "881",
+      "id": "899",
       "type": "baEdge",
       "source": "413",
       "target": "431",
@@ -16533,7 +17385,7 @@
       }
     },
     {
-      "id": "882",
+      "id": "900",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -16549,7 +17401,7 @@
       }
     },
     {
-      "id": "883",
+      "id": "901",
       "type": "baEdge",
       "source": "422",
       "target": "431",
@@ -16565,7 +17417,7 @@
       }
     },
     {
-      "id": "884",
+      "id": "902",
       "type": "baEdge",
       "source": "423",
       "target": "431",
@@ -16581,7 +17433,7 @@
       }
     },
     {
-      "id": "885",
+      "id": "903",
       "type": "baEdge",
       "source": "431",
       "target": "432",
@@ -16597,7 +17449,7 @@
       }
     },
     {
-      "id": "886",
+      "id": "904",
       "type": "baEdge",
       "source": "400",
       "target": "432",
@@ -16613,7 +17465,7 @@
       }
     },
     {
-      "id": "887",
+      "id": "905",
       "type": "baEdge",
       "source": "431",
       "target": "491",
@@ -16629,7 +17481,7 @@
       }
     },
     {
-      "id": "888",
+      "id": "906",
       "type": "baEdge",
       "source": "102",
       "target": "1000",
@@ -16645,7 +17497,7 @@
       }
     },
     {
-      "id": "889",
+      "id": "907",
       "type": "baEdge",
       "source": "1000",
       "target": "1001",
@@ -16661,7 +17513,7 @@
       }
     },
     {
-      "id": "890",
+      "id": "908",
       "type": "baEdge",
       "source": "240",
       "target": "1002",
@@ -16677,7 +17529,7 @@
       }
     },
     {
-      "id": "891",
+      "id": "909",
       "type": "baEdge",
       "source": "1002",
       "target": "1003",
@@ -16693,7 +17545,7 @@
       }
     },
     {
-      "id": "892",
+      "id": "910",
       "type": "baEdge",
       "source": "242",
       "target": "1004",
@@ -16709,7 +17561,7 @@
       }
     },
     {
-      "id": "893",
+      "id": "911",
       "type": "baEdge",
       "source": "1004",
       "target": "1005",
@@ -16725,7 +17577,7 @@
       }
     },
     {
-      "id": "894",
+      "id": "912",
       "type": "baEdge",
       "source": "202",
       "target": "1006",
@@ -16741,7 +17593,7 @@
       }
     },
     {
-      "id": "895",
+      "id": "913",
       "type": "baEdge",
       "source": "1006",
       "target": "1007",
@@ -16757,11 +17609,11 @@
       }
     },
     {
-      "id": "896",
+      "id": "914",
       "type": "baEdge",
-      "source": "212",
+      "source": "201",
       "target": "1008",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16773,7 +17625,7 @@
       }
     },
     {
-      "id": "897",
+      "id": "915",
       "type": "baEdge",
       "source": "1008",
       "target": "1009",
@@ -16789,9 +17641,9 @@
       }
     },
     {
-      "id": "898",
+      "id": "916",
       "type": "baEdge",
-      "source": "222",
+      "source": "212",
       "target": "1010",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -16805,7 +17657,7 @@
       }
     },
     {
-      "id": "899",
+      "id": "917",
       "type": "baEdge",
       "source": "1010",
       "target": "1011",
@@ -16821,11 +17673,11 @@
       }
     },
     {
-      "id": "900",
+      "id": "918",
       "type": "baEdge",
-      "source": "340",
+      "source": "211",
       "target": "1012",
-      "sourceHandle": "marked_crop",
+      "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16837,7 +17689,7 @@
       }
     },
     {
-      "id": "901",
+      "id": "919",
       "type": "baEdge",
       "source": "1012",
       "target": "1013",
@@ -16853,11 +17705,11 @@
       }
     },
     {
-      "id": "902",
+      "id": "920",
       "type": "baEdge",
-      "source": "342",
+      "source": "222",
       "target": "1014",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16869,7 +17721,7 @@
       }
     },
     {
-      "id": "903",
+      "id": "921",
       "type": "baEdge",
       "source": "1014",
       "target": "1015",
@@ -16885,11 +17737,11 @@
       }
     },
     {
-      "id": "904",
+      "id": "922",
       "type": "baEdge",
-      "source": "302",
+      "source": "340",
       "target": "1016",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "marked_crop",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16901,7 +17753,7 @@
       }
     },
     {
-      "id": "905",
+      "id": "923",
       "type": "baEdge",
       "source": "1016",
       "target": "1017",
@@ -16917,11 +17769,11 @@
       }
     },
     {
-      "id": "906",
+      "id": "924",
       "type": "baEdge",
-      "source": "312",
+      "source": "342",
       "target": "1018",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "guide_image",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16933,7 +17785,7 @@
       }
     },
     {
-      "id": "907",
+      "id": "925",
       "type": "baEdge",
       "source": "1018",
       "target": "1019",
@@ -16949,9 +17801,9 @@
       }
     },
     {
-      "id": "908",
+      "id": "926",
       "type": "baEdge",
-      "source": "322",
+      "source": "302",
       "target": "1020",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -16965,7 +17817,7 @@
       }
     },
     {
-      "id": "909",
+      "id": "927",
       "type": "baEdge",
       "source": "1020",
       "target": "1021",
@@ -16981,11 +17833,11 @@
       }
     },
     {
-      "id": "910",
+      "id": "928",
       "type": "baEdge",
-      "source": "440",
+      "source": "301",
       "target": "1022",
-      "sourceHandle": "marked_crop",
+      "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -16997,7 +17849,7 @@
       }
     },
     {
-      "id": "911",
+      "id": "929",
       "type": "baEdge",
       "source": "1022",
       "target": "1023",
@@ -17013,11 +17865,11 @@
       }
     },
     {
-      "id": "912",
+      "id": "930",
       "type": "baEdge",
-      "source": "442",
+      "source": "312",
       "target": "1024",
-      "sourceHandle": "guide_image",
+      "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17029,7 +17881,7 @@
       }
     },
     {
-      "id": "913",
+      "id": "931",
       "type": "baEdge",
       "source": "1024",
       "target": "1025",
@@ -17045,11 +17897,11 @@
       }
     },
     {
-      "id": "914",
+      "id": "932",
       "type": "baEdge",
-      "source": "402",
+      "source": "311",
       "target": "1026",
-      "sourceHandle": "inspection_sheet",
+      "sourceHandle": "image",
       "targetHandle": "image",
       "data": {
         "type": "IMAGE",
@@ -17061,7 +17913,7 @@
       }
     },
     {
-      "id": "915",
+      "id": "933",
       "type": "baEdge",
       "source": "1026",
       "target": "1027",
@@ -17077,9 +17929,9 @@
       }
     },
     {
-      "id": "916",
+      "id": "934",
       "type": "baEdge",
-      "source": "412",
+      "source": "322",
       "target": "1028",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
@@ -17093,7 +17945,7 @@
       }
     },
     {
-      "id": "917",
+      "id": "935",
       "type": "baEdge",
       "source": "1028",
       "target": "1029",
@@ -17109,10 +17961,74 @@
       }
     },
     {
-      "id": "918",
+      "id": "936",
       "type": "baEdge",
-      "source": "422",
+      "source": "440",
       "target": "1030",
+      "sourceHandle": "marked_crop",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "937",
+      "type": "baEdge",
+      "source": "1030",
+      "target": "1031",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "938",
+      "type": "baEdge",
+      "source": "442",
+      "target": "1032",
+      "sourceHandle": "guide_image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "939",
+      "type": "baEdge",
+      "source": "1032",
+      "target": "1033",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "940",
+      "type": "baEdge",
+      "source": "402",
+      "target": "1034",
       "sourceHandle": "inspection_sheet",
       "targetHandle": "image",
       "data": {
@@ -17125,10 +18041,138 @@
       }
     },
     {
-      "id": "919",
+      "id": "941",
       "type": "baEdge",
-      "source": "1030",
-      "target": "1031",
+      "source": "1034",
+      "target": "1035",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "942",
+      "type": "baEdge",
+      "source": "401",
+      "target": "1036",
+      "sourceHandle": "image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "943",
+      "type": "baEdge",
+      "source": "1036",
+      "target": "1037",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "944",
+      "type": "baEdge",
+      "source": "412",
+      "target": "1038",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "945",
+      "type": "baEdge",
+      "source": "1038",
+      "target": "1039",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "946",
+      "type": "baEdge",
+      "source": "411",
+      "target": "1040",
+      "sourceHandle": "image",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "947",
+      "type": "baEdge",
+      "source": "1040",
+      "target": "1041",
+      "sourceHandle": "image_file",
+      "targetHandle": "image",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "948",
+      "type": "baEdge",
+      "source": "422",
+      "target": "1042",
+      "sourceHandle": "inspection_sheet",
+      "targetHandle": "image",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "949",
+      "type": "baEdge",
+      "source": "1042",
+      "target": "1043",
       "sourceHandle": "image_file",
       "targetHandle": "image",
       "data": {

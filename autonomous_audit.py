@@ -416,12 +416,20 @@ def repair_prompt(plan_text, key, numeric_report, visual_report, attempt):
     contract = {field: target[field] for field in (
         "name", "appearance", "occlusion", "connected_parts", "excluded_objects")}
     return (
-        f"重新从本次原始局部参考图提取完整目标，背景输出均匀纯色{key}。"
-        "输入是本次原图产生的可编辑目标参考，不是上一版成图，也没有必须保留的错误遮罩。"
+        f"对照图1的本次原图目标参考，编辑图2的上一版实际成图，背景输出均匀纯色{key}。"
+        "图1用于核对真实目标、正确画风与完整连接关系；图2用于看清审查指出的具体缺陷。"
+        "上一版图2不是必须保留的成品或错误遮罩，不要照抄错误林带、切面或残片。"
         "根据下方目标结构与审查反馈纠正整个目标轮廓：删除混入的其他深度残片，"
         "恢复真实相连的侧峰岩肩，并补全被树木、前排地形遮挡的自然山脚。"
         "目标自己的峰形、积雪、岩层、颜色和空气透视遵照原图；不增加新峰、"
         "树木、地面托盘或浮空岩基。底部是有体积的短自然岩脚，不是直线平切。\n"
+        "Image 1 is the editable original source-pixel target guide: use it to identify "
+        "the correct target, source style and genuinely connected parts. Image 2 is "
+        "the actual previous candidate reviewed by the feedback below. Edit its actual "
+        "visible defects while retaining correct geometry and source colors. Image 2 "
+        "is not immutable: remove its forest ribbon, extraneous fragments and crop planes "
+        "when reported, and restore missing target parts using Image 1. Do not copy an "
+        "error from either image. Finish the corrected asset, not a comparison sheet.\n"
         "Regenerate exactly this reference target from the editable source-pixel guide "
         "derived from the actual original reference crop, "
         "with the same "

@@ -6,7 +6,7 @@ from .autonomous_plan import candidate_review, split_three, asset_reference
 from .autonomous_audit import inspect_asset, repair_prompt, choose_asset
 from .target_guide import target_guide
 from .foot_completion import completion_context, complete_foot
-from .image_handoff import native_image_file
+from .image_handoff import native_image_file, save_inspection, save_review_records
 from .localization_view import localization_view
 
 
@@ -105,16 +105,23 @@ class BAMidFarAssetInspect:
             "key_color": ("STRING", {"forceInput": True}),
             "softness": ("FLOAT", {"default": .06, "min": 0, "max": .2, "step": .01}),
             "padding": ("INT", {"default": 24, "min": 0, "max": 256}),
-        }, "optional": {"target_guide": ("IMAGE",)}}
+        }, "optional": {"target_guide": ("IMAGE",),
+                        "diagnostic_prefix": ("STRING", {"default": "", "forceInput": True}),
+                        "version": ("INT", {"default": 1, "min": 1, "max": 3})}}
     RETURN_TYPES = ("IMAGE", "STRING", "IMAGE", "STRING")
     RETURN_NAMES = ("inspection_sheet", "review_prompt", "candidate_rgba", "numeric_report")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
-    def run(self, image, reference_crop, plan, key_color, softness, padding, target_guide=None):
+    def run(self, image, reference_crop, plan, key_color, softness, padding, target_guide=None,
+            diagnostic_prefix="", version=1):
         sheet, prompt, rgba, numeric = inspect_asset(
             _array(image), _array(reference_crop), plan, key_color, softness, padding,
             None if target_guide is None else _array(target_guide))
+        if diagnostic_prefix:
+            import folder_paths
+            save_inspection(_array(image), sheet, rgba, numeric, prompt, diagnostic_prefix,
+                            version, folder_paths.get_output_directory())
         return torch.from_numpy(sheet), prompt, torch.from_numpy(rgba), numeric
 
 
@@ -183,14 +190,19 @@ class BAMidFarChooseAsset:
             required[f"numeric_{i}"] = ("STRING", {"forceInput": True})
             required[f"visual_{i}"] = ("STRING", {"forceInput": True})
         required["min_score"] = ("INT", {"default": 85, "min": 85, "max": 100})
-        return {"required": required}
+        return {"required": required, "optional": {
+            "diagnostic_prefix": ("STRING", {"default": "", "forceInput": True})}}
     RETURN_TYPES = ("IMAGE", "STRING")
     RETURN_NAMES = ("rgba", "selection_record")
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Autonomous"
 
     def run(self, rgba_1, numeric_1, visual_1, rgba_2, numeric_2, visual_2,
-            rgba_3, numeric_3, visual_3, min_score):
+            rgba_3, numeric_3, visual_3, min_score, diagnostic_prefix=""):
+        if diagnostic_prefix:
+            import folder_paths
+            save_review_records(diagnostic_prefix, [numeric_1, numeric_2, numeric_3],
+                                [visual_1, visual_2, visual_3], folder_paths.get_output_directory())
         rgba, record = choose_asset(
             [_array(rgba_1), _array(rgba_2), _array(rgba_3)],
             [numeric_1, numeric_2, numeric_3],
