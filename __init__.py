@@ -12,6 +12,7 @@ from .autonomous_nodes import (
 from .three_d_nodes import BAMidFar3DModel, BAMidFar3DGenerate, BAMidFarGLBExport
 from .compact_nodes import BAMidFarCompactExtract
 from .reference_nodes import BAMidFarReferencePlan, BAMidFarReferenceExtract, BAMidFarReferenceGLB
+from .visible_nodes import BAMidFarVisibleAsset, BAMidFarVisiblePNG
 
 
 class BAMidFarPlanPrompt:
@@ -311,6 +312,8 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarReferencePlan": BAMidFarReferencePlan,
     "BAMidFarReferenceExtract": BAMidFarReferenceExtract,
     "BAMidFarReferenceGLB": BAMidFarReferenceGLB,
+    "BAMidFarVisibleAsset": BAMidFarVisibleAsset,
+    "BAMidFarVisiblePNG": BAMidFarVisiblePNG,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -340,4 +343,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarReferencePlan": "MidFar Reference Plan / 单图统一识别",
     "BAMidFarReferenceExtract": "MidFar Reference Extract / 自动提取与检查",
     "BAMidFarReferenceGLB": "MidFar Reference GLB / 生成并导出模型",
+    "BAMidFarVisibleAsset": "MidFar Visible Asset / 目标定位与PE提示",
+    "BAMidFarVisiblePNG": "MidFar Visible PNG / 透明化并输出提取图",
 }

@@ -1,0 +1,1057 @@
+{
+  "recognition": {
+    "initialWidth": 350,
+    "initialHeight": 613,
+    "id": "31",
+    "width": 350,
+    "data": {
+      "title": "天气识别",
+      "type": "BALLMText",
+      "inputs": [
+        {
+          "name": "text",
+          "label": "文本",
+          "type": "STRING",
+          "format": "slot"
+        },
+        {
+          "name": "image",
+          "label": "图片",
+          "type": "IMAGE",
+          "format": "slot"
+        },
+        {
+          "name": "model",
+          "label": "model",
+          "type": "STRING",
+          "value": ""
+        },
+        {
+          "name": "user_prompt",
+          "label": "user_prompt",
+          "type": "STRING",
+          "value": ""
+        }
+      ],
+      "outputSlots": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "label": "文本"
+        }
+      ],
+      "extra": {
+        "model": {
+          "cover_url": "https://p11-chimera.byteimg.com/tos-cn-i-tl5fq5atma/ba_model_cover/doubao.png~tplv-tl5fq5atma-image.webp",
+          "key": "Doubao-Seed-2.1-pro",
+          "max_tokens": 1000,
+          "model": "Doubao-Seed-2.1-pro",
+          "name": "豆包2.1 pro",
+          "name_en": "Doubao 2.1 pro",
+          "origin": "egress",
+          "schema": [
+            {
+              "default_value": "false",
+              "format": "select",
+              "internal_name": "thinking",
+              "json_path": "thinking.type",
+              "label": "thinking",
+              "name": "thinking",
+              "omitempty": false,
+              "props": {
+                "enums": [
+                  {
+                    "label": "false",
+                    "value": "disabled"
+                  },
+                  {
+                    "label": "true",
+                    "value": "enabled"
+                  }
+                ],
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "是否开启深度思考模式",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": 1000,
+              "format": "input_number",
+              "internal_name": "max_tokens",
+              "json_path": "max_tokens",
+              "label": "最大回复长度",
+              "name": "max_tokens",
+              "omitempty": false,
+              "props": {
+                "max": 256000,
+                "min": 1,
+                "precision": 0,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": true,
+              "tips": "可控制模型回复的最多 Token 数量，以满足不同场景和需求。通常 100 Tokens 约等于 60 个中文汉字。",
+              "type": "int",
+              "visible": true
+            },
+            {
+              "default_value": 1,
+              "format": "input_number",
+              "internal_name": "temperature",
+              "json_path": "temperature",
+              "label": "温度",
+              "name": "temperature",
+              "omitempty": false,
+              "props": {
+                "max": 2,
+                "min": 0,
+                "precision": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": true,
+              "tips": "温度控制随机性。较低的温度会导致较少的随机完成。随着温度接近零，模型将变得确定性和重复性。较高的温度会导致更多的随机完成。",
+              "type": "float32",
+              "visible": true
+            },
+            {
+              "default_value": 0.7,
+              "format": "input_number",
+              "internal_name": "top_p",
+              "json_path": "top_p",
+              "label": "Top P",
+              "name": "top_p",
+              "omitempty": false,
+              "props": {
+                "max": 1,
+                "min": 0,
+                "precision": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": false,
+              "tips": "通过核心采样控制多样性：0.5表示考虑了一半的所有可能性加权选项。",
+              "type": "float32",
+              "visible": true
+            },
+            {
+              "default_value": -1,
+              "format": "input_seed",
+              "internal_name": "seed",
+              "json_path": "seed",
+              "label": "seed",
+              "name": "seed",
+              "omitempty": false,
+              "props": {
+                "max": 2147483647,
+                "min": -1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "seed",
+              "type": "int",
+              "visible": true
+            }
+          ],
+          "support_input_types": [
+            "text",
+            "image",
+            "video"
+          ],
+          "support_multi_image_input": true,
+          "support_multi_prompt_input": true,
+          "support_multimodal": false,
+          "support_vision_status": 2,
+          "vision_model": "Doubao-Seed-2.1-pro"
+        },
+        "modelConfig": {
+          "thinking": {
+            "switch": true,
+            "value": "disabled"
+          },
+          "max_tokens": {
+            "switch": true,
+            "value": 6000
+          },
+          "temperature": {
+            "switch": true,
+            "value": 0.1
+          },
+          "system_prompt": {
+            "switch": true,
+            "value": "按当前图片与连接文本严谨判断。只输出要求的合法JSON，无代码围栏。"
+          }
+        },
+        "output_preview_names": [
+          "text"
+        ],
+        "uiHeightMap": {
+          "user_prompt": 240
+        }
+      }
+    },
+    "position": {
+      "x": -1576.340445270284,
+      "y": 193.47072199105233
+    },
+    "type": "baNode",
+    "selected": true
+  },
+  "pe": {
+    "initialWidth": 350,
+    "initialHeight": 645,
+    "id": "34",
+    "width": 350,
+    "data": {
+      "title": "HDR_Prompt",
+      "type": "BALLMText",
+      "inputs": [
+        {
+          "name": "text",
+          "label": "文本",
+          "type": "STRING",
+          "format": "slot"
+        },
+        {
+          "name": "image",
+          "label": "图片",
+          "type": "IMAGE",
+          "format": "slot"
+        },
+        {
+          "name": "model",
+          "label": "model",
+          "type": "STRING",
+          "value": ""
+        },
+        {
+          "name": "user_prompt",
+          "label": "user_prompt",
+          "type": "STRING",
+          "value": ""
+        }
+      ],
+      "outputSlots": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "label": "文本"
+        }
+      ],
+      "extra": {
+        "model": {
+          "cover_url": "https://p11-chimera.byteimg.com/tos-cn-i-tl5fq5atma/ba_model_cover/doubao.png~tplv-tl5fq5atma-image.webp",
+          "key": "Doubao-Seed-2.1-pro",
+          "max_tokens": 1000,
+          "model": "Doubao-Seed-2.1-pro",
+          "name": "豆包2.1 pro",
+          "name_en": "Doubao 2.1 pro",
+          "origin": "egress",
+          "schema": [
+            {
+              "default_value": "false",
+              "format": "select",
+              "internal_name": "thinking",
+              "json_path": "thinking.type",
+              "label": "thinking",
+              "name": "thinking",
+              "omitempty": false,
+              "props": {
+                "enums": [
+                  {
+                    "label": "false",
+                    "value": "disabled"
+                  },
+                  {
+                    "label": "true",
+                    "value": "enabled"
+                  }
+                ],
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "是否开启深度思考模式",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": 1000,
+              "format": "input_number",
+              "internal_name": "max_tokens",
+              "json_path": "max_tokens",
+              "label": "最大回复长度",
+              "name": "max_tokens",
+              "omitempty": false,
+              "props": {
+                "max": 256000,
+                "min": 1,
+                "precision": 0,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": true,
+              "tips": "可控制模型回复的最多 Token 数量，以满足不同场景和需求。通常 100 Tokens 约等于 60 个中文汉字。",
+              "type": "int",
+              "visible": true
+            },
+            {
+              "default_value": 1,
+              "format": "input_number",
+              "internal_name": "temperature",
+              "json_path": "temperature",
+              "label": "温度",
+              "name": "temperature",
+              "omitempty": false,
+              "props": {
+                "max": 2,
+                "min": 0,
+                "precision": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": true,
+              "tips": "温度控制随机性。较低的温度会导致较少的随机完成。随着温度接近零，模型将变得确定性和重复性。较高的温度会导致更多的随机完成。",
+              "type": "float32",
+              "visible": true
+            },
+            {
+              "default_value": 0.7,
+              "format": "input_number",
+              "internal_name": "top_p",
+              "json_path": "top_p",
+              "label": "Top P",
+              "name": "top_p",
+              "omitempty": false,
+              "props": {
+                "max": 1,
+                "min": 0,
+                "precision": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "show_switch": true,
+              "switch_value": false,
+              "tips": "通过核心采样控制多样性：0.5表示考虑了一半的所有可能性加权选项。",
+              "type": "float32",
+              "visible": true
+            },
+            {
+              "default_value": -1,
+              "format": "input_seed",
+              "internal_name": "seed",
+              "json_path": "seed",
+              "label": "seed",
+              "name": "seed",
+              "omitempty": false,
+              "props": {
+                "max": 2147483647,
+                "min": -1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "seed",
+              "type": "int",
+              "visible": true
+            }
+          ],
+          "support_input_types": [
+            "text",
+            "image",
+            "video"
+          ],
+          "support_multi_image_input": true,
+          "support_multi_prompt_input": true,
+          "support_multimodal": false,
+          "support_vision_status": 2,
+          "vision_model": "Doubao-Seed-2.1-pro"
+        },
+        "modelConfig": {
+          "thinking": {
+            "switch": true,
+            "value": "disabled"
+          },
+          "max_tokens": {
+            "switch": true,
+            "value": 4500
+          },
+          "temperature": {
+            "switch": true,
+            "value": 0.1
+          },
+          "system_prompt": {
+            "switch": true,
+            "value": "按当前图片与连接文本严谨判断。只输出要求的合法JSON，无代码围栏。"
+          }
+        },
+        "output_preview_names": [
+          "text"
+        ],
+        "uiHeightMap": {
+          "user_prompt": 240
+        }
+      }
+    },
+    "position": {
+      "x": -1204.2668063215924,
+      "y": 189.49365257636921
+    },
+    "type": "baNode",
+    "selected": true
+  },
+  "image": {
+    "initialWidth": 350,
+    "initialHeight": 485,
+    "id": "26",
+    "width": 350,
+    "data": {
+      "title": "图片生成",
+      "type": "BALLMImage",
+      "inputs": [
+        {
+          "name": "prompt",
+          "label": "文本",
+          "type": "STRING",
+          "format": "slot"
+        },
+        {
+          "name": "image",
+          "label": "图片",
+          "type": "IMAGE",
+          "format": "slot"
+        },
+        {
+          "name": "user_prompt",
+          "label": "user_prompt",
+          "type": "STRING",
+          "value": ""
+        },
+        {
+          "name": "model",
+          "label": "model",
+          "type": "STRING",
+          "value": ""
+        }
+      ],
+      "outputSlots": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "label": "图片"
+        }
+      ],
+      "extra": {
+        "model": {
+          "base_url": "",
+          "cache_ep": false,
+          "cover_url": "https://p-byteartist-internal.bytedance.net/tos-cn-i-3rqcfx17w1%2Fcaimufu-1770621418390-seedream5.0%E5%B0%81%E9%9D%A2.png~tplv-3rqcfx17w1-image.image",
+          "description": "",
+          "endpoint": null,
+          "gpt_model_name": "",
+          "image_max_count": -1,
+          "image_multiple": true,
+          "inference_types": [
+            "t2i",
+            "i2i",
+            "image_r2v"
+          ],
+          "key": "Doubao-Seedream-5.0-pro",
+          "max_token": 1000,
+          "model_name": "Doubao-Seedream-5.0-pro",
+          "name": "Seedream 5.0 pro",
+          "name_en": "Seedream 5.0 pro",
+          "name_lumi": "",
+          "origin": "egress",
+          "price_configs": null,
+          "product_name": "Doubao-Seedream-5.0-pro",
+          "required_lumi_resource_uri": "",
+          "schema": [
+            {
+              "default_value": null,
+              "format": "text_area",
+              "internal_name": "prompt",
+              "json_path": "prompt",
+              "label": "prompt",
+              "name": "prompt",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "risk_predict_type": "text",
+              "tips": "用于生成图像的提示词，支持中英文。建议不超过300个汉字或600个英文单词。字数过多信息容易分散，模型可能因此忽略细节，只关注重点，造成图片缺失部分元素。",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "text_area",
+              "internal_name": "negative_prompt",
+              "json_path": "negative_prompt",
+              "label": "negative_prompt",
+              "name": "negative_prompt",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "负向提示词，用于描述不想要生成效果的提示词",
+              "type": "string",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "img",
+              "internal_name": "image",
+              "json_path": "image",
+              "label": "image",
+              "name": "image",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "risk_predict_type": "image",
+              "tips": "输入的图片信息，支持 URL 或 Base64 编码。支持多图输入",
+              "transformer": "store_id_to_url",
+              "type": "string_list",
+              "visible": true
+            },
+            {
+              "default_value": false,
+              "format": "boolean",
+              "internal_name": "layer_decomposition",
+              "json_path": "layer_decomposition",
+              "label": "图层拆离",
+              "name": "layer_decomposition",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "图层拆离模式",
+              "type": "boolean",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "boolean",
+              "internal_name": "inner_skip_pe_rewrite",
+              "json_path": "inner_skip_pe_rewrite",
+              "label": "inner_skip_pe_rewrite",
+              "name": "inner_skip_pe_rewrite",
+              "omitempty": false,
+              "props": {
+                "required": null,
+                "support_smart_duration": null
+              },
+              "tips": "跳过用于扩写的pe模型。不对外透出",
+              "type": "boolean",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "boolean",
+              "internal_name": "inner_skip_pe_router",
+              "json_path": "inner_skip_pe_router",
+              "label": "inner_skip_pe_router",
+              "name": "inner_skip_pe_router",
+              "omitempty": false,
+              "props": {
+                "required": null,
+                "support_smart_duration": null
+              },
+              "tips": "跳过有参考图场景下的Router PE模型。不对外透出",
+              "type": "boolean",
+              "visible": false
+            },
+            {
+              "default_value": true,
+              "format": "boolean",
+              "internal_name": "optimize_prompt",
+              "json_path": "optimize_prompt",
+              "label": "optimize_prompt",
+              "name": "optimize_prompt",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "控制是否启用VLM模型对用户输入的提示信息（prompt）进行改写，对应的参数为use_pre_llm。不对外透出",
+              "type": "boolean",
+              "visible": false
+            },
+            {
+              "default_value": "auto",
+              "format": "select",
+              "internal_name": "optimize_prompt_options.thinking",
+              "json_path": "optimize_prompt_options.thinking",
+              "label": "optimize_prompt_options.thinking",
+              "name": "optimize_prompt_options.thinking",
+              "omitempty": false,
+              "props": {
+                "enums": [
+                  {
+                    "label": "auto",
+                    "value": "auto"
+                  },
+                  {
+                    "label": "enabled",
+                    "value": "enabled"
+                  },
+                  {
+                    "label": "disabled",
+                    "value": "disabled"
+                  }
+                ],
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "控制Seedream agent中的VLM模型是否开启深度思考模式",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": "standard",
+              "format": "select",
+              "internal_name": "optimize_prompt_options.mode",
+              "json_path": "optimize_prompt_options.mode",
+              "label": "optimize_prompt_options.mode",
+              "name": "optimize_prompt_options.mode",
+              "omitempty": false,
+              "props": {
+                "enums": [
+                  {
+                    "label": "standard",
+                    "value": "standard"
+                  },
+                  {
+                    "label": "fast",
+                    "value": "fast"
+                  }
+                ],
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "设置提示词优化功能使用的模式。standard：标准模式，生成内容的质量更高，耗时较长。fast：快速模式，生成内容的耗时更短，质量一般。",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "text_area",
+              "internal_name": "tools.type",
+              "json_path": "tools.type",
+              "label": "tools.type",
+              "name": "tools.type",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "模型可以调用的工具",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "text_area",
+              "internal_name": "inner_pre_llm_result",
+              "json_path": "inner_pre_llm_result",
+              "label": "inner_pre_llm_result",
+              "name": "inner_pre_llm_result",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "VLM输出的改写后prompt，仅在optimize_prompt为false时生效",
+              "type": "string",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "input_box",
+              "internal_name": "inner_image_offset_start",
+              "json_path": "inner_image_offset_start",
+              "label": "inner_image_offset_start",
+              "name": "inner_image_offset_start",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "流式场景下生成或者部分重试场景下，跳过组图的头几个图，跳过的图需要传入到image，拼接在用户的参考图后面",
+              "type": "integer",
+              "visible": false
+            },
+            {
+              "default_value": "2048x2048",
+              "format": "text",
+              "internal_name": "size",
+              "json_path": "size",
+              "label": "size",
+              "name": "size",
+              "omitempty": false,
+              "props": {
+                "area_enums": [
+                  {
+                    "label": "1k",
+                    "value": "1k"
+                  },
+                  {
+                    "label": "2k",
+                    "value": "2k"
+                  }
+                ],
+                "max_height": 2048,
+                "max_width": 2048,
+                "min_height": 512,
+                "min_width": 512,
+                "required": false,
+                "size_modes": [
+                  "dimensions",
+                  "area"
+                ],
+                "support_smart_duration": null
+              },
+              "tips": "指定生成图像的尺寸信息，支持以下两种方式，不可混用。1.指定生成图像的分辨率，并在prompt中用自然语言描述图片宽高比、图片形状或图片用途，最终由模型判断生成图片的大小，可选值：1K、2K。2.指定生成图像的宽高像素值，总像素取值范围：[1280x720（921600）, 2048x2048x1.1025（4624220）] 宽高比取值范围：[1/16, 16]",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "input_box",
+              "internal_name": "inner_min_ratio",
+              "json_path": "inner_min_ratio",
+              "label": "inner_min_ratio",
+              "name": "inner_min_ratio",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "宽/高>=min_ratio，如果智能选比例<min_ratio，则用min_ratio。取值范围[1/16,16)",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "input_box",
+              "internal_name": "inner_max_ratio",
+              "json_path": "inner_max_ratio",
+              "label": "inner_max_ratio",
+              "name": "inner_max_ratio",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "宽/高>=min_ratio，如果智能选比例<min_ratio，则用min_ratio。取值范围[1/16,16)",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": "jpeg",
+              "format": "select",
+              "internal_name": "output_format",
+              "json_path": "output_format",
+              "label": "output_format",
+              "name": "output_format",
+              "omitempty": false,
+              "props": {
+                "enums": [
+                  {
+                    "label": "jpeg",
+                    "value": "jpeg"
+                  },
+                  {
+                    "label": "png",
+                    "value": "png"
+                  }
+                ],
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "返回生成图像的文件格式。",
+              "type": "string",
+              "visible": true
+            },
+            {
+              "default_value": false,
+              "format": "input_boolean",
+              "internal_name": "watermark",
+              "json_path": "watermark",
+              "label": "watermark",
+              "name": "watermark",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "是否包含水印",
+              "type": "boolean",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "input_seed",
+              "internal_name": "seed",
+              "json_path": "seed",
+              "label": "seed",
+              "name": "seed",
+              "omitempty": false,
+              "props": {
+                "max": 2147483647,
+                "min": -1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "随机数种子",
+              "type": "integer",
+              "visible": true
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "guidance_scale",
+              "json_path": "guidance_scale",
+              "label": "guidance_scale",
+              "name": "guidance_scale",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "image_guidance_scale",
+              "json_path": "image_guidance_scale",
+              "label": "image_guidance_scale",
+              "name": "image_guidance_scale",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "模型输出结果与输入参考图的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的参考图片相关性越强。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "inner_guidance_scale_options.guidance_scale",
+              "json_path": "inner_guidance_scale_options.guidance_scale",
+              "label": "inner_guidance_scale_options.guidance_scale",
+              "name": "inner_guidance_scale_options.guidance_scale",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "文生图场景下，模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。仅对内，外部不开放。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "inner_guidance_scale_options.single_edit_guidance_weight",
+              "json_path": "inner_guidance_scale_options.single_edit_guidance_weight",
+              "label": "inner_guidance_scale_options.single_edit_guidance_weight",
+              "name": "inner_guidance_scale_options.single_edit_guidance_weight",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "单输入图生图场景下，模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。仅对内，外部不开放。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "inner_guidance_scale_options.multi_edit_guidance_weight",
+              "json_path": "inner_guidance_scale_options.multi_edit_guidance_weight",
+              "label": "inner_guidance_scale_options.multi_edit_guidance_weight",
+              "name": "inner_guidance_scale_options.multi_edit_guidance_weight",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "多输入图生图场景下，模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "inner_guidance_scale_options.single_edit_guidance_weight_image",
+              "json_path": "inner_guidance_scale_options.single_edit_guidance_weight_image",
+              "label": "inner_guidance_scale_options.single_edit_guidance_weight_image",
+              "name": "inner_guidance_scale_options.single_edit_guidance_weight_image",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "单输入图生图场景下，模型输出结果与输入参考图的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "inner_guidance_scale_options.multi_edit_guidance_weight_image",
+              "json_path": "inner_guidance_scale_options.multi_edit_guidance_weight_image",
+              "label": "inner_guidance_scale_options.multi_edit_guidance_weight_image",
+              "name": "inner_guidance_scale_options.multi_edit_guidance_weight_image",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "多输入图生图场景下，模型输出结果与输入参考图的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "single_min_cfg_time",
+              "json_path": "single_min_cfg_time",
+              "label": "single_min_cfg_time",
+              "name": "single_min_cfg_time",
+              "omitempty": false,
+              "props": {
+                "max": 1,
+                "min": 0,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "单输入图edit专用。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "multi_edit_guidance_weight",
+              "json_path": "inner_guidance_scale_options.multi_edit_guidance_weight",
+              "label": "multi_edit_guidance_weight",
+              "name": "multi_edit_guidance_weight",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "多输入图生图场景下，模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。仅对内，外部不开放。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "slide",
+              "internal_name": "multi_edit_guidance_weight_image",
+              "json_path": "inner_guidance_scale_options.multi_edit_guidance_weight_image",
+              "label": "multi_edit_guidance_weight_image",
+              "name": "multi_edit_guidance_weight_image",
+              "omitempty": false,
+              "props": {
+                "max": 10,
+                "min": 1,
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "多输入图生图场景下，模型输出结果与输入参考图的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。仅对内，外部不开放。",
+              "type": "float32",
+              "visible": false
+            },
+            {
+              "default_value": null,
+              "format": "input_boolean",
+              "internal_name": "inner_return_dual_stack_url",
+              "json_path": "inner_return_dual_stack_url",
+              "label": "inner_return_dual_stack_url",
+              "name": "inner_return_dual_stack_url",
+              "omitempty": false,
+              "props": {
+                "required": false,
+                "support_smart_duration": null
+              },
+              "tips": "是否返回内网图片URL",
+              "type": "boolean",
+              "visible": false
+            }
+          ],
+          "username_lumi": ""
+        },
+        "modelConfig": {
+          "size": {
+            "switch": true,
+            "value": "2048x2048"
+          },
+          "output_format": {
+            "switch": true,
+            "value": "png"
+          },
+          "watermark": {
+            "switch": true,
+            "value": false
+          },
+          "optimize_prompt_options.thinking": {
+            "switch": true,
+            "value": "disabled"
+          },
+          "optimize_prompt_options.mode": {
+            "switch": true,
+            "value": "standard"
+          }
+        },
+        "output_preview_names": [
+          "image"
+        ],
+        "uiHeightMap": {
+          "user_prompt": 240
+        }
+      }
+    },
+    "position": {
+      "x": -824.522175299234,
+      "y": 188.9291571060993
+    },
+    "type": "baNode",
+    "selected": true
+  },
+  "source": "D:\\Work\\douyin.3DAIStudio\\deliverables\\byteartist-sky-workflow-repair-20261023\\修复前-ByteArtist工作流.json"
+}
