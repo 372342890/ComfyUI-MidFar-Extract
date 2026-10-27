@@ -61,7 +61,8 @@ def _variant_signature(rgba, key):
     histogram = cv2.calcHist([hsv], [0, 1], mask.astype(np.uint8),
                              [18, 8], [0, 180, 0, 256])
     cv2.normalize(histogram, histogram)
-    return silhouette.astype(bool), perceptual_hash, histogram
+    return (silhouette.astype(bool), perceptual_hash, histogram,
+            cv2.cvtColor(color, cv2.COLOR_RGB2GRAY))
 
 
 def _white_asset(source):
@@ -177,9 +178,33 @@ def process_three(images, key):
             hash_distance = int(np.count_nonzero(a[1] != b[1]))
             color_distance = cv2.compareHist(a[2], b[2], cv2.HISTCMP_BHATTACHARYYA)
             if upper_overlap >= .75 and hash_distance <= 16 and color_distance <= .45:
-                raise ValueError(
-                    f"第{first+1}路与第{second+1}路疑似重复：主体结构相近，"
-                    f"即使光照或底部不同也可能是同一岩体变体"
-                    f"（结构重合{upper_overlap:.3f}，结构差异{hash_distance}/63，"
-                    f"色调距离{color_distance:.3f}）。")
+                common = a[0] & b[0]
+                detail_a, detail_b = a[3][common], b[3][common]
+                detail_correlation = 0.
+                if (len(detail_a) > 16 and detail_a.std() > .005 and
+                        detail_b.std() > .005):
+                    detail_correlation = float(np.corrcoef(detail_a, detail_b)[0, 1])
+                # Similar mountain silhouettes and snow colors alone are weak
+                # evidence. Require matching visual detail or near-identical
+                # structure before blocking a changed-light/base variant.
+                if (detail_correlation >= .5 or
+                        upper_overlap >= .995 and hash_distance <= 8):
+                    raise ValueError(
+                        f"第{first+1}路与第{second+1}路疑似重复：主体结构与细节相近，"
+                        "即使光照或底部不同也可能是同一岩体变体"
+                        f"（结构重合{upper_overlap:.3f}，结构差异{hash_distance}/63，"
+                        f"色调距离{color_distance:.3f}，细节相关{detail_correlation:.3f}）。")
+                note = {
+                    "branches": [first+1, second+1], "status": "review_required",
+                    "upper_overlap": upper_overlap, "hash_distance": hash_distance,
+                    "color_distance": float(color_distance),
+                    "detail_correlation": detail_correlation,
+                    "message": "外形或色调接近，但细节证据不足；三图已保留，请查看成图。",
+                }
+                for index in (first, second):
+                    records[index].setdefault("similarity_warnings", []).append(note)
+                    records[index]["status"] = "warning"
+                    records[index]["warning"] = (
+                        records[index]["warning"] + " " +
+                        f"第{first+1}路与第{second+1}路：" + note["message"]).strip()
     return outputs, records

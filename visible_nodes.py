@@ -142,7 +142,9 @@ class BAMidFarVisibleThreePNG:
                                  json.dumps(quality, ensure_ascii=False, indent=2), encoding="utf8")
         record = json.dumps(
             {"status": "warning" if any(q["status"] == "warning" for q in qualities)
-             else "success", "png_count": 3, "duplicate_check": "passed",
+             else "success", "png_count": 3,
+             "duplicate_check": "review_required"
+             if any(q.get("similarity_warnings") for q in qualities) else "passed",
              "hidden_model_calls": 0, "outputs": qualities}, ensure_ascii=False, indent=2)
         _diagnostic_path(prefixes[0], "_三图记录.json",
                          folder_paths.get_output_directory()).write_text(record, encoding="utf8")
