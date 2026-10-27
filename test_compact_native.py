@@ -68,6 +68,62 @@ class NativeContract(unittest.TestCase):
             adapter.invoke({"BALLMText": Broken}, "BALLMText", {}, "2", {},
                            {"model": "x"}, [], [])
 
+    def test_invalid_json_requests_one_format_correction(self):
+        self.assertTrue(callable(getattr(adapter, "request_json", None)),
+                        "Automatic JSON format correction is missing.")
+        feedbacks = []
+        replies = iter(['{"asset_id":"c02","visible_polygon":[[100,200],…]}',
+                        '{"asset_id":"c02","visible_polygon":[[100,200],[200,100],[300,200]]}'])
+
+        def request(feedback):
+            feedbacks.append(feedback)
+            return next(replies)
+
+        result = adapter.request_json(request)
+        self.assertIn('"asset_id":"c02"', result)
+        self.assertEqual(len(feedbacks), 2)
+        self.assertEqual(feedbacks[0], "")
+        self.assertIn("JSON", feedbacks[1])
+        self.assertIn("visible_polygon", feedbacks[1])
+
+    def test_json_retry_is_bounded_and_never_accepts_invalid_reply(self):
+        self.assertTrue(callable(getattr(adapter, "request_json", None)),
+                        "Automatic JSON format correction is missing.")
+        attempts = []
+
+        def request(feedback):
+            attempts.append(feedback)
+            return '{"visible_polygon":[[100,200],…]}'
+
+        with self.assertRaisesRegex(ValueError, "JSON"):
+            adapter.request_json(request)
+        self.assertEqual(len(attempts), 2)
+
+    def test_valid_json_does_not_trigger_an_extra_model_call(self):
+        self.assertTrue(callable(getattr(adapter, "request_json", None)),
+                        "Automatic JSON format correction is missing.")
+        calls = []
+
+        def request(feedback):
+            calls.append(feedback)
+            return '{"score":95,"issues":[]}'
+
+        self.assertEqual(adapter.request_json(request), '{"score":95,"issues":[]}')
+        self.assertEqual(calls, [""])
+
+    def test_json_correction_does_not_retry_service_failure(self):
+        self.assertTrue(callable(getattr(adapter, "request_json", None)),
+                        "Automatic JSON format correction is missing.")
+        calls = []
+
+        def request(feedback):
+            calls.append(feedback)
+            raise RuntimeError("native account error")
+
+        with self.assertRaisesRegex(RuntimeError, "native account error"):
+            adapter.request_json(request)
+        self.assertEqual(calls, [""])
+
 
 if __name__ == "__main__":
     unittest.main()

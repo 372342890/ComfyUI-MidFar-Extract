@@ -11,7 +11,7 @@ from .autonomous_plan import candidate_review, split_three, asset_reference
 from .localization_view import localization_view
 from .target_guide import target_guide
 from .image_handoff import native_image_file, save_inspection, save_review_records, _diagnostic_path
-from .compact_native import invoke
+from .compact_native import invoke, request_json
 from .compact_pipeline import extract_until_accepted
 from .core import validate_image
 
@@ -47,26 +47,35 @@ class BAMidFarCompactExtract:
             status_file.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf8")
 
         def native(stage, images, texts=()):
-            call = {"stage": stage, "status": "running", "started": time.time()}
-            record["native_calls"].append(call)
-            checkpoint()
             files = [str(Path(folder_paths.get_input_directory())/
                          native_image_file(image, folder_paths.get_input_directory()))
                      for image in images]
-            result = invoke(nodes.NODE_CLASS_MAPPINGS,
-                            "BALLMImage" if stage in ("generate", "repair") else "BALLMText",
-                            getattr(self, "node_info", {}), unique_id, prompt,
-                            settings[stage], files, list(texts))
-            call.update(status="success", duration_seconds=round(time.time()-call["started"], 3))
-            checkpoint()
-            if stage in ("generate", "repair"):
+            image_stage = stage in ("generate", "repair")
+
+            def request(feedback=""):
+                call = {"stage": stage, "status": "running", "started": time.time(),
+                        "format_correction": bool(feedback)}
+                record["native_calls"].append(call)
+                checkpoint()
+                result = invoke(
+                    nodes.NODE_CLASS_MAPPINGS, "BALLMImage" if image_stage else "BALLMText",
+                    getattr(self, "node_info", {}), unique_id, prompt, settings[stage],
+                    files, list(texts) + ([feedback] if feedback else []))
+                call.update(status="success", duration_seconds=round(time.time()-call["started"], 3))
+                if not image_stage:
+                    call["response"] = result[0]
+                checkpoint()
+                return result if image_stage else result[0]
+
+            if image_stage:
+                result = request()
                 value = result[0]
                 if isinstance(value, list):
                     if len(value) != 1:
                         raise ValueError("Native image generation must return exactly one image.")
                     value = value[0]
                 return validate_image(value.detach().cpu().numpy())
-            return result[0]
+            return request_json(request)
 
         checkpoint()
         previews, rgba_results, prefixes = [], [], []
@@ -83,12 +92,13 @@ class BAMidFarCompactExtract:
             for index, plan in enumerate(plans[:3], 1):
                 _, crop, key, prefix, source_record = asset_reference(
                     plan, reference, filename_prefix)
+                record["current_asset"] = index
+                record["current_prefix"] = prefix
+                checkpoint()
                 marked, localization_prompt, identity = localization_view(crop, source_record)
                 localized = native("localization", [marked], [localization_prompt])
                 guide, guide_prompt, guide_record = target_guide(
                     crop, plan, localized, key, identity)
-                record["current_asset"] = index
-                record["current_prefix"] = prefix
                 record.setdefault("localizations", []).append(
                     {"plan": plan, "source_record": source_record,
                      "localization": localized, "guide_record": guide_record})

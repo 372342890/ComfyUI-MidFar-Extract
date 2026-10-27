@@ -1,6 +1,32 @@
 """Invoke installed ByteArtist carriers using their real list-input contract."""
 from copy import deepcopy
 from pathlib import Path
+try:
+    from .autonomous_audit import _json
+except ImportError:
+    from autonomous_audit import _json
+
+
+def request_json(request):
+    """Correct malformed JSON once with the same references and model settings."""
+    feedback = ""
+    for attempt in range(2):
+        response = request(feedback)
+        try:
+            value = _json(response, "native response")
+            if not isinstance(value, dict):
+                raise ValueError("Native JSON response must be an object.")
+        except ValueError as error:
+            if attempt:
+                raise
+            feedback = (
+                "上一条返回不是合法 JSON。请仅修复输出格式，重新观察同一参考图并遵循原来的"
+                "目标和固定字段；所有坐标必须写出实际数字，不要使用省略号、注释或未加引号的文本。"
+                "不要更换目标、编造部件或弱化任何检查。只返回完整 JSON 对象。\n"
+                f"解析错误：{error}\n上一条实际返回：\n{response}"
+            )
+            continue
+        return response
 
 
 def invoke(mappings, kind, node_info, unique_id, prompt, settings, image_files, texts):
