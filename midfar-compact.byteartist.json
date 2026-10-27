@@ -1,0 +1,915 @@
+{
+  "name": "ba-clipboard",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "1",
+      "type": "baNode",
+      "position": {
+        "x": 0,
+        "y": 260
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "① 只上传这一张图片",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "COMBO",
+            "value": "reference.png"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "baNode",
+      "position": {
+        "x": 440,
+        "y": 230
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarCompactExtract",
+        "title": "② 自动选三份 · 合格即停止",
+        "inputs": [
+          {
+            "name": "reference",
+            "label": "参考图",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "输出文件名",
+            "type": "STRING",
+            "value": "midfar-compact/asset"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "rgba_1",
+            "label": "素材1",
+            "type": "IMAGE"
+          },
+          {
+            "name": "rgba_2",
+            "label": "素材2",
+            "type": "IMAGE"
+          },
+          {
+            "name": "rgba_3",
+            "label": "素材3",
+            "type": "IMAGE"
+          },
+          {
+            "name": "prefix_1",
+            "label": "文件名1",
+            "type": "STRING"
+          },
+          {
+            "name": "prefix_2",
+            "label": "文件名2",
+            "type": "STRING"
+          },
+          {
+            "name": "prefix_3",
+            "label": "文件名3",
+            "type": "STRING"
+          },
+          {
+            "name": "audit",
+            "label": "检查记录",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": [],
+          "uiHeightMap": {}
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "baNode",
+      "position": {
+        "x": 440,
+        "y": 0
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFar3DModel",
+        "title": "共享混元3D模型 · 加载一次",
+        "inputs": [],
+        "outputSlots": [
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "11",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 0
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFar3DGenerate",
+        "title": "③ 素材1生成3D",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261026
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "21",
+      "type": "baNode",
+      "position": {
+        "x": 1380,
+        "y": 0
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarGLBExport",
+        "title": "④ 导出模型1.glb",
+        "inputs": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH",
+            "format": "slot"
+          },
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb_file",
+            "label": "glb_file",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "12",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 380
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFar3DGenerate",
+        "title": "③ 素材2生成3D",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261027
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "22",
+      "type": "baNode",
+      "position": {
+        "x": 1380,
+        "y": 380
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarGLBExport",
+        "title": "④ 导出模型2.glb",
+        "inputs": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH",
+            "format": "slot"
+          },
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb_file",
+            "label": "glb_file",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "13",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 760
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFar3DGenerate",
+        "title": "③ 素材3生成3D",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261028
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "23",
+      "type": "baNode",
+      "position": {
+        "x": 1380,
+        "y": 760
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarGLBExport",
+        "title": "④ 导出模型3.glb",
+        "inputs": [
+          {
+            "name": "mesh",
+            "label": "mesh",
+            "type": "MESH",
+            "format": "slot"
+          },
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "generation_record",
+            "label": "generation_record",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb_file",
+            "label": "glb_file",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "compact-0",
+      "type": "baEdge",
+      "source": "1",
+      "target": "2",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-1",
+      "type": "baEdge",
+      "source": "2",
+      "target": "11",
+      "sourceHandle": "rgba_1",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-2",
+      "type": "baEdge",
+      "source": "3",
+      "target": "11",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "compact-3",
+      "type": "baEdge",
+      "source": "3",
+      "target": "11",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "compact-4",
+      "type": "baEdge",
+      "source": "3",
+      "target": "11",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "compact-5",
+      "type": "baEdge",
+      "source": "11",
+      "target": "21",
+      "sourceHandle": "mesh",
+      "targetHandle": "mesh",
+      "data": {
+        "type": "MESH",
+        "sourceType": "MESH",
+        "targetType": "MESH",
+        "extra": {
+          "type": "MESH"
+        }
+      }
+    },
+    {
+      "id": "compact-6",
+      "type": "baEdge",
+      "source": "11",
+      "target": "21",
+      "sourceHandle": "generation_record",
+      "targetHandle": "generation_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "compact-7",
+      "type": "baEdge",
+      "source": "2",
+      "target": "21",
+      "sourceHandle": "rgba_1",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-8",
+      "type": "baEdge",
+      "source": "2",
+      "target": "21",
+      "sourceHandle": "prefix_1",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "compact-9",
+      "type": "baEdge",
+      "source": "2",
+      "target": "12",
+      "sourceHandle": "rgba_2",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-10",
+      "type": "baEdge",
+      "source": "3",
+      "target": "12",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "compact-11",
+      "type": "baEdge",
+      "source": "3",
+      "target": "12",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "compact-12",
+      "type": "baEdge",
+      "source": "3",
+      "target": "12",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "compact-13",
+      "type": "baEdge",
+      "source": "12",
+      "target": "22",
+      "sourceHandle": "mesh",
+      "targetHandle": "mesh",
+      "data": {
+        "type": "MESH",
+        "sourceType": "MESH",
+        "targetType": "MESH",
+        "extra": {
+          "type": "MESH"
+        }
+      }
+    },
+    {
+      "id": "compact-14",
+      "type": "baEdge",
+      "source": "12",
+      "target": "22",
+      "sourceHandle": "generation_record",
+      "targetHandle": "generation_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "compact-15",
+      "type": "baEdge",
+      "source": "2",
+      "target": "22",
+      "sourceHandle": "rgba_2",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-16",
+      "type": "baEdge",
+      "source": "2",
+      "target": "22",
+      "sourceHandle": "prefix_2",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "compact-17",
+      "type": "baEdge",
+      "source": "2",
+      "target": "13",
+      "sourceHandle": "rgba_3",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-18",
+      "type": "baEdge",
+      "source": "3",
+      "target": "13",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "compact-19",
+      "type": "baEdge",
+      "source": "3",
+      "target": "13",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "compact-20",
+      "type": "baEdge",
+      "source": "3",
+      "target": "13",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "compact-21",
+      "type": "baEdge",
+      "source": "13",
+      "target": "23",
+      "sourceHandle": "mesh",
+      "targetHandle": "mesh",
+      "data": {
+        "type": "MESH",
+        "sourceType": "MESH",
+        "targetType": "MESH",
+        "extra": {
+          "type": "MESH"
+        }
+      }
+    },
+    {
+      "id": "compact-22",
+      "type": "baEdge",
+      "source": "13",
+      "target": "23",
+      "sourceHandle": "generation_record",
+      "targetHandle": "generation_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "compact-23",
+      "type": "baEdge",
+      "source": "2",
+      "target": "23",
+      "sourceHandle": "rgba_3",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "compact-24",
+      "type": "baEdge",
+      "source": "2",
+      "target": "23",
+      "sourceHandle": "prefix_3",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ from .autonomous_nodes import (
     BAMidFarCompleteFoot, BAMidFarNativeImageFile, BAMidFarLocalizationView,
 )
 from .three_d_nodes import BAMidFar3DModel, BAMidFar3DGenerate, BAMidFarGLBExport
+from .compact_nodes import BAMidFarCompactExtract
 
 
 class BAMidFarPlanPrompt:
@@ -305,6 +306,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFar3DModel": BAMidFar3DModel,
     "BAMidFar3DGenerate": BAMidFar3DGenerate,
     "BAMidFarGLBExport": BAMidFarGLBExport,
+    "BAMidFarCompactExtract": BAMidFarCompactExtract,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -330,4 +332,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFar3DModel": "MidFar 3D Model / 共享混元3D模型",
     "BAMidFar3DGenerate": "MidFar 3D Generate / 完整体积生成",
     "BAMidFarGLBExport": "MidFar GLB Export / 内嵌贴图GLB导出",
+    "BAMidFarCompactExtract": "MidFar Compact / 单图自动三份素材",
 }
