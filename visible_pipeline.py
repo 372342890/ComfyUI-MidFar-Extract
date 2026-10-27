@@ -1,6 +1,8 @@
 """Visible PE handoff only: validate identities and prepare current-image crops."""
 import json
 import re
+import unicodedata
+from uuid import uuid4
 
 try:
     from .autonomous_plan import candidate_review, split_three, asset_reference, _decode
@@ -22,14 +24,18 @@ def split_prompts(recognition, pe, reference, prefix):
     targets = plan["objects"]
     if not isinstance(targets, list) or len(targets) != 3:
         raise ValueError("识别节点需要三个实际完整目标，不能虚构补足。")
-    ids, units = [], set()
+    ids, units, identities = [], set(), set()
     for target in targets:
         if not isinstance(target, dict):
             raise ValueError("Each recognized target must be an object.")
         identifier, unit = target.get("id"), target.get("unit_id")
         if (not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", identifier)
-                or identifier in ids or not isinstance(unit, str) or unit in units):
+                or identifier in ids or not isinstance(unit, str) or
+                not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", unit.strip())):
             raise ValueError("Three distinct actual target ids and connected units are required.")
+        normalized_unit = unit.strip().casefold()
+        if normalized_unit in units:
+            raise ValueError("识别中存在重复的相连单元，不能拆分凑三个目标。")
         if (target.get("kind") not in ("rock", "hill", "mountain") or
                 target.get("layer") not in ("midground", "background") or
                 target.get("is_single") is not True or target.get("suitable") is not True or
@@ -38,13 +44,19 @@ def split_prompts(recognition, pe, reference, prefix):
         for field in ("name", "location", "appearance"):
             if not isinstance(target.get(field), str) or not target[field].strip():
                 raise ValueError("识别描述缺少字段：" + field)
+        identity = tuple(
+            re.sub(r"[\W_]+", "", unicodedata.normalize("NFKC", target[field]).casefold())
+            for field in ("layer", "location", "appearance"))
+        if identity in identities:
+            raise ValueError("识别中有位置与外观重复的目标，换编号不能作为新素材。")
+        identities.add(identity)
         occlusion = target.get("occlusion")
         if not (isinstance(occlusion, str) and occlusion.strip() or
                 isinstance(occlusion, list) and
                 all(isinstance(item, str) and item.strip() for item in occlusion)):
             raise ValueError("识别遮挡描述必须是文本或文本列表。")
         ids.append(identifier)
-        units.add(unit)
+        units.add(normalized_unit)
     entries = _decode(pe, "objects")["objects"]
     if not isinstance(entries, list) or len(entries) != 3:
         raise ValueError("PE节点必须输出三份独立提示词。")
@@ -58,15 +70,25 @@ def split_prompts(recognition, pe, reference, prefix):
     if set(lookup) != set(ids):
         raise ValueError("PE目标必须与识别结果的三个id一致。")
     key = choose_key(source, "auto")
-    prompts = [lookup[target["id"]].replace("{KEY_COLOR}", key) +
-               f"\n当前输入为完整原图。只提取「{target['name']}」（id={target['id']}），"
-               f"原图位置：{target['location']}。外观：{target['appearance']}。"
-               f"全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。"
-               "完整居中，宽高均不超过画布70%，四侧至少15%空白，只输出一张完整单元。"
-               for target in targets]
-    prefixes = [object_filename(target, prefix) for target in targets]
+    prompts = []
+    for target in targets:
+        excluded = "；".join(
+            f"「{other['name']}」（id={other['id']}，位置：{other['location']}）"
+            for other in targets if other["id"] != target["id"])
+        identity = (
+            f"本路唯一目标：{target['name']}（id={target['id']}，距离层={target['layer']}）。"
+            f"原图位置：{target['location']}。外观：{target['appearance']}。\n"
+            f"本路排除的其他目标：{excluded}。不得用其他目标的同形变体替代本路目标。\n"
+            "当前输入是完整原图，先按以上身份定位，再执行以下PE。\n")
+        prompts.append(identity + lookup[target["id"]].replace("{KEY_COLOR}", key) +
+                       f"\n全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。"
+                       "完整居中，宽高均不超过画布70%，四侧至少15%空白，"
+                       "只输出一张完整单元。")
+    run_id = uuid4().hex
+    prefixes = [object_filename(target, prefix + "/run_" + run_id) for target in targets]
     record = {"schema_version": 1, "status": "ready", "source_image_modified": False,
               "source_size": [source.shape[2], source.shape[1]], "key_color": key,
+              "run_id": run_id,
               "recognized_targets": targets, "original_pe_prompts": [lookup[i] for i in ids],
               "execution_prompts": prompts, "prefixes": prefixes, "hidden_model_calls": 0}
     return (*prompts, key, *prefixes, json.dumps(record, ensure_ascii=False))

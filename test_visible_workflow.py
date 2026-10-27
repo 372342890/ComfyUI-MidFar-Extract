@@ -16,18 +16,32 @@ class VisibleWorkflow(unittest.TestCase):
     def test_one_input_two_visible_text_stages_three_native_image_stages(self):
         graph = self.graph()
         types = [n["data"]["type"] for n in graph["nodes"]]
-        self.assertEqual(len(types), 10)
+        self.assertEqual(len(types), 8)
         self.assertEqual(types.count("LoadImage"), 1)
         self.assertEqual(types.count("BALLMText"), 2)
         self.assertEqual(types.count("BALLMImage"), 3)
         self.assertEqual(types.count("BAMidFarVisiblePE"), 1)
         self.assertEqual(types.count("BAMidFarVisibleAsset"), 0)
-        self.assertEqual(types.count("BAMidFarVisiblePNG"), 3)
+        self.assertEqual(types.count("BAMidFarVisiblePNG"), 0)
+        self.assertEqual(types.count("BAMidFarVisibleThreePNG"), 1)
         self.assertFalse(any("3D" in t or "GLB" in t or "Compact" in t or
                              "ReferencePlan" in t for t in types))
         text_nodes = [n for n in graph["nodes"] if n["data"]["type"] == "BALLMText"]
         self.assertIn("识别", text_nodes[0]["data"]["title"])
         self.assertIn("PE", text_nodes[1]["data"]["title"])
+
+    def test_single_output_waits_for_three_distinct_native_branches(self):
+        graph = self.graph()
+        self.assertEqual(len(graph["edges"]), 19)
+        wires = {(e["source"], e["sourceHandle"], e["target"], e["targetHandle"])
+                 for e in graph["edges"]}
+        self.assertEqual(len(wires), len(graph["edges"]))
+        finals = [n for n in graph["nodes"]
+                  if n["data"]["type"] == "BAMidFarVisibleThreePNG"]
+        self.assertEqual(len(finals), 1)
+        sources = {e["source"] for e in graph["edges"]
+                   if e["target"] == finals[0]["id"] and e["targetHandle"].startswith("image_")}
+        self.assertEqual(len(sources), 3)
 
     def test_current_image_and_native_text_flow_are_connected(self):
         graph = self.graph()

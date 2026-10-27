@@ -21,7 +21,7 @@
             "name": "image",
             "label": "image",
             "type": "COMBO",
-            "value": "midfar-test-lake-20261026-v1.png"
+            "value": "reference.png"
           }
         ],
         "outputSlots": [
@@ -594,7 +594,7 @@
             "name": "filename_prefix",
             "label": "输出目录",
             "type": "STRING",
-            "value": "midfar-visible/asset-20261027"
+            "value": "midfar-reliable/asset"
           }
         ],
         "outputSlots": [
@@ -1316,63 +1316,9 @@
       "selected": false
     },
     {
-      "id": "6",
-      "type": "baNode",
-      "position": {
-        "x": 2480,
-        "y": 0
-      },
-      "width": 390,
-      "initialWidth": 390,
-      "initialHeight": 500,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarVisiblePNG",
-        "title": "⑥ 输出提取图1 · 透明PNG",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "filename_prefix",
-            "label": "filename_prefix",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "rgba",
-            "label": "rgba",
-            "type": "IMAGE"
-          },
-          {
-            "name": "quality_record",
-            "label": "quality_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": [
-            "rgba",
-            "quality_record"
-          ]
-        }
-      }
-    },
-    {
       "initialWidth": 410,
       "initialHeight": 600,
-      "id": "7",
+      "id": "6",
       "width": 410,
       "data": {
         "title": "⑤ 图片提取2 · 查看原始成图",
@@ -2036,63 +1982,9 @@
       "selected": false
     },
     {
-      "id": "8",
-      "type": "baNode",
-      "position": {
-        "x": 2480,
-        "y": 760
-      },
-      "width": 390,
-      "initialWidth": 390,
-      "initialHeight": 500,
-      "selected": false,
-      "data": {
-        "type": "BAMidFarVisiblePNG",
-        "title": "⑥ 输出提取图2 · 透明PNG",
-        "inputs": [
-          {
-            "name": "image",
-            "label": "image",
-            "type": "IMAGE",
-            "format": "slot"
-          },
-          {
-            "name": "key_color",
-            "label": "key_color",
-            "type": "STRING",
-            "format": "slot"
-          },
-          {
-            "name": "filename_prefix",
-            "label": "filename_prefix",
-            "type": "STRING",
-            "format": "slot"
-          }
-        ],
-        "outputSlots": [
-          {
-            "name": "rgba",
-            "label": "rgba",
-            "type": "IMAGE"
-          },
-          {
-            "name": "quality_record",
-            "label": "quality_record",
-            "type": "STRING"
-          }
-        ],
-        "extra": {
-          "output_preview_names": [
-            "rgba",
-            "quality_record"
-          ]
-        }
-      }
-    },
-    {
       "initialWidth": 410,
       "initialHeight": 600,
-      "id": "9",
+      "id": "7",
       "width": 410,
       "data": {
         "title": "⑤ 图片提取3 · 查看原始成图",
@@ -2756,23 +2648,35 @@
       "selected": false
     },
     {
-      "id": "10",
+      "id": "8",
       "type": "baNode",
       "position": {
-        "x": 2480,
-        "y": 1520
+        "x": 2500,
+        "y": 650
       },
-      "width": 390,
-      "initialWidth": 390,
+      "width": 490,
+      "initialWidth": 490,
       "initialHeight": 500,
       "selected": false,
       "data": {
-        "type": "BAMidFarVisiblePNG",
-        "title": "⑥ 输出提取图3 · 透明PNG",
+        "type": "BAMidFarVisibleThreePNG",
+        "title": "⑥ 三图统一去重 · 输出三个透明PNG",
         "inputs": [
           {
-            "name": "image",
-            "label": "image",
+            "name": "image_1",
+            "label": "image_1",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "image_2",
+            "label": "image_2",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "image_3",
+            "label": "image_3",
             "type": "IMAGE",
             "format": "slot"
           },
@@ -2783,16 +2687,38 @@
             "format": "slot"
           },
           {
-            "name": "filename_prefix",
-            "label": "filename_prefix",
+            "name": "prefix_1",
+            "label": "prefix_1",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "prefix_2",
+            "label": "prefix_2",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "prefix_3",
+            "label": "prefix_3",
             "type": "STRING",
             "format": "slot"
           }
         ],
         "outputSlots": [
           {
-            "name": "rgba",
-            "label": "rgba",
+            "name": "rgba_1",
+            "label": "rgba_1",
+            "type": "IMAGE"
+          },
+          {
+            "name": "rgba_2",
+            "label": "rgba_2",
+            "type": "IMAGE"
+          },
+          {
+            "name": "rgba_3",
+            "label": "rgba_3",
             "type": "IMAGE"
           },
           {
@@ -2803,7 +2729,9 @@
         ],
         "extra": {
           "output_preview_names": [
-            "rgba",
+            "rgba_1",
+            "rgba_2",
+            "rgba_3",
             "quality_record"
           ]
         }
@@ -2942,8 +2870,8 @@
     {
       "id": "visible-8",
       "type": "baEdge",
-      "source": "5",
-      "sourceHandle": "image",
+      "source": "1",
+      "sourceHandle": "IMAGE",
       "target": "6",
       "targetHandle": "image",
       "data": {
@@ -2959,9 +2887,9 @@
       "id": "visible-9",
       "type": "baEdge",
       "source": "4",
-      "sourceHandle": "key_color",
+      "sourceHandle": "prompt_2",
       "target": "6",
-      "targetHandle": "key_color",
+      "targetHandle": "prompt",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -2974,22 +2902,6 @@
     {
       "id": "visible-10",
       "type": "baEdge",
-      "source": "4",
-      "sourceHandle": "prefix_1",
-      "target": "6",
-      "targetHandle": "filename_prefix",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "visible-11",
-      "type": "baEdge",
       "source": "1",
       "sourceHandle": "IMAGE",
       "target": "7",
@@ -3004,10 +2916,10 @@
       }
     },
     {
-      "id": "visible-12",
+      "id": "visible-11",
       "type": "baEdge",
       "source": "4",
-      "sourceHandle": "prompt_2",
+      "sourceHandle": "prompt_3",
       "target": "7",
       "targetHandle": "prompt",
       "data": {
@@ -3020,12 +2932,12 @@
       }
     },
     {
-      "id": "visible-13",
+      "id": "visible-12",
       "type": "baEdge",
-      "source": "7",
+      "source": "5",
       "sourceHandle": "image",
       "target": "8",
-      "targetHandle": "image",
+      "targetHandle": "image_1",
       "data": {
         "type": "IMAGE",
         "sourceType": "IMAGE",
@@ -3036,12 +2948,12 @@
       }
     },
     {
-      "id": "visible-14",
+      "id": "visible-13",
       "type": "baEdge",
       "source": "4",
-      "sourceHandle": "key_color",
+      "sourceHandle": "prefix_1",
       "target": "8",
-      "targetHandle": "key_color",
+      "targetHandle": "prefix_1",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -3052,12 +2964,28 @@
       }
     },
     {
+      "id": "visible-14",
+      "type": "baEdge",
+      "source": "6",
+      "sourceHandle": "image",
+      "target": "8",
+      "targetHandle": "image_2",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
       "id": "visible-15",
       "type": "baEdge",
       "source": "4",
       "sourceHandle": "prefix_2",
       "target": "8",
-      "targetHandle": "filename_prefix",
+      "targetHandle": "prefix_2",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -3070,10 +2998,10 @@
     {
       "id": "visible-16",
       "type": "baEdge",
-      "source": "1",
-      "sourceHandle": "IMAGE",
-      "target": "9",
-      "targetHandle": "image",
+      "source": "7",
+      "sourceHandle": "image",
+      "target": "8",
+      "targetHandle": "image_3",
       "data": {
         "type": "IMAGE",
         "sourceType": "IMAGE",
@@ -3087,9 +3015,9 @@
       "id": "visible-17",
       "type": "baEdge",
       "source": "4",
-      "sourceHandle": "prompt_3",
-      "target": "9",
-      "targetHandle": "prompt",
+      "sourceHandle": "prefix_3",
+      "target": "8",
+      "targetHandle": "prefix_3",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",
@@ -3102,42 +3030,10 @@
     {
       "id": "visible-18",
       "type": "baEdge",
-      "source": "9",
-      "sourceHandle": "image",
-      "target": "10",
-      "targetHandle": "image",
-      "data": {
-        "type": "IMAGE",
-        "sourceType": "IMAGE",
-        "targetType": "IMAGE",
-        "extra": {
-          "type": "IMAGE"
-        }
-      }
-    },
-    {
-      "id": "visible-19",
-      "type": "baEdge",
       "source": "4",
       "sourceHandle": "key_color",
-      "target": "10",
+      "target": "8",
       "targetHandle": "key_color",
-      "data": {
-        "type": "STRING",
-        "sourceType": "STRING",
-        "targetType": "STRING",
-        "extra": {
-          "type": "STRING"
-        }
-      }
-    },
-    {
-      "id": "visible-20",
-      "type": "baEdge",
-      "source": "4",
-      "sourceHandle": "prefix_3",
-      "target": "10",
-      "targetHandle": "filename_prefix",
       "data": {
         "type": "STRING",
         "sourceType": "STRING",

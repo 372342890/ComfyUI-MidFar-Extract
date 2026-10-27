@@ -89,16 +89,20 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
     connect(2, "text", 4, "recognition")
     connect(3, "text", 4, "pe")
     for index in range(1, 4):
-        generate, final = 2*index+3, 2*index+4
+        generate = index+4
         y = (index-1)*760
         carrier("image", generate, f"⑤ 图片提取{index} · 查看原始成图", 1960, y, IMAGE_INSTRUCTION)
-        nodes.append(_node(
-            final, "BAMidFarVisiblePNG", f"⑥ 输出提取图{index} · 透明PNG", 2480, y,
-            [_slot("image", "IMAGE"), _slot("key_color", "STRING"), _slot("filename_prefix", "STRING")],
-            [("rgba", "IMAGE"), ("quality_record", "STRING")], ["rgba", "quality_record"]))
         connect(1, "IMAGE", generate, "image")
         connect(4, f"prompt_{index}", generate, "prompt")
-        connect(generate, "image", final, "image")
-        connect(4, "key_color", final, "key_color")
-        connect(4, f"prefix_{index}", final, "filename_prefix")
+    nodes.append(_node(
+        8, "BAMidFarVisibleThreePNG", "⑥ 三图统一去重 · 输出三个透明PNG", 2500, 650,
+        [_slot(f"image_{i}", "IMAGE") for i in range(1, 4)] +
+        [_slot("key_color", "STRING")] +
+        [_slot(f"prefix_{i}", "STRING") for i in range(1, 4)],
+        [("rgba_1", "IMAGE"), ("rgba_2", "IMAGE"), ("rgba_3", "IMAGE"),
+         ("quality_record", "STRING")], ["rgba_1", "rgba_2", "rgba_3", "quality_record"], 490))
+    for index in range(1, 4):
+        connect(index+4, "image", 8, f"image_{index}")
+        connect(4, f"prefix_{index}", 8, f"prefix_{index}")
+    connect(4, "key_color", 8, "key_color")
     return {"name": "ba-clipboard", "version": 1, "nodes": nodes, "edges": edges}

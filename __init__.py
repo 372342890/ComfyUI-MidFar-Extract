@@ -12,7 +12,9 @@ from .autonomous_nodes import (
 from .three_d_nodes import BAMidFar3DModel, BAMidFar3DGenerate, BAMidFarGLBExport
 from .compact_nodes import BAMidFarCompactExtract
 from .reference_nodes import BAMidFarReferencePlan, BAMidFarReferenceExtract, BAMidFarReferenceGLB
-from .visible_nodes import BAMidFarVisibleAsset, BAMidFarVisiblePNG, BAMidFarVisiblePE
+from .visible_nodes import (
+    BAMidFarVisibleAsset, BAMidFarVisiblePNG, BAMidFarVisiblePE, BAMidFarVisibleThreePNG,
+)
 
 
 class BAMidFarPlanPrompt:
@@ -315,6 +317,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarVisibleAsset": BAMidFarVisibleAsset,
     "BAMidFarVisiblePNG": BAMidFarVisiblePNG,
     "BAMidFarVisiblePE": BAMidFarVisiblePE,
+    "BAMidFarVisibleThreePNG": BAMidFarVisibleThreePNG,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -347,4 +350,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarVisibleAsset": "MidFar Visible Asset / 目标定位与PE提示",
     "BAMidFarVisiblePNG": "MidFar Visible PNG / 透明化并输出提取图",
     "BAMidFarVisiblePE": "MidFar Visible PE / 三份提示词自动分路",
+    "BAMidFarVisibleThreePNG": "MidFar Visible Three PNG / 三图统一去重与输出",
 }
