@@ -30,6 +30,8 @@ class BAMidFarVisiblePE:
             "recognition": ("STRING", {"forceInput": True}),
             "pe": ("STRING", {"forceInput": True}),
             "filename_prefix": ("STRING", {"default": "midfar-visible/asset"}),
+        }, "optional": {
+            "background_mode": (["key", "white"], {"default": "key"}),
         }}
 
     RETURN_TYPES = ("STRING",)*8
@@ -40,8 +42,9 @@ class BAMidFarVisiblePE:
     OUTPUT_NODE = True
     DESCRIPTION = "Shows three actual PE prompts; original image goes directly to native image nodes."
 
-    def run(self, reference, recognition, pe, filename_prefix):
-        outputs = split_prompts(recognition, pe, reference.detach().cpu().numpy(), filename_prefix)
+    def run(self, reference, recognition, pe, filename_prefix, background_mode="key"):
+        outputs = split_prompts(recognition, pe, reference.detach().cpu().numpy(),
+                                filename_prefix, background_mode)
         import folder_paths
         path = _diagnostic_path(filename_prefix, "_PE分路.json", folder_paths.get_output_directory())
         path.write_text(outputs[-1], encoding="utf8")
@@ -122,7 +125,7 @@ class BAMidFarVisibleThreePNG:
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Visible PE"
     OUTPUT_NODE = True
-    DESCRIPTION = "Shows three distinct PNGs after shared cleanup and duplicate checks."
+    DESCRIPTION = "Shows three distinct white-background or transparent PNGs with duplicate checks."
 
     def run(self, image_1, image_2, image_3, key_color, prefix_1, prefix_2, prefix_3):
         prefixes = (prefix_1, prefix_2, prefix_3)

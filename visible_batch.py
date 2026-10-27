@@ -6,10 +6,10 @@ import numpy as np
 
 try:
     from .selection import selected_matte
-    from .core import dominance
+    from .core import dominance, validate_image
 except ImportError:
     from selection import selected_matte
-    from core import dominance
+    from core import dominance, validate_image
 
 
 def _normalized_asset(rgba):
@@ -31,7 +31,9 @@ def _normalized_asset(rgba):
 
 def _variant_signature(rgba, key):
     pixels = rgba[0]
-    core = (pixels[..., 3] > .99) & (dominance(pixels[..., :3], key) < .1)
+    core = pixels[..., 3] > .99
+    if key != "#FFFFFF":
+        core &= dominance(pixels[..., :3], key) < .1
     ys, xs = np.where(core)
     if not len(xs):
         return None
@@ -62,15 +64,48 @@ def _variant_signature(rgba, key):
     return silhouette.astype(bool), perceptual_hash, histogram
 
 
+def _white_asset(source):
+    pixels = validate_image(source)
+    if pixels.shape[0] != 1:
+        raise ValueError("每路只接受一张实际提取图。")
+    rgb = pixels[..., :3].copy()
+    if pixels.shape[-1] == 4:
+        alpha = pixels[..., 3:4]
+        rgb = rgb * alpha + (1 - alpha)
+    # This mask is only for content checks. Pale rock and snow pixels in the
+    # delivered RGB image remain intact, including pure-white interior pixels.
+    mask = np.max(1 - rgb[0], axis=-1) > .08
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask.astype(np.uint8), 8)
+    keep = [i for i in range(1, count) if stats[i, cv2.CC_STAT_AREA] > 16]
+    mask = np.isin(labels, keep)
+    if not mask.any():
+        raise ValueError("白底提取图没有可识别的主体。")
+    if mask[0].any() or mask[-1].any() or mask[:, 0].any() or mask[:, -1].any():
+        raise ValueError("主体触及画布边界，可能被裁断或背景不是白底。")
+    comparison = np.concatenate((rgb, mask[None, ..., None].astype(np.float32)), axis=-1)
+    quality = {
+        "background": "white", "alpha_required": False,
+        "source_pixels_preserved": pixels.shape[-1] == 3,
+        "comparison_mask_only": True, "foreground_pixels": int(mask.sum()),
+        "removed_remote_pixels": 0, "warning": "",
+    }
+    return rgb, comparison, quality
+
+
 def process_three(images, key):
     if not isinstance(images, (list, tuple)) or len(images) != 3:
         raise ValueError("需要三张实际生成的图片。")
     outputs, records, signatures, variants = [], [], [], []
     for index, source in enumerate(images, 1):
         try:
-            rgba, quality = selected_matte(source, key, .06, 24, strict=False)
+            if key == "#FFFFFF":
+                output, rgba, quality = _white_asset(source)
+            else:
+                rgba, quality = selected_matte(source, key, .06, 24, strict=False)
+                output = rgba
         except ValueError as error:
-            raise ValueError(f"第{index}路透明检查失败：{error}") from error
+            stage = "白底内容检查" if key == "#FFFFFF" else "透明检查"
+            raise ValueError(f"第{index}路{stage}失败：{error}") from error
         limit = min(16, math.floor(np.asarray(source).shape[1] *
                                    np.asarray(source).shape[2] * .00005))
         removed = quality["removed_remote_pixels"]
@@ -88,7 +123,7 @@ def process_three(images, key):
             quality["warning"] = f"已清理{removed}个远离主体的小噪点像素。"
         signatures.append(_normalized_asset(rgba))
         variants.append(_variant_signature(rgba, key))
-        outputs.append(rgba)
+        outputs.append(output)
         records.append(quality)
 
     for first in range(3):

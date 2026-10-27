@@ -16,7 +16,7 @@ except ImportError:
     from objects import object_filename
 
 
-def split_prompts(recognition, pe, reference, prefix):
+def split_prompts(recognition, pe, reference, prefix, background_mode="key"):
     source = validate_image(reference)
     if source.shape[0] != 1:
         raise ValueError("Only one current reference image is accepted.")
@@ -69,7 +69,9 @@ def split_prompts(recognition, pe, reference, prefix):
         lookup[entry["id"]] = entry["prompt"].strip()
     if set(lookup) != set(ids):
         raise ValueError("PE目标必须与识别结果的三个id一致。")
-    key = choose_key(source, "auto")
+    if background_mode not in ("key", "white"):
+        raise ValueError("Unknown output background mode.")
+    key = "#FFFFFF" if background_mode == "white" else choose_key(source, "auto")
     prompts = []
     for target in targets:
         excluded = "；".join(
@@ -83,11 +85,15 @@ def split_prompts(recognition, pe, reference, prefix):
         prompts.append(identity + lookup[target["id"]].replace("{KEY_COLOR}", key) +
                        f"\n全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。"
                        "完整居中，宽高均不超过画布70%，四侧至少15%空白，"
-                       "只输出一张完整单元。")
+                       "只输出一张完整单元。" +
+                       ("本次输出白底提取图，背景为纯白；保留主体自身白色岩面与积雪。"
+                        "移除主体外围雾气和环境，不要求透明通道。"
+                        if background_mode == "white" else ""))
     run_id = uuid4().hex
     prefixes = [object_filename(target, prefix + "/run_" + run_id) for target in targets]
     record = {"schema_version": 1, "status": "ready", "source_image_modified": False,
               "source_size": [source.shape[2], source.shape[1]], "key_color": key,
+              "background_mode": background_mode,
               "run_id": run_id,
               "recognized_targets": targets, "original_pe_prompts": [lookup[i] for i in ids],
               "execution_prompts": prompts, "prefixes": prefixes, "hidden_model_calls": 0}

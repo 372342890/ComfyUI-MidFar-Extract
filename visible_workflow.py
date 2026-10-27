@@ -36,7 +36,18 @@ def _node(identifier, kind, title, x, y, inputs, outputs, previews, width=390):
                      "extra": {"output_preview_names": previews}}}
 
 
-def build_workflow(input_filename="reference.png", filename_prefix="midfar-visible/asset"):
+def build_workflow(input_filename="reference.png", filename_prefix="midfar-visible/asset",
+                   background_mode="key"):
+    if background_mode not in ("key", "white"):
+        raise ValueError("Unknown output background mode.")
+    pe_instruction = PE
+    image_instruction = IMAGE_INSTRUCTION
+    if background_mode == "white":
+        pe_instruction = PE.replace("均匀纯色{KEY_COLOR}背景", "纯白底{KEY_COLOR}背景")
+        pe_instruction += "\n本次允许白底，默认输出白底提取图，不要求透明通道。主体外围不能保留雾气。"
+        image_instruction = IMAGE_INSTRUCTION.replace(
+            "指定纯色键背景", "纯白底背景")
+        image_instruction += "\n不要求透明通道，保留主体白色岩面与积雪，移除外围雾气。"
     templates = json.loads(Path(__file__).with_name("visible_native_templates.json").read_text(
         encoding="utf8"))
     nodes = [_node(1, "LoadImage", "① 上传一张原图", 0, 650,
@@ -57,7 +68,7 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
         nodes.append(node)
 
     carrier("recognition", 2, "② 识别 · 查看三个目标与原图分析", 440, 650, RECOGNITION)
-    carrier("pe", 3, "③ PE · 查看三份提取提示词", 940, 650, PE)
+    carrier("pe", 3, "③ PE · 查看三份提取提示词", 940, 650, pe_instruction)
     edges = []
 
     def connect(source, output, target, input_name):
@@ -85,13 +96,16 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
          ("key_color", "STRING"), ("prefix_1", "STRING"), ("prefix_2", "STRING"),
          ("prefix_3", "STRING"), ("record", "STRING")],
         ["prompt_1", "prompt_2", "prompt_3", "record"]))
+    if background_mode == "white":
+        nodes[-1]["data"]["inputs"].append(
+            {"name": "background_mode", "label": "输出背景", "type": "STRING", "value": "white"})
     connect(1, "IMAGE", 4, "reference")
     connect(2, "text", 4, "recognition")
     connect(3, "text", 4, "pe")
     for index in range(1, 4):
         generate = index+4
         y = (index-1)*760
-        carrier("image", generate, f"⑤ 图片提取{index} · 查看原始成图", 1960, y, IMAGE_INSTRUCTION)
+        carrier("image", generate, f"⑤ 图片提取{index} · 查看原始成图", 1960, y, image_instruction)
         connect(1, "IMAGE", generate, "image")
         connect(4, f"prompt_{index}", generate, "prompt")
     nodes.append(_node(
@@ -105,4 +119,6 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
         connect(index+4, "image", 8, f"image_{index}")
         connect(4, f"prefix_{index}", 8, f"prefix_{index}")
     connect(4, "key_color", 8, "key_color")
+    if background_mode == "white":
+        nodes[-1]["data"]["title"] = "⑥ 三图统一去重 · 输出三张白底提取PNG"
     return {"name": "ba-clipboard", "version": 1, "nodes": nodes, "edges": edges}
