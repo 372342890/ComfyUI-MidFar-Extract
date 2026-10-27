@@ -1,12 +1,70 @@
 """Visible PE handoff only: validate identities and prepare current-image crops."""
 import json
+import re
 
 try:
     from .autonomous_plan import candidate_review, split_three, asset_reference, _decode
     from .localization_view import localization_view
+    from .core import choose_key, validate_image
+    from .objects import object_filename
 except ImportError:
     from autonomous_plan import candidate_review, split_three, asset_reference, _decode
     from localization_view import localization_view
+    from core import choose_key, validate_image
+    from objects import object_filename
+
+
+def split_prompts(recognition, pe, reference, prefix):
+    source = validate_image(reference)
+    if source.shape[0] != 1:
+        raise ValueError("Only one current reference image is accepted.")
+    plan = _decode(recognition, "objects")
+    targets = plan["objects"]
+    if not isinstance(targets, list) or len(targets) != 3:
+        raise ValueError("识别节点需要三个实际完整目标，不能虚构补足。")
+    ids, units = [], set()
+    for target in targets:
+        if not isinstance(target, dict):
+            raise ValueError("Each recognized target must be an object.")
+        identifier, unit = target.get("id"), target.get("unit_id")
+        if (not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", identifier)
+                or identifier in ids or not isinstance(unit, str) or unit in units):
+            raise ValueError("Three distinct actual target ids and connected units are required.")
+        if (target.get("kind") not in ("rock", "hill", "mountain") or
+                target.get("layer") not in ("midground", "background") or
+                target.get("is_single") is not True or target.get("suitable") is not True or
+                target.get("boundary_cut") is not False):
+            raise ValueError("识别目标不是可提取的完整中远景单元。")
+        for field in ("name", "location", "appearance", "occlusion"):
+            if not isinstance(target.get(field), str) or not target[field].strip():
+                raise ValueError("识别描述缺少字段：" + field)
+        ids.append(identifier)
+        units.add(unit)
+    entries = _decode(pe, "objects")["objects"]
+    if not isinstance(entries, list) or len(entries) != 3:
+        raise ValueError("PE节点必须输出三份独立提示词。")
+    lookup = {}
+    for entry in entries:
+        if (not isinstance(entry, dict) or not isinstance(entry.get("id"), str) or
+                entry["id"] in lookup or not isinstance(entry.get("prompt"), str) or
+                not 0 < len(entry["prompt"].strip()) < 15000):
+            raise ValueError("PE目标id或提示词无效，不能静默补写。")
+        lookup[entry["id"]] = entry["prompt"].strip()
+    if set(lookup) != set(ids):
+        raise ValueError("PE目标必须与识别结果的三个id一致。")
+    key = choose_key(source, "auto")
+    prompts = [lookup[target["id"]].replace("{KEY_COLOR}", key) +
+               f"\n当前输入为完整原图。只提取「{target['name']}」（id={target['id']}），"
+               f"原图位置：{target['location']}。外观：{target['appearance']}。"
+               f"全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。"
+               "完整居中，宽高均不超过画布70%，四侧至少15%空白，只输出一张完整单元。"
+               for target in targets]
+    prefixes = [object_filename(target, prefix) for target in targets]
+    record = {"schema_version": 1, "status": "ready", "source_image_modified": False,
+              "source_size": [source.shape[2], source.shape[1]], "key_color": key,
+              "recognized_targets": targets, "original_pe_prompts": [lookup[i] for i in ids],
+              "execution_prompts": prompts, "prefixes": prefixes, "hidden_model_calls": 0}
+    return (*prompts, key, *prefixes, json.dumps(record, ensure_ascii=False))
 
 
 def prepare_asset(recognition, pe, reference, index, prefix):

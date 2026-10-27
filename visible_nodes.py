@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from .visible_pipeline import prepare_asset
+from .visible_pipeline import prepare_asset, split_prompts
 from .selection import selected_matte
 from .image_handoff import _diagnostic_path
 
@@ -19,6 +19,32 @@ def _preview(image, prefix, suffix):
     Image.fromarray(pixels).save(path)
     return {"filename": path.name, "subfolder": str(path.relative_to(output_dir).parent),
             "type": "output"}
+
+
+class BAMidFarVisiblePE:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "reference": ("IMAGE",),
+            "recognition": ("STRING", {"forceInput": True}),
+            "pe": ("STRING", {"forceInput": True}),
+            "filename_prefix": ("STRING", {"default": "midfar-visible/asset"}),
+        }}
+
+    RETURN_TYPES = ("STRING",)*8
+    RETURN_NAMES = ("prompt_1", "prompt_2", "prompt_3", "key_color",
+                    "prefix_1", "prefix_2", "prefix_3", "record")
+    FUNCTION = "run"
+    CATEGORY = "MidFar Extract/Visible PE"
+    OUTPUT_NODE = True
+    DESCRIPTION = "Shows three actual PE prompts; original image goes directly to native image nodes."
+
+    def run(self, reference, recognition, pe, filename_prefix):
+        outputs = split_prompts(recognition, pe, reference.detach().cpu().numpy(), filename_prefix)
+        import folder_paths
+        path = _diagnostic_path(filename_prefix, "_PE分路.json", folder_paths.get_output_directory())
+        path.write_text(outputs[-1], encoding="utf8")
+        return {"ui": {"text": list(outputs[:3])+[outputs[-1]]}, "result": outputs}
 
 
 class BAMidFarVisibleAsset:

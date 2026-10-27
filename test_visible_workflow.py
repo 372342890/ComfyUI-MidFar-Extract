@@ -16,11 +16,12 @@ class VisibleWorkflow(unittest.TestCase):
     def test_one_input_two_visible_text_stages_three_native_image_stages(self):
         graph = self.graph()
         types = [n["data"]["type"] for n in graph["nodes"]]
-        self.assertEqual(len(types), 12)
+        self.assertEqual(len(types), 10)
         self.assertEqual(types.count("LoadImage"), 1)
         self.assertEqual(types.count("BALLMText"), 2)
         self.assertEqual(types.count("BALLMImage"), 3)
-        self.assertEqual(types.count("BAMidFarVisibleAsset"), 3)
+        self.assertEqual(types.count("BAMidFarVisiblePE"), 1)
+        self.assertEqual(types.count("BAMidFarVisibleAsset"), 0)
         self.assertEqual(types.count("BAMidFarVisiblePNG"), 3)
         self.assertFalse(any("3D" in t or "GLB" in t or "Compact" in t or
                              "ReferencePlan" in t for t in types))
