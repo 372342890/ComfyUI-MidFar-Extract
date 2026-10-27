@@ -1,0 +1,985 @@
+{
+  "name": "ba-clipboard",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "1",
+      "type": "baNode",
+      "position": {
+        "x": 0,
+        "y": 560
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "LoadImage",
+        "title": "① 只上传一张参考图",
+        "inputs": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "COMBO",
+            "value": "midfar-test-lake-20261026-v1.png"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "IMAGE",
+            "label": "IMAGE",
+            "type": "IMAGE"
+          },
+          {
+            "name": "MASK",
+            "label": "MASK",
+            "type": "MASK"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "baNode",
+      "position": {
+        "x": 440,
+        "y": 560
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferencePlan",
+        "title": "② 统一识别 · 准备三份目标",
+        "inputs": [
+          {
+            "name": "reference",
+            "label": "reference",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "value": "midfar-reference/asset-20261027"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "plan_1",
+            "label": "plan_1",
+            "type": "STRING"
+          },
+          {
+            "name": "plan_2",
+            "label": "plan_2",
+            "type": "STRING"
+          },
+          {
+            "name": "plan_3",
+            "label": "plan_3",
+            "type": "STRING"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING"
+          },
+          {
+            "name": "audit",
+            "label": "audit",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "baNode",
+      "position": {
+        "x": 440,
+        "y": 0
+      },
+      "width": 360,
+      "initialWidth": 360,
+      "initialHeight": 420,
+      "selected": false,
+      "data": {
+        "type": "BAMidFar3DModel",
+        "title": "共享混元3D模型 · 加载一次",
+        "inputs": [],
+        "outputSlots": [
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 0
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceExtract",
+        "title": "③ 自动提取与检查 · 素材1",
+        "inputs": [
+          {
+            "name": "reference",
+            "label": "reference",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "plan",
+            "label": "plan",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "baNode",
+      "position": {
+        "x": 1440,
+        "y": 0
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceGLB",
+        "title": "④ 生成并导出 · 模型1.glb",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261026
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb",
+            "label": "glb",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 560
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceExtract",
+        "title": "③ 自动提取与检查 · 素材2",
+        "inputs": [
+          {
+            "name": "reference",
+            "label": "reference",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "plan",
+            "label": "plan",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "7",
+      "type": "baNode",
+      "position": {
+        "x": 1440,
+        "y": 560
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceGLB",
+        "title": "④ 生成并导出 · 模型2.glb",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261026
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb",
+            "label": "glb",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "8",
+      "type": "baNode",
+      "position": {
+        "x": 940,
+        "y": 1120
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceExtract",
+        "title": "③ 自动提取与检查 · 素材3",
+        "inputs": [
+          {
+            "name": "reference",
+            "label": "reference",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "plan",
+            "label": "plan",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    },
+    {
+      "id": "9",
+      "type": "baNode",
+      "position": {
+        "x": 1440,
+        "y": 1120
+      },
+      "width": 400,
+      "initialWidth": 400,
+      "initialHeight": 460,
+      "selected": false,
+      "data": {
+        "type": "BAMidFarReferenceGLB",
+        "title": "④ 生成并导出 · 模型3.glb",
+        "inputs": [
+          {
+            "name": "rgba",
+            "label": "rgba",
+            "type": "IMAGE",
+            "format": "slot"
+          },
+          {
+            "name": "model",
+            "label": "model",
+            "type": "MODEL",
+            "format": "slot"
+          },
+          {
+            "name": "clip_vision",
+            "label": "clip_vision",
+            "type": "CLIP_VISION",
+            "format": "slot"
+          },
+          {
+            "name": "vae",
+            "label": "vae",
+            "type": "VAE",
+            "format": "slot"
+          },
+          {
+            "name": "filename_prefix",
+            "label": "filename_prefix",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "extraction_record",
+            "label": "extraction_record",
+            "type": "STRING",
+            "format": "slot"
+          },
+          {
+            "name": "seed",
+            "label": "seed",
+            "type": "INT",
+            "value": 20261026
+          }
+        ],
+        "outputSlots": [
+          {
+            "name": "glb",
+            "label": "glb",
+            "type": "STRING"
+          },
+          {
+            "name": "export_record",
+            "label": "export_record",
+            "type": "STRING"
+          }
+        ],
+        "extra": {
+          "output_preview_names": []
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "reference-0",
+      "type": "baEdge",
+      "source": "1",
+      "target": "2",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-1",
+      "type": "baEdge",
+      "source": "1",
+      "target": "4",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-2",
+      "type": "baEdge",
+      "source": "2",
+      "target": "4",
+      "sourceHandle": "plan_1",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-3",
+      "type": "baEdge",
+      "source": "2",
+      "target": "4",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-4",
+      "type": "baEdge",
+      "source": "4",
+      "target": "5",
+      "sourceHandle": "rgba",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-5",
+      "type": "baEdge",
+      "source": "3",
+      "target": "5",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "reference-6",
+      "type": "baEdge",
+      "source": "3",
+      "target": "5",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "reference-7",
+      "type": "baEdge",
+      "source": "3",
+      "target": "5",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "reference-8",
+      "type": "baEdge",
+      "source": "4",
+      "target": "5",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-9",
+      "type": "baEdge",
+      "source": "4",
+      "target": "5",
+      "sourceHandle": "extraction_record",
+      "targetHandle": "extraction_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-10",
+      "type": "baEdge",
+      "source": "1",
+      "target": "6",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-11",
+      "type": "baEdge",
+      "source": "2",
+      "target": "6",
+      "sourceHandle": "plan_2",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-12",
+      "type": "baEdge",
+      "source": "2",
+      "target": "6",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-13",
+      "type": "baEdge",
+      "source": "6",
+      "target": "7",
+      "sourceHandle": "rgba",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-14",
+      "type": "baEdge",
+      "source": "3",
+      "target": "7",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "reference-15",
+      "type": "baEdge",
+      "source": "3",
+      "target": "7",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "reference-16",
+      "type": "baEdge",
+      "source": "3",
+      "target": "7",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "reference-17",
+      "type": "baEdge",
+      "source": "6",
+      "target": "7",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-18",
+      "type": "baEdge",
+      "source": "6",
+      "target": "7",
+      "sourceHandle": "extraction_record",
+      "targetHandle": "extraction_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-19",
+      "type": "baEdge",
+      "source": "1",
+      "target": "8",
+      "sourceHandle": "IMAGE",
+      "targetHandle": "reference",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-20",
+      "type": "baEdge",
+      "source": "2",
+      "target": "8",
+      "sourceHandle": "plan_3",
+      "targetHandle": "plan",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-21",
+      "type": "baEdge",
+      "source": "2",
+      "target": "8",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-22",
+      "type": "baEdge",
+      "source": "8",
+      "target": "9",
+      "sourceHandle": "rgba",
+      "targetHandle": "rgba",
+      "data": {
+        "type": "IMAGE",
+        "sourceType": "IMAGE",
+        "targetType": "IMAGE",
+        "extra": {
+          "type": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "reference-23",
+      "type": "baEdge",
+      "source": "3",
+      "target": "9",
+      "sourceHandle": "model",
+      "targetHandle": "model",
+      "data": {
+        "type": "MODEL",
+        "sourceType": "MODEL",
+        "targetType": "MODEL",
+        "extra": {
+          "type": "MODEL"
+        }
+      }
+    },
+    {
+      "id": "reference-24",
+      "type": "baEdge",
+      "source": "3",
+      "target": "9",
+      "sourceHandle": "clip_vision",
+      "targetHandle": "clip_vision",
+      "data": {
+        "type": "CLIP_VISION",
+        "sourceType": "CLIP_VISION",
+        "targetType": "CLIP_VISION",
+        "extra": {
+          "type": "CLIP_VISION"
+        }
+      }
+    },
+    {
+      "id": "reference-25",
+      "type": "baEdge",
+      "source": "3",
+      "target": "9",
+      "sourceHandle": "vae",
+      "targetHandle": "vae",
+      "data": {
+        "type": "VAE",
+        "sourceType": "VAE",
+        "targetType": "VAE",
+        "extra": {
+          "type": "VAE"
+        }
+      }
+    },
+    {
+      "id": "reference-26",
+      "type": "baEdge",
+      "source": "8",
+      "target": "9",
+      "sourceHandle": "filename_prefix",
+      "targetHandle": "filename_prefix",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    },
+    {
+      "id": "reference-27",
+      "type": "baEdge",
+      "source": "8",
+      "target": "9",
+      "sourceHandle": "extraction_record",
+      "targetHandle": "extraction_record",
+      "data": {
+        "type": "STRING",
+        "sourceType": "STRING",
+        "targetType": "STRING",
+        "extra": {
+          "type": "STRING"
+        }
+      }
+    }
+  ]
+}

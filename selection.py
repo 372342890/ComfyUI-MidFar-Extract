@@ -253,7 +253,11 @@ def selected_matte(image, key, softness=.06, padding=24, strict=True):
         if stats[label, cv2.CC_STAT_AREA] > 16:
             continue
         island = labels == label
-        if (np.all(raw_key[island] > .35) and
+        ring = cv2.dilate(island.astype(np.uint8),
+                          np.ones((3, 3), np.uint8)).astype(bool) & ~island
+        key_supported = np.all(raw_key[island] > .35) or (
+            np.all(raw_key[island] > .1) and ring.any() and np.all(screen[ring]))
+        if (key_supported and
                 np.all(distance[island] > max(12, min(h, w)*.03))):
             screen_noise |= island
     alpha[screen_noise] = 0

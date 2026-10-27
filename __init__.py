@@ -11,6 +11,7 @@ from .autonomous_nodes import (
 )
 from .three_d_nodes import BAMidFar3DModel, BAMidFar3DGenerate, BAMidFarGLBExport
 from .compact_nodes import BAMidFarCompactExtract
+from .reference_nodes import BAMidFarReferencePlan, BAMidFarReferenceExtract, BAMidFarReferenceGLB
 
 
 class BAMidFarPlanPrompt:
@@ -307,6 +308,9 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFar3DGenerate": BAMidFar3DGenerate,
     "BAMidFarGLBExport": BAMidFarGLBExport,
     "BAMidFarCompactExtract": BAMidFarCompactExtract,
+    "BAMidFarReferencePlan": BAMidFarReferencePlan,
+    "BAMidFarReferenceExtract": BAMidFarReferenceExtract,
+    "BAMidFarReferenceGLB": BAMidFarReferenceGLB,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
@@ -333,4 +337,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BAMidFar3DGenerate": "MidFar 3D Generate / 完整体积生成",
     "BAMidFarGLBExport": "MidFar GLB Export / 内嵌贴图GLB导出",
     "BAMidFarCompactExtract": "MidFar Compact / 单图自动三份素材",
+    "BAMidFarReferencePlan": "MidFar Reference Plan / 单图统一识别",
+    "BAMidFarReferenceExtract": "MidFar Reference Extract / 自动提取与检查",
+    "BAMidFarReferenceGLB": "MidFar Reference GLB / 生成并导出模型",
 }
