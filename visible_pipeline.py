@@ -35,9 +35,14 @@ def split_prompts(recognition, pe, reference, prefix):
                 target.get("is_single") is not True or target.get("suitable") is not True or
                 target.get("boundary_cut") is not False):
             raise ValueError("识别目标不是可提取的完整中远景单元。")
-        for field in ("name", "location", "appearance", "occlusion"):
+        for field in ("name", "location", "appearance"):
             if not isinstance(target.get(field), str) or not target[field].strip():
                 raise ValueError("识别描述缺少字段：" + field)
+        occlusion = target.get("occlusion")
+        if not (isinstance(occlusion, str) and occlusion.strip() or
+                isinstance(occlusion, list) and
+                all(isinstance(item, str) and item.strip() for item in occlusion)):
+            raise ValueError("识别遮挡描述必须是文本或文本列表。")
         ids.append(identifier)
         units.add(unit)
     entries = _decode(pe, "objects")["objects"]

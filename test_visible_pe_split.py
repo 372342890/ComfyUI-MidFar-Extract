@@ -55,6 +55,21 @@ class VisiblePESplit(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.call(rec=raw)
 
+    def test_real_recognition_occlusion_lists_are_preserved(self):
+        raw = recognition()
+        raw["objects"][0]["occlusion"] = ["下部被岸边针叶林遮挡山脚"]
+        raw["objects"][1]["occlusion"] = []
+        output = self.call(rec=raw)
+        targets = json.loads(output[-1])["recognized_targets"]
+        self.assertEqual(targets[0]["occlusion"], ["下部被岸边针叶林遮挡山脚"])
+        self.assertEqual(targets[1]["occlusion"], [])
+
+    def test_invalid_occlusion_payload_is_rejected(self):
+        raw = recognition()
+        raw["objects"][0]["occlusion"] = {"unexpected": "field"}
+        with self.assertRaises(ValueError):
+            self.call(rec=raw)
+
 
 if __name__ == "__main__":
     unittest.main()
