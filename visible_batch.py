@@ -1,4 +1,4 @@
-"""Shared transparent processing with bounded noise tolerance and duplicate checks."""
+"""Save three distinct images; optional legacy background processing."""
 import math
 
 import cv2
@@ -32,7 +32,7 @@ def _normalized_asset(rgba):
 def _variant_signature(rgba, key):
     pixels = rgba[0]
     core = pixels[..., 3] > .99
-    if key != "#FFFFFF":
+    if key not in ("#FFFFFF", "any"):
         core &= dominance(pixels[..., :3], key) < .1
     ys, xs = np.where(core)
     if not len(xs):
@@ -92,19 +92,51 @@ def _white_asset(source):
     return rgb, comparison, quality
 
 
+def _any_asset(source):
+    pixels = validate_image(source)
+    if pixels.shape[0] != 1:
+        raise ValueError("每路只接受一张实际提取图。")
+    rgb = pixels[0, ..., :3]
+    if pixels.shape[-1] == 4 and np.any(pixels[0, ..., 3] < .99):
+        mask = pixels[0, ..., 3] > .05
+    else:
+        border = np.concatenate((rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1]))
+        background = np.median(border, axis=0)
+        mask = np.max(np.abs(rgb - background), axis=-1) > .08
+    # Background estimation only helps compare subjects. Delivered pixels and
+    # alpha remain untouched, regardless of color, haze or border contact.
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask.astype(np.uint8), 8)
+    keep = [i for i in range(1, count) if stats[i, cv2.CC_STAT_AREA] > 16]
+    mask = np.isin(labels, keep)
+    if not mask.any():
+        raise ValueError("提取图没有可识别的主体。")
+    comparison = np.concatenate(
+        (pixels[..., :3], mask[None, ..., None].astype(np.float32)), axis=-1)
+    quality = {
+        "background": "any", "alpha_required": False,
+        "source_pixels_preserved": True, "comparison_mask_only": True,
+        "foreground_pixels": int(mask.sum()), "removed_remote_pixels": 0,
+        "warning": "",
+    }
+    return pixels.copy(), comparison, quality
+
+
 def process_three(images, key):
     if not isinstance(images, (list, tuple)) or len(images) != 3:
         raise ValueError("需要三张实际生成的图片。")
     outputs, records, signatures, variants = [], [], [], []
     for index, source in enumerate(images, 1):
         try:
-            if key == "#FFFFFF":
+            if key == "any":
+                output, rgba, quality = _any_asset(source)
+            elif key == "#FFFFFF":
                 output, rgba, quality = _white_asset(source)
             else:
                 rgba, quality = selected_matte(source, key, .06, 24, strict=False)
                 output = rgba
         except ValueError as error:
-            stage = "白底内容检查" if key == "#FFFFFF" else "透明检查"
+            stage = ("图片内容检查" if key == "any" else
+                     "白底内容检查" if key == "#FFFFFF" else "透明检查")
             raise ValueError(f"第{index}路{stage}失败：{error}") from error
         limit = min(16, math.floor(np.asarray(source).shape[1] *
                                    np.asarray(source).shape[2] * .00005))

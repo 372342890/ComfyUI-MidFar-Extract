@@ -69,9 +69,10 @@ def split_prompts(recognition, pe, reference, prefix, background_mode="key"):
         lookup[entry["id"]] = entry["prompt"].strip()
     if set(lookup) != set(ids):
         raise ValueError("PE目标必须与识别结果的三个id一致。")
-    if background_mode not in ("key", "white"):
+    if background_mode not in ("key", "white", "any"):
         raise ValueError("Unknown output background mode.")
-    key = "#FFFFFF" if background_mode == "white" else choose_key(source, "auto")
+    key = ("any" if background_mode == "any" else
+           "#FFFFFF" if background_mode == "white" else choose_key(source, "auto"))
     prompts = []
     for target in targets:
         excluded = "；".join(
@@ -82,8 +83,13 @@ def split_prompts(recognition, pe, reference, prefix, background_mode="key"):
             f"原图位置：{target['location']}。外观：{target['appearance']}。\n"
             f"本路排除的其他目标：{excluded}。不得用其他目标的同形变体替代本路目标。\n"
             "当前输入是完整原图，先按以上身份定位，再执行以下PE。\n")
-        prompts.append(identity + lookup[target["id"]].replace("{KEY_COLOR}", key) +
-                       f"\n全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。"
+        background = (
+            "\n底色不限，白底、其他颜色或透明均可；不要求指定颜色或透明通道。"
+            if background_mode == "any" else
+            f"\n全部空白区域必须使用均匀纯色{key}，不要让键色染上主体。")
+        prompts.append(identity + lookup[target["id"]].replace(
+                       "{KEY_COLOR}", "任意底色" if background_mode == "any" else key) +
+                       background +
                        "完整居中，宽高均不超过画布70%，四侧至少15%空白，"
                        "只输出一张完整单元。" +
                        ("本次输出白底提取图，背景为纯白；保留主体自身白色岩面与积雪。"

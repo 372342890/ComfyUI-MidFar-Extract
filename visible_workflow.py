@@ -38,7 +38,7 @@ def _node(identifier, kind, title, x, y, inputs, outputs, previews, width=390):
 
 def build_workflow(input_filename="reference.png", filename_prefix="midfar-visible/asset",
                    background_mode="key"):
-    if background_mode not in ("key", "white"):
+    if background_mode not in ("key", "white", "any"):
         raise ValueError("Unknown output background mode.")
     pe_instruction = PE
     image_instruction = IMAGE_INSTRUCTION
@@ -48,6 +48,12 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
         image_instruction = IMAGE_INSTRUCTION.replace(
             "指定纯色键背景", "纯白底背景")
         image_instruction += "\n不要求透明通道，保留主体白色岩面与积雪，移除外围雾气。"
+    elif background_mode == "any":
+        pe_instruction = PE.replace(
+            "提示词中所有非目标区域写为“均匀纯色{KEY_COLOR}背景”，此占位符由提示词分路节点根据原图颜色自动替换，不让用户手工填写。不画棋盘格、渐变、阴影、文字、水印，也不将色键染上主体。",
+            "底色不限，白底、其他颜色或透明均可，不要求指定颜色或透明通道。不要增加文字、水印或无关物体。")
+        image_instruction = IMAGE_INSTRUCTION.replace(
+            "使用指定纯色键背景", "底色不限，白底、其他颜色或透明均可")
     templates = json.loads(Path(__file__).with_name("visible_native_templates.json").read_text(
         encoding="utf8"))
     nodes = [_node(1, "LoadImage", "① 上传一张原图", 0, 650,
@@ -96,9 +102,10 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
          ("key_color", "STRING"), ("prefix_1", "STRING"), ("prefix_2", "STRING"),
          ("prefix_3", "STRING"), ("record", "STRING")],
         ["prompt_1", "prompt_2", "prompt_3", "record"]))
-    if background_mode == "white":
+    if background_mode in ("white", "any"):
         nodes[-1]["data"]["inputs"].append(
-            {"name": "background_mode", "label": "输出背景", "type": "STRING", "value": "white"})
+            {"name": "background_mode", "label": "输出背景", "type": "STRING",
+             "value": background_mode})
     connect(1, "IMAGE", 4, "reference")
     connect(2, "text", 4, "recognition")
     connect(3, "text", 4, "pe")
@@ -121,4 +128,6 @@ def build_workflow(input_filename="reference.png", filename_prefix="midfar-visib
     connect(4, "key_color", 8, "key_color")
     if background_mode == "white":
         nodes[-1]["data"]["title"] = "⑥ 三图统一去重 · 输出三张白底提取PNG"
+    elif background_mode == "any":
+        nodes[-1]["data"]["title"] = "⑥ 三图统一去重 · 输出三张提取图（底色不限）"
     return {"name": "ba-clipboard", "version": 1, "nodes": nodes, "edges": edges}

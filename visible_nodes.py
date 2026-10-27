@@ -31,7 +31,7 @@ class BAMidFarVisiblePE:
             "pe": ("STRING", {"forceInput": True}),
             "filename_prefix": ("STRING", {"default": "midfar-visible/asset"}),
         }, "optional": {
-            "background_mode": (["key", "white"], {"default": "key"}),
+            "background_mode": (["key", "white", "any"], {"default": "key"}),
         }}
 
     RETURN_TYPES = ("STRING",)*8
@@ -125,7 +125,7 @@ class BAMidFarVisibleThreePNG:
     FUNCTION = "run"
     CATEGORY = "MidFar Extract/Visible PE"
     OUTPUT_NODE = True
-    DESCRIPTION = "Shows three distinct white-background or transparent PNGs with duplicate checks."
+    DESCRIPTION = "Shows three distinct extraction images; any background is accepted in any mode."
 
     def run(self, image_1, image_2, image_3, key_color, prefix_1, prefix_2, prefix_3):
         prefixes = (prefix_1, prefix_2, prefix_3)
