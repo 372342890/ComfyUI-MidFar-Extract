@@ -2,6 +2,7 @@ import json
 import torch
 from .core import parse_plan, choose_key, compile_prompt, matte
 from .grid_nodes import AutoGridSplit, GridAssetSplitter
+from .seedream_batch_2k import SeedreamBatch2K
 from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
 from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_workflow
 from .selection import parse_selection, crop_reference, selected_prompt, expand_selection, selected_matte
@@ -288,6 +289,7 @@ class BAMidFarSelectedMatte:
 
 
 NODE_CLASS_MAPPINGS = {
+    "SeedreamBatch2K": SeedreamBatch2K,
     "AutoGridSplit": AutoGridSplit,
     "GridAssetSplitter": GridAssetSplitter,
     "BAMidFarPlanPrompt": BAMidFarPlanPrompt,
@@ -323,6 +325,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarVisibleThreePNG": BAMidFarVisibleThreePNG,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "SeedreamBatch2K": "Seedream 5.0 Pro · 批量高清 2048",
     "AutoGridSplit": "自动网格切图",
     "GridAssetSplitter": "方格切图 · 高级设置",
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",

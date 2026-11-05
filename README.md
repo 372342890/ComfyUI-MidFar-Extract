@@ -348,3 +348,45 @@ PNG. Side and back colors use nearest foreground color extension from that
 single front reference. This is not independent multiview AI texture painting;
 side/back detail may be less faithful than the front view. Geometry is generated
 by the real 3D model, not an extrusion or a textured plane.
+
+## Seedream 5.0 Pro batch enhancement to 2048×2048
+
+`AutoGridSplit.images → SeedreamBatch2K.images → SaveImage`
+
+Display name: **Seedream 5.0 Pro · 批量高清 2048**. One IMAGE batch input and one
+IMAGE batch output. It calls the workbench's installed `BALLMImage` carrier with
+the actual `Doubao-Seedream-5.0-pro` model, one current reference PNG per request,
+in source order. Every returned image must be exactly 2048×2048 RGB.
+No local resizing is substituted when generation fails.
+
+The default instruction preserves the subject, current view, orientation,
+proportions, palette and background while improving clarity. Non-square subjects
+are requested with proportional background padding. This is generative
+enhancement: details may change, and exact pixel or silhouette preservation is
+not guaranteed. Review the first outputs before running the entire batch.
+
+- `max_images=0`: process all images; use `1` or `2` for a small first run.
+- `seed`: initial provider seed, incremented per source image.
+- `reuse_completed=true`: use completed PNGs for the same reference, instruction,
+  model and seed. Changing these parameters generates new results.
+- `instruction`: editable enhancement prompt.
+
+Each uncached image is a separate model request and incurs the provider's usual
+cost. Completed files are retained under `output/seedream-batch-2k/`, including
+when a later image fails or the batch is cancelled. Errors include the source
+index; failed calls are not automatically repeated. Rerun to resume from
+completed results. To deliberately regenerate, disable `reuse_completed`.
+Invalid cached files produce an explicit error rather than a silent paid retry.
+The output is RGB; this node does not restore transparency.
+
+The existing ByteArtist runtime, account authorization and native image carrier
+are required. No new API key is bundled in this plugin. Update this Git URL in
+the room's Manager, restart the workbench, then add `SeedreamBatch2K`.
+The output batch uses about 48 MiB per image in CPU memory (16 images ≈768 MiB).
+
+```sh
+python -m unittest test_seedream_batch_2k test_compact_native test_image_handoff -v
+```
+
+These tests exercise real PNG handoff and completed-file reuse with a simulated
+carrier. They do not claim the external Seedream service has generated images.

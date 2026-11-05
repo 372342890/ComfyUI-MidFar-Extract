@@ -1,0 +1,174 @@
+"""Contract tests use a fake paid carrier, with real PNG input/cache files."""
+import importlib.util
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import unittest
+
+import numpy as np
+from PIL import Image
+import torch
+
+if importlib.util.find_spec("seedream_batch_2k"):
+    import seedream_batch_2k as batch
+else:
+    batch = None
+
+
+class Availability(unittest.TestCase):
+    def test_batch_enhancer_exists(self):
+        self.assertIsNotNone(batch, "Seedream 5.0 Pro batch enhancer is missing.")
+
+
+@unittest.skipIf(batch is None, "Seedream batch enhancer is missing.")
+class BatchContract(unittest.TestCase):
+    def setUp(self):
+        self.directory = TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.calls = []
+        self.fail_at = None
+        self.reply = None
+        owner = self
+
+        class Native:
+            INPUT_IS_LIST = True
+            FUNCTION = "run_with_tea"
+
+            def run_with_tea(self, **kw):
+                file = Path(kw["image0"][0])
+                with Image.open(file) as image:
+                    pixels = np.asarray(image.convert("RGB")).copy()
+                owner.calls.append((kw, dict(self.node_info), pixels))
+                if owner.fail_at == len(owner.calls):
+                    raise RuntimeError("provider request denied")
+                if owner.reply is not None:
+                    return {"result": (owner.reply,)}
+                color = torch.from_numpy(pixels[0, 0].astype("float32") / 255)
+                return {"result": (color.reshape(1, 1, 1, 3).expand(
+                    1, 2048, 2048, 3),)}
+
+        self.mappings = {"BALLMImage": Native}
+
+    def source(self, count=2):
+        result = torch.zeros((count, 12, 16, 3))
+        for index in range(count):
+            result[index, ..., index % 3] = 1
+        return result
+
+    def run_batch(self, images=None, **options):
+        return batch.enhance_batch(
+            self.source() if images is None else images, self.mappings,
+            {"prompt_id": "task-123", "node_id": "81"}, "81",
+            {"81": {"class_type": "SeedreamBatch2K"}},
+            self.root / "input", self.root / "output", **options)
+
+    def test_isolated_ordered_native_requests_and_exact_2k_outputs(self):
+        images, records = self.run_batch()
+        self.assertEqual(tuple(images.shape), (2, 2048, 2048, 3))
+        self.assertEqual(images.device.type, "cpu")
+        self.assertEqual(images.dtype, torch.float32)
+        self.assertEqual(len(self.calls), 2)
+        self.assertTrue(torch.equal(images[0, 0, 0], torch.tensor([1., 0., 0.])))
+        self.assertTrue(torch.equal(images[1, 0, 0], torch.tensor([0., 1., 0.])))
+        for kw, info, _ in self.calls:
+            self.assertEqual([key for key in kw if key.startswith("image")], ["image0"])
+            self.assertTrue(all(isinstance(value, list) and len(value) == 1
+                                for value in kw.values()))
+            self.assertEqual(info["prompt_id"], "task-123")
+            self.assertEqual(kw["extra_inputs"][0]["size"], "2048x2048")
+            self.assertFalse(kw["extra_inputs"][0]["watermark"])
+            model = json.loads(kw["model"][0])
+            self.assertEqual(model["model_name"], "Doubao-Seedream-5.0-pro")
+            self.assertIn("唯一", kw["user_prompt"][0])
+        self.assertEqual([item["index"] for item in records], [1, 2])
+        for item in records:
+            with Image.open(self.root / "output" / item["relative_file"]) as image:
+                self.assertEqual(image.size, (2048, 2048))
+
+    def test_partial_failure_is_indexed_not_retried_and_success_reused(self):
+        self.fail_at = 2
+        with self.assertRaisesRegex(RuntimeError, "2/2.*provider request denied"):
+            self.run_batch()
+        self.assertEqual(len(self.calls), 2)
+        self.fail_at = None
+        images, records = self.run_batch()
+        self.assertEqual(len(self.calls), 3)
+        self.assertEqual([item["cached"] for item in records], [True, False])
+        self.assertEqual(tuple(images.shape), (2, 2048, 2048, 3))
+
+    def test_seed_and_instruction_invalidate_completed_cache(self):
+        self.run_batch(self.source(1), seed=7)
+        self.run_batch(self.source(1), seed=7)
+        self.assertEqual(len(self.calls), 1)
+        self.run_batch(self.source(1), seed=8)
+        self.run_batch(self.source(1), seed=8, instruction="保留唯一参考图的造型。")
+        self.assertEqual(len(self.calls), 3)
+
+    def test_empty_invalid_sources_fail_before_native_request(self):
+        for source in (torch.empty(0, 12, 16, 3), torch.zeros(12, 16, 3),
+                       torch.full((1, 2, 2, 3), float("nan")),
+                       torch.full((1, 2, 2, 3), 1.5)):
+            with self.subTest(shape=source.shape):
+                with self.assertRaises(ValueError):
+                    self.run_batch(source)
+        self.assertEqual(self.calls, [])
+
+    def test_wrong_size_and_multiple_or_missing_native_outputs_are_rejected(self):
+        for reply in (torch.zeros(1, 512, 512, 3), torch.zeros(2, 2048, 2048, 3),
+                      [], [torch.zeros(1, 1, 1, 3), torch.zeros(1, 1, 1, 3)],
+                      None):
+            self.reply = reply
+            if reply is None:
+                self.reply = "no IMAGE"
+            with self.subTest(kind=type(reply).__name__):
+                with self.assertRaisesRegex(RuntimeError, "1/1"):
+                    self.run_batch(self.source(1))
+        self.assertEqual(len(self.calls), 5)
+
+    def test_corrupt_cached_output_fails_without_paid_regeneration(self):
+        _, records = self.run_batch(self.source(1))
+        path = self.root / "output" / records[0]["relative_file"]
+        path.write_bytes(b"broken PNG")
+        with self.assertRaisesRegex(RuntimeError, "cache"):
+            self.run_batch(self.source(1))
+        self.assertEqual(len(self.calls), 1)
+
+    def test_rgba_input_composites_over_white_and_limit_is_explicit(self):
+        source = torch.zeros(2, 12, 16, 4)
+        source[0, ..., 0] = 1
+        source[0, ..., 3] = .5
+        images, _ = self.run_batch(source, max_images=1)
+        self.assertEqual(images.shape[0], 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0][2][0, 0].tolist(), [255, 128, 128])
+
+    def test_interruption_before_next_image_keeps_completed_cache(self):
+        checks = []
+
+        def interrupted():
+            checks.append(True)
+            if len(checks) == 2:
+                raise RuntimeError("cancelled")
+
+        with self.assertRaisesRegex(RuntimeError, "cancelled"):
+            self.run_batch(check_interrupt=interrupted)
+        self.assertEqual(len(self.calls), 1)
+        _, records = self.run_batch()
+        self.assertTrue(records[0]["cached"])
+        self.assertEqual(len(self.calls), 2)
+
+    def test_single_image_output_port_and_fixed_defaults(self):
+        node = batch.SeedreamBatch2K
+        self.assertEqual(node.RETURN_TYPES, ("IMAGE",))
+        inputs = node.INPUT_TYPES()
+        self.assertEqual(inputs["required"]["images"], ("IMAGE",))
+        self.assertEqual(inputs["required"]["max_images"][1]["default"], 0)
+        self.assertIn("unique_id", inputs["hidden"])
+        self.assertIn("prompt", inputs["hidden"])
+        registration = Path(__file__).with_name("__init__.py").read_text(encoding="utf8")
+        self.assertIn('"SeedreamBatch2K": SeedreamBatch2K', registration)
+
+
+if __name__ == "__main__":
+    unittest.main()
