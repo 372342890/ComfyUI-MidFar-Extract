@@ -1,6 +1,7 @@
 import json
 import torch
 from .core import parse_plan, choose_key, compile_prompt, matte
+from .grid_nodes import AutoGridSplit, GridAssetSplitter
 from .objects import parse_objects, object_prompt, object_filename, crop_asset, expand_workflow
 from .terrain import parse_assets, asset_prompt, asset_filename, expand_terrain_workflow
 from .selection import parse_selection, crop_reference, selected_prompt, expand_selection, selected_matte
@@ -287,6 +288,8 @@ class BAMidFarSelectedMatte:
 
 
 NODE_CLASS_MAPPINGS = {
+    "AutoGridSplit": AutoGridSplit,
+    "GridAssetSplitter": GridAssetSplitter,
     "BAMidFarPlanPrompt": BAMidFarPlanPrompt,
     "BAMidFarMatte": BAMidFarMatte,
     "BAMidFarObjectPlan": BAMidFarObjectPlan,
@@ -320,6 +323,8 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarVisibleThreePNG": BAMidFarVisibleThreePNG,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "AutoGridSplit": "自动网格切图",
+    "GridAssetSplitter": "方格切图 · 高级设置",
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",
     "BAMidFarMatte": "MidFar Soft Matte / 中远景软边抠图",
     "BAMidFarObjectPlan": "MidFar Individual Objects / 逐物体动态提取",
