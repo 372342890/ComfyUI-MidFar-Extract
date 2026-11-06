@@ -39,13 +39,24 @@ def _axis_lines(rgb, background, axis):
     centers = [
         (lo + hi) // 2 for lo, hi in bands
         if hi - lo <= max(8, size * 0.02)
-        and lo >= size * 0.06 and hi <= size * 0.94
+        and lo >= 4 and hi <= size - 4
     ]
     if not centers:
         return None
+    # Several pixel bands can be antialiased edges of the same stroke.
+    # Collapse only these near-duplicates, not genuinely narrow grid cells.
+    merged = []
+    for center in centers:
+        if merged and center - merged[-1] <= 4:
+            merged[-1] = (merged[-1] + center) // 2
+        else:
+            merged.append(center)
+    centers = merged
     bounds = [0, *centers, size]
-    if len(centers) > 7 or min(np.diff(bounds)) < size * 0.055:
-        raise ValueError("Ambiguous grid lines; set rows/columns explicitly")
+    # A narrow blank cell is valid and will be skipped by the content filter.
+    # Its width relative to the sheet is not a reason to reject every asset.
+    if len(centers) > 19:
+        raise ValueError("More than 20 cells on one axis; verify the grid")
     return bounds
 
 
@@ -60,16 +71,14 @@ def _axis_gaps(rgb, background, axis, tolerance):
     bands = _runs(profile <= 0.002)
     inner = [
         (lo, hi) for lo, hi in bands
-        if lo > size * 0.05 and hi < size * 0.95
-        and hi - lo >= size * 0.018
+        if lo > 4 and hi < size - 4
+        and hi - lo >= max(4, size * 0.018)
     ]
     if not inner:
         return None
     bounds = [0, *[(a + b) // 2 for a, b in inner], size]
     widths = np.diff(bounds)
-    if len(inner) > 4 or min(widths) < size * 0.12:
-        return None
-    if max(widths) / min(widths) > 1.7:
+    if len(inner) > 19 or min(widths) < 8:
         return None
     return bounds
 

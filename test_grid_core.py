@@ -76,6 +76,49 @@ class GridRegression(unittest.TestCase):
         self.assertEqual(report["y_boundaries"], [0, 485, 970])
         self.assertEqual(report["detection"], {"x": "manual", "y": "manual"})
 
+    def test_narrow_blank_cell_does_not_abort_the_other_13_assets(self):
+        columns = [
+            [0, 300, 625, 910, 1220],
+            [0, 300, 580, 625, 910, 1220],
+            [0, 245, 515, 742, 910, 1220],
+        ]
+        image, colors = marked_sheet([0, 330, 610, 970], columns, blank=(7,))
+        tiles, report = split_sheet(image)
+        indices = [index for index in range(1, 15) if index != 7]
+        self.assert_one_marker_per_tile(tiles, colors, indices)
+        self.assertEqual(report["row_columns"], [4, 5, 5])
+        self.assertEqual(report["skipped_indices"], [7])
+
+    def test_narrow_occupied_edge_cell_is_not_ignored(self):
+        columns = [[0, 50, 610, 1220]]
+        image, colors = marked_sheet([0, 300], columns)
+        tiles, report = split_sheet(image)
+        self.assert_one_marker_per_tile(tiles, colors, [1, 2, 3])
+        self.assertEqual(report["row_x_boundaries"], columns)
+
+    def test_short_first_row_is_detected_without_a_relative_height_limit(self):
+        columns = [[0, 610, 1220]] * 3
+        image, colors = marked_sheet([0, 50, 350, 970], columns)
+        tiles, report = split_sheet(image)
+        self.assert_one_marker_per_tile(tiles, colors, list(range(1, 7)))
+        self.assertEqual(report["y_boundaries"], [0, 50, 350, 970])
+
+    def test_blank_gutters_do_not_require_similarly_sized_cells(self):
+        image = np.full((200, 1000, 3), 255, np.uint8)
+        colors = {1: (200, 40, 30), 2: (30, 180, 50), 3: (40, 50, 200)}
+        for index, x in enumerate((40, 250, 780), 1):
+            image[80:120, x - 20:x + 20] = colors[index]
+        tiles, report = split_sheet(image)
+        self.assert_one_marker_per_tile(tiles, colors, [1, 2, 3])
+        self.assertEqual(report["row_x_detection"], ["gaps"])
+
+    def test_ten_clear_columns_are_within_the_supported_cell_budget(self):
+        columns = [list(range(0, 2001, 200))]
+        image, colors = marked_sheet([0, 200], columns)
+        tiles, report = split_sheet(image)
+        self.assert_one_marker_per_tile(tiles, colors, list(range(1, 11)))
+        self.assertEqual(report["row_columns"], [10])
+
 
 if __name__ == "__main__":
     unittest.main()
