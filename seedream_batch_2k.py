@@ -28,7 +28,7 @@ DEFAULT_INSTRUCTION = (
     "非方形参考图保持比例，以原有背景补齐方形画布，不要拉伸或裁掉主体。"
 )
 SIZE = 1024
-RESOLUTIONS = {"512x512": (512, "512"), "1024x1024": (1024, "1k"),
+RESOLUTIONS = {"960x960": (960, "960"), "1024x1024": (1024, "1k"),
                "2048x2048": (2048, "2k")}
 MAX_SEED = 0x7fffffff
 LOGGER = logging.getLogger(__name__)
@@ -110,7 +110,7 @@ def enhance_batch(images, mappings, node_info, unique_id, prompt,
     """Return ordered RGB IMAGE batch and the actual generated file records."""
     source = _rgb_tensor(images)
     if not isinstance(resolution, str) or resolution not in RESOLUTIONS:
-        raise ValueError("resolution must be 512x512, 1024x1024 or 2048x2048.")
+        raise ValueError("resolution must be 960x960, 1024x1024 or 2048x2048.")
     size, cache_label = RESOLUTIONS[resolution]
     if type(seed) is not int or not 0 <= seed <= MAX_SEED:
         raise ValueError("seed must be an integer between 0 and 2147483647.")
@@ -119,7 +119,7 @@ def enhance_batch(images, mappings, node_info, unique_id, prompt,
     if not isinstance(instruction, str) or not instruction.strip():
         raise ValueError("Enhancement instruction must not be empty.")
     # Saved workflows retain their old widget text when a plugin is updated.
-    instruction = re.sub(r"(?<!\d)(512|1024|2048)\s*[xX×*]\s*\1(?!\d)",
+    instruction = re.sub(r"(?<!\d)(512|768|960|1024|2048)\s*[xX×*]\s*\1(?!\d)",
                          f"{size}×{size}", instruction.strip())
     count = min(source.shape[0], max_images) if max_images else source.shape[0]
     input_directory = Path(input_directory).resolve()
@@ -192,7 +192,7 @@ class SeedreamBatch2K:
         }, "optional": {
             "resolution": (list(RESOLUTIONS), {
                 "default": "1024x1024",
-                "tooltip": "真实模型请求尺寸；512可能被服务拒绝，不会缩放替代。"}),
+                "tooltip": "真实模型请求尺寸；960为921600像素，输出严格检查，不会缩放替代。"}),
         }, "hidden": {"unique_id": "UNIQUE_ID", "prompt": "PROMPT"}}
 
     RETURN_TYPES = ("IMAGE",)

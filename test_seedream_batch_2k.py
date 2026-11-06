@@ -121,7 +121,7 @@ class BatchContract(unittest.TestCase):
             with self.subTest(shape=source.shape):
                 with self.assertRaises(ValueError):
                     self.run_batch(source)
-        self.assertEqual(self.calls, [])
+        self.assertEqual(len(self.calls), 0)
 
     def test_wrong_size_and_multiple_or_missing_native_outputs_are_rejected(self):
         for reply in (torch.zeros(1, 2048, 2048, 3), torch.zeros(2, 1024, 1024, 3),
@@ -181,7 +181,7 @@ class BatchContract(unittest.TestCase):
         self.assertIn('"SeedreamBatch2K": SeedreamBatch2K', registration)
 
     def test_selected_resolution_controls_native_request_and_exact_output(self):
-        for size in (512, 2048):
+        for size in (960, 2048):
             with self.subTest(size=size):
                 images, records = self.run_batch(
                     resolution=f"{size}x{size}", reuse_completed=False)
@@ -197,7 +197,7 @@ class BatchContract(unittest.TestCase):
 
     def test_resolution_caches_are_isolated_and_reusable(self):
         paths = []
-        for resolution in ("512x512", "1024x1024", "2048x2048"):
+        for resolution in ("960x960", "1024x1024", "2048x2048"):
             _, first = self.run_batch(self.source(1), resolution=resolution)
             _, second = self.run_batch(self.source(1), resolution=resolution)
             paths.append(first[0]["relative_file"])
@@ -211,11 +211,11 @@ class BatchContract(unittest.TestCase):
         self.assertEqual(records[0]["relative_file"], paths[1])
 
     def test_invalid_resolution_is_rejected_before_native_request(self):
-        for resolution in ("1024", "512x1024", 2048, None):
+        for resolution in ("1024", "512x512", "768x768", "512x1024", 2048, None):
             with self.subTest(resolution=resolution):
                 with self.assertRaisesRegex(ValueError, "resolution"):
                     self.run_batch(resolution=resolution)
-        self.assertEqual(self.calls, [])
+        self.assertEqual(len(self.calls), 0)
 
     def test_wrong_selected_size_is_rejected_without_resizing_or_retrying(self):
         self.reply = torch.zeros(1, 1024, 1024, 3)
@@ -225,14 +225,14 @@ class BatchContract(unittest.TestCase):
         self.assertEqual(list((self.root / "output").rglob("*.png")), [])
 
     def test_known_saved_dimensions_follow_selection(self):
-        self.run_batch(self.source(1), resolution="512x512",
-                       instruction="输出1024 X 1024，不要拼成2048×2048；保留尺寸300x300的标牌。")
+        self.run_batch(self.source(1), resolution="960x960",
+                       instruction="输出1024 X 1024，不要拼成2048×2048或512x512或768x768；保留尺寸300x300的标牌。")
         self.assertEqual(self.calls[0][0]["user_prompt"][0],
-                         "输出512×512，不要拼成512×512；保留尺寸300x300的标牌。")
+                         "输出960×960，不要拼成960×960或960×960或960×960；保留尺寸300x300的标牌。")
 
     def test_resolution_widget_is_optional_with_legacy_default(self):
         options, metadata = batch.SeedreamBatch2K.INPUT_TYPES()["optional"]["resolution"]
-        self.assertEqual(options, ["512x512", "1024x1024", "2048x2048"])
+        self.assertEqual(options, ["960x960", "1024x1024", "2048x2048"])
         self.assertEqual(metadata["default"], "1024x1024")
 
     def test_records_distinguish_native_time_from_cache_and_report_completion(self):

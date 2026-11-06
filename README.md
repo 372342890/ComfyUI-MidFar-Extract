@@ -383,12 +383,14 @@ No local resizing is substituted when generation fails.
 The legacy class identifier `SeedreamBatch2K` and socket name `images_2048`
 are retained to preserve saved workflow connections. The optional `resolution`
 widget defaults to `1024x1024`, including old workflows without this input.
-Known 512/1024/2048 square dimensions in saved enhancement prompts follow the
+Known 512/768/960/1024/2048 square dimensions in saved enhancement prompts follow the
 selected size while the remaining instruction is preserved.
 
-`512x512` is available as a native request probe. The official Seedream 5.0 Pro
-guide lists native 1K, 1.5K and 2K output sizes; the service may reject 512.
-Unsupported requests fail explicitly without resizing or switching models.
+`960x960` replaces the smaller 512/768 options. It has 921600 total pixels,
+matching the minimum documented for requests with explicit dimensions.
+The official Seedream 5.0 Pro guide also describes native 1K, 1.5K and 2K sizes.
+Every response is checked for the requested dimensions. Unsupported or mismatched
+requests fail explicitly without resizing or switching models.
 See the [official model guide](https://console.volcengine.com/ark/region:cn-beijing/docs/ark/seedream-5-0-pro?lang=zh).
 
 The default instruction preserves the subject, current view, orientation,
@@ -399,13 +401,13 @@ not guaranteed. Review the first outputs before running the entire batch.
 
 - `max_images=0`: process all images; use `1` or `2` for a small first run.
 - `seed`: initial provider seed, incremented per source image.
-- `resolution`: `512x512`, `1024x1024` (default), or `2048x2048`.
+- `resolution`: `960x960`, `1024x1024` (default), or `2048x2048`.
 - `reuse_completed=true`: use completed PNGs for the same reference, instruction,
   model, seed and resolution. Changing these parameters generates new results.
 - `instruction`: editable enhancement prompt.
 
 Each uncached image is a separate model request and incurs the provider's usual
-cost. Completed files are retained under `output/seedream-batch-512/`,
+cost. Completed files are retained under `output/seedream-batch-960/`,
 `output/seedream-batch-1k/` or `output/seedream-batch-2k/`, including
 when a later image fails or the batch is cancelled. Errors include the source
 index; failed calls are not automatically repeated. Rerun to resume from
