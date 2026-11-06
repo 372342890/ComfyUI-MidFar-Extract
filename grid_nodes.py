@@ -99,7 +99,7 @@ class AutoGridSplit:
     RETURN_NAMES = ("images",)
     FUNCTION = "split"
     CATEGORY = "image/asset_sheet"
-    DESCRIPTION = "输入一张网格图，支持不等列宽、行高和窄空白格；逐行识别边界、裁切并过滤空白。"
+    DESCRIPTION = "输入一张网格图，逐行识别贯通格子线并排除灰色主体误切；支持不等列宽、行高和窄空白格。"
 
     def split(self, image):
         images, _, _ = GridAssetSplitter().split(image=image)

@@ -119,6 +119,42 @@ class GridRegression(unittest.TestCase):
         self.assert_one_marker_per_tile(tiles, colors, list(range(1, 11)))
         self.assertEqual(report["row_columns"], [10])
 
+    def test_overlapping_gray_walls_do_not_cut_a_marker_in_half(self):
+        columns = [[0, 400, 800]]
+        image, colors = marked_sheet([0, 300], columns)
+        # Different walls overlap in a narrow projection band through asset 1.
+        # Neither wall is a separator stroke with background on both sides.
+        image[:140, 80:204] = 230
+        image[160:, 196:320] = 230
+        tiles, report = split_sheet(image)
+        self.assertEqual(report["row_x_boundaries"], columns)
+        self.assert_one_marker_per_tile(tiles, colors, [1, 2])
+        for tile, color in zip(tiles, colors.values()):
+            self.assertEqual(np.all(tile == color, axis=2).sum(),
+                             np.all(image == color, axis=2).sum())
+
+    def test_tall_gray_part_stopping_before_row_ends_is_not_a_separator(self):
+        columns = [[0, 400, 800]]
+        image, colors = marked_sheet([0, 300], columns)
+        image[30:270, 78:81] = 230
+        tiles, report = split_sheet(image)
+        self.assertEqual(report["row_x_boundaries"], columns)
+        self.assert_one_marker_per_tile(tiles, colors, [1, 2])
+        self.assertTrue(np.all(tiles[0][30:270, 78:81] == 230))
+
+    def test_gray_horizontal_shapes_do_not_replace_faint_grid_lines(self):
+        columns = [[0, 400, 800]] * 2
+        image, colors = marked_sheet([0, 300, 600], columns)
+        image[50:154, :380] = 230
+        image[146:250, 420:] = 230
+        # Genuine low-contrast separators must still be detected on both axes.
+        image[299:302] = 247
+        image[:, 399:402] = 247
+        tiles, report = split_sheet(image)
+        self.assertEqual(report["y_boundaries"], [0, 300, 600])
+        self.assertEqual(report["row_x_boundaries"], columns)
+        self.assert_one_marker_per_tile(tiles, colors, [1, 2, 3, 4])
+
 
 if __name__ == "__main__":
     unittest.main()

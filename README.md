@@ -359,6 +359,9 @@ pixels; the IMAGE batch is padded to a common size without resizing.
 Different row heights and column widths are supported. Narrow blank cells are
 filtered without aborting the rest of the sheet; inferred gutter cells do not
 need similar widths. Up to 20 cells per axis and 100 cells per sheet are allowed.
+Line detection checks a narrow darker stroke against its two flanks and requires
+it to reach both ends of the row or sheet. Broad gray building surfaces and tall
+gray parts stopping inside a cell are rejected as separator candidates.
 
 `GridAssetSplitter` additionally provides explicit row/column overrides and a
 report with `row_columns` and `row_x_boundaries`. Uniform grids retain the shared

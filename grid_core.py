@@ -36,11 +36,26 @@ def _axis_lines(rgb, background, axis):
     coverage = gray_line.mean(axis=axis)
     size = coverage.size
     bands = _runs(coverage >= 0.65)
-    centers = [
-        (lo + hi) // 2 for lo, hi in bands
-        if hi - lo <= max(8, size * 0.02)
-        and lo >= 4 and hi <= size - 4
-    ]
+    # Neutral object surfaces can overlap into a narrow projection band.
+    # A separator is a darker stroke with similar flanks, continuing to both
+    # ends of the row (vertical) or sheet (horizontal).
+    luma = rgb.mean(axis=2)
+    if axis == 1:
+        luma = luma.T
+    endpoint = max(4, int(round(luma.shape[0] * 0.05)))
+    centers = []
+    for lo, hi in bands:
+        if hi - lo > max(8, size * 0.02) or lo < 4 or hi > size - 4:
+            continue
+        stroke = luma[:, lo:hi].min(axis=1)
+        left = np.median(luma[:, lo - 4:lo], axis=1)
+        right = np.median(luma[:, hi:hi + 4], axis=1)
+        support = ((np.minimum(left, right) - stroke >= 3)
+                   & (np.abs(left - right) <= 12))
+        if (support.mean() >= 0.65
+                and support[:endpoint].mean() >= 0.65
+                and support[-endpoint:].mean() >= 0.65):
+            centers.append((lo + hi) // 2)
     if not centers:
         return None
     # Several pixel bands can be antialiased edges of the same stroke.
