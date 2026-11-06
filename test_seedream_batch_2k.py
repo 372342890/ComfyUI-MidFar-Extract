@@ -44,9 +44,10 @@ class BatchContract(unittest.TestCase):
                     raise RuntimeError("provider request denied")
                 if owner.reply is not None:
                     return {"result": (owner.reply,)}
+                size = int(kw["extra_inputs"][0]["size"].split("x")[0])
                 color = torch.from_numpy(pixels[0, 0].astype("float32") / 255)
                 return {"result": (color.reshape(1, 1, 1, 3).expand(
-                    1, 1024, 1024, 3),)}
+                    1, size, size, 3),)}
 
         self.mappings = {"BALLMImage": Native}
 
@@ -178,6 +179,71 @@ class BatchContract(unittest.TestCase):
         self.assertIn("prompt", inputs["hidden"])
         registration = Path(__file__).with_name("__init__.py").read_text(encoding="utf8")
         self.assertIn('"SeedreamBatch2K": SeedreamBatch2K', registration)
+
+    def test_selected_resolution_controls_native_request_and_exact_output(self):
+        for size in (512, 2048):
+            with self.subTest(size=size):
+                images, records = self.run_batch(
+                    resolution=f"{size}x{size}", reuse_completed=False)
+                self.assertEqual(tuple(images.shape), (2, size, size, 3))
+                self.assertTrue(torch.equal(images[1, 0, 0],
+                                            torch.tensor([0., 1., 0.])))
+                settings = self.calls[-1][0]
+                self.assertEqual(settings["extra_inputs"][0]["size"], f"{size}x{size}")
+                self.assertIn(f"{size}×{size}", settings["user_prompt"][0])
+                for record in records:
+                    with Image.open(self.root / "output" / record["relative_file"]) as img:
+                        self.assertEqual(img.size, (size, size))
+
+    def test_resolution_caches_are_isolated_and_reusable(self):
+        paths = []
+        for resolution in ("512x512", "1024x1024", "2048x2048"):
+            _, first = self.run_batch(self.source(1), resolution=resolution)
+            _, second = self.run_batch(self.source(1), resolution=resolution)
+            paths.append(first[0]["relative_file"])
+            self.assertFalse(first[0]["cached"])
+            self.assertTrue(second[0]["cached"])
+        self.assertEqual(len(self.calls), 3)
+        self.assertEqual(len(set(paths)), 3)
+        # Missing resolution and explicit 1024 must reuse the legacy default cache.
+        _, records = self.run_batch(self.source(1))
+        self.assertTrue(records[0]["cached"])
+        self.assertEqual(records[0]["relative_file"], paths[1])
+
+    def test_invalid_resolution_is_rejected_before_native_request(self):
+        for resolution in ("1024", "512x1024", 2048, None):
+            with self.subTest(resolution=resolution):
+                with self.assertRaisesRegex(ValueError, "resolution"):
+                    self.run_batch(resolution=resolution)
+        self.assertEqual(self.calls, [])
+
+    def test_wrong_selected_size_is_rejected_without_resizing_or_retrying(self):
+        self.reply = torch.zeros(1, 1024, 1024, 3)
+        with self.assertRaisesRegex(RuntimeError, "1/2.*2048x2048"):
+            self.run_batch(resolution="2048x2048")
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(list((self.root / "output").rglob("*.png")), [])
+
+    def test_known_saved_dimensions_follow_selection(self):
+        self.run_batch(self.source(1), resolution="512x512",
+                       instruction="输出1024 X 1024，不要拼成2048×2048；保留尺寸300x300的标牌。")
+        self.assertEqual(self.calls[0][0]["user_prompt"][0],
+                         "输出512×512，不要拼成512×512；保留尺寸300x300的标牌。")
+
+    def test_resolution_widget_is_optional_with_legacy_default(self):
+        options, metadata = batch.SeedreamBatch2K.INPUT_TYPES()["optional"]["resolution"]
+        self.assertEqual(options, ["512x512", "1024x1024", "2048x2048"])
+        self.assertEqual(metadata["default"], "1024x1024")
+
+    def test_records_distinguish_native_time_from_cache_and_report_completion(self):
+        completed = []
+        _, records = self.run_batch(
+            self.source(1), on_completed=lambda *args: completed.append(args))
+        self.assertGreater(records[0]["request_seconds"], 0)
+        self.assertEqual(records[0]["resolution"], "1024x1024")
+        self.assertEqual(completed, [(1, 1)])
+        _, cached = self.run_batch(self.source(1))
+        self.assertEqual(cached[0]["request_seconds"], 0)
 
 
 if __name__ == "__main__":

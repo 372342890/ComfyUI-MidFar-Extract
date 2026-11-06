@@ -370,20 +370,26 @@ then reports the maximum column count. Explicit manual settings remain
 authoritative. Clear separators or blank gutters are needed for automatic
 detection; it does not infer semantic object boundaries inside a cell.
 
-## Seedream 5.0 Pro batch enhancement to 1024×1024
+## Seedream 5.0 Pro batch enhancement with resolution selection
 
 `AutoGridSplit.images → SeedreamBatch2K.images → SaveImage`
 
-Display name: **Seedream 5.0 Pro · 批量高清 1024**. One IMAGE batch input and one
+Display name: **Seedream 5.0 Pro · 批量高清 · 尺寸可选**. One IMAGE batch input and one
 IMAGE batch output. It calls the workbench's installed `BALLMImage` carrier with
 the actual `Doubao-Seedream-5.0-pro` model, one current reference PNG per request,
-in source order. Every returned image must be exactly 1024×1024 RGB.
+in source order. Every returned image must be exactly the selected square size in RGB.
 No local resizing is substituted when generation fails.
 
 The legacy class identifier `SeedreamBatch2K` and socket name `images_2048`
-are retained to preserve saved workflow connections; the request and actual
-output are now 1024×1024. Old 2048×2048 dimensions in saved enhancement prompts
-are automatically migrated while the remaining instruction is preserved.
+are retained to preserve saved workflow connections. The optional `resolution`
+widget defaults to `1024x1024`, including old workflows without this input.
+Known 512/1024/2048 square dimensions in saved enhancement prompts follow the
+selected size while the remaining instruction is preserved.
+
+`512x512` is available as a native request probe. The official Seedream 5.0 Pro
+guide lists native 1K, 1.5K and 2K output sizes; the service may reject 512.
+Unsupported requests fail explicitly without resizing or switching models.
+See the [official model guide](https://console.volcengine.com/ark/region:cn-beijing/docs/ark/seedream-5-0-pro?lang=zh).
 
 The default instruction preserves the subject, current view, orientation,
 proportions, palette and background while improving clarity. Non-square subjects
@@ -393,23 +399,30 @@ not guaranteed. Review the first outputs before running the entire batch.
 
 - `max_images=0`: process all images; use `1` or `2` for a small first run.
 - `seed`: initial provider seed, incremented per source image.
+- `resolution`: `512x512`, `1024x1024` (default), or `2048x2048`.
 - `reuse_completed=true`: use completed PNGs for the same reference, instruction,
-  model and seed. Changing these parameters generates new results.
+  model, seed and resolution. Changing these parameters generates new results.
 - `instruction`: editable enhancement prompt.
 
 Each uncached image is a separate model request and incurs the provider's usual
-cost. Completed files are retained under `output/seedream-batch-1k/`, including
+cost. Completed files are retained under `output/seedream-batch-512/`,
+`output/seedream-batch-1k/` or `output/seedream-batch-2k/`, including
 when a later image fails or the batch is cancelled. Errors include the source
 index; failed calls are not automatically repeated. Rerun to resume from
 completed results. To deliberately regenerate, disable `reuse_completed`.
 Invalid cached files produce an explicit error rather than a silent paid retry.
 The output is RGB; this node does not restore transparency.
+Progress advances only after each image is completed. UI result metadata
+`seedream_timings` records each actual native call's elapsed seconds and cache
+status; cached images have zero request seconds. These durations exclude the
+outer task queue and final SaveImage node.
 
 The existing ByteArtist runtime, account authorization and native image carrier
 are required. No new API key is bundled in this plugin. Update this Git URL in
 the room's Manager, restart the workbench, then add `SeedreamBatch2K`.
-Old 2K cache files are not reused for the new size. The output batch uses about
-12 MiB per image in CPU memory (16 images ≈192 MiB).
+Existing 1024 cache keys remain valid; other resolutions use separate keys.
+The output batch uses about 12 MiB per 1024 image or 48 MiB per 2048 image
+in CPU memory (12 images at 2048 ≈576 MiB).
 
 ```sh
 python -m unittest test_grid_core test_seedream_batch_2k test_compact_native test_image_handoff -v
