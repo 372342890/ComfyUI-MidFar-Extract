@@ -46,7 +46,7 @@ class BatchContract(unittest.TestCase):
                     return {"result": (owner.reply,)}
                 color = torch.from_numpy(pixels[0, 0].astype("float32") / 255)
                 return {"result": (color.reshape(1, 1, 1, 3).expand(
-                    1, 2048, 2048, 3),)}
+                    1, 1024, 1024, 3),)}
 
         self.mappings = {"BALLMImage": Native}
 
@@ -63,9 +63,9 @@ class BatchContract(unittest.TestCase):
             {"81": {"class_type": "SeedreamBatch2K"}},
             self.root / "input", self.root / "output", **options)
 
-    def test_isolated_ordered_native_requests_and_exact_2k_outputs(self):
+    def test_isolated_ordered_native_requests_and_exact_1k_outputs(self):
         images, records = self.run_batch()
-        self.assertEqual(tuple(images.shape), (2, 2048, 2048, 3))
+        self.assertEqual(tuple(images.shape), (2, 1024, 1024, 3))
         self.assertEqual(images.device.type, "cpu")
         self.assertEqual(images.dtype, torch.float32)
         self.assertEqual(len(self.calls), 2)
@@ -76,15 +76,16 @@ class BatchContract(unittest.TestCase):
             self.assertTrue(all(isinstance(value, list) and len(value) == 1
                                 for value in kw.values()))
             self.assertEqual(info["prompt_id"], "task-123")
-            self.assertEqual(kw["extra_inputs"][0]["size"], "2048x2048")
+            self.assertEqual(kw["extra_inputs"][0]["size"], "1024x1024")
             self.assertFalse(kw["extra_inputs"][0]["watermark"])
             model = json.loads(kw["model"][0])
             self.assertEqual(model["model_name"], "Doubao-Seedream-5.0-pro")
             self.assertIn("唯一", kw["user_prompt"][0])
         self.assertEqual([item["index"] for item in records], [1, 2])
         for item in records:
+            self.assertTrue(item["relative_file"].startswith("seedream-batch-1k/"))
             with Image.open(self.root / "output" / item["relative_file"]) as image:
-                self.assertEqual(image.size, (2048, 2048))
+                self.assertEqual(image.size, (1024, 1024))
 
     def test_partial_failure_is_indexed_not_retried_and_success_reused(self):
         self.fail_at = 2
@@ -95,7 +96,14 @@ class BatchContract(unittest.TestCase):
         images, records = self.run_batch()
         self.assertEqual(len(self.calls), 3)
         self.assertEqual([item["cached"] for item in records], [True, False])
-        self.assertEqual(tuple(images.shape), (2, 2048, 2048, 3))
+        self.assertEqual(tuple(images.shape), (2, 1024, 1024, 3))
+
+    def test_saved_2048_prompt_is_migrated_without_changing_other_instructions(self):
+        for dimensions in ("2048×2048", "2048x2048", "2048 X 2048"):
+            self.run_batch(self.source(1), reuse_completed=False,
+                           instruction=f"输出{dimensions}，保留木箱和当前视角。")
+            instruction = self.calls[-1][0]["user_prompt"][0]
+            self.assertEqual(instruction, "输出1024×1024，保留木箱和当前视角。")
 
     def test_seed_and_instruction_invalidate_completed_cache(self):
         self.run_batch(self.source(1), seed=7)
@@ -115,7 +123,7 @@ class BatchContract(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_wrong_size_and_multiple_or_missing_native_outputs_are_rejected(self):
-        for reply in (torch.zeros(1, 512, 512, 3), torch.zeros(2, 2048, 2048, 3),
+        for reply in (torch.zeros(1, 2048, 2048, 3), torch.zeros(2, 1024, 1024, 3),
                       [], [torch.zeros(1, 1, 1, 3), torch.zeros(1, 1, 1, 3)],
                       None):
             self.reply = reply
@@ -161,9 +169,11 @@ class BatchContract(unittest.TestCase):
     def test_single_image_output_port_and_fixed_defaults(self):
         node = batch.SeedreamBatch2K
         self.assertEqual(node.RETURN_TYPES, ("IMAGE",))
+        self.assertEqual(node.RETURN_NAMES, ("images_2048",))
         inputs = node.INPUT_TYPES()
         self.assertEqual(inputs["required"]["images"], ("IMAGE",))
         self.assertEqual(inputs["required"]["max_images"][1]["default"], 0)
+        self.assertIn("1024×1024", inputs["required"]["instruction"][1]["default"])
         self.assertIn("unique_id", inputs["hidden"])
         self.assertIn("prompt", inputs["hidden"])
         registration = Path(__file__).with_name("__init__.py").read_text(encoding="utf8")

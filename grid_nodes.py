@@ -31,7 +31,7 @@ class GridAssetSplitter:
     RETURN_NAMES = ("assets", "kept_count", "report")
     FUNCTION = "split"
     CATEGORY = "image/asset_sheet"
-    DESCRIPTION = "Automatically cut asset-sheet cells and skip blank cells; original pixels retained."
+    DESCRIPTION = "Cut row-specific asset-sheet cells and skip blanks; original pixels retained."
 
     def split(self, image, rows=0, columns=0, background_tolerance=24,
               min_content_ratio=0.0003, border_ignore_ratio=0.025,
@@ -99,7 +99,7 @@ class AutoGridSplit:
     RETURN_NAMES = ("images",)
     FUNCTION = "split"
     CATEGORY = "image/asset_sheet"
-    DESCRIPTION = "输入一张网格图，自动识别分隔线、逐格裁切、过滤空白，输出所有小图。"
+    DESCRIPTION = "输入一张网格图，逐行识别独立列边界、逐格裁切、过滤空白，输出所有小图。"
 
     def split(self, image):
         images, _, _ = GridAssetSplitter().split(image=image)

@@ -325,7 +325,7 @@ NODE_CLASS_MAPPINGS = {
     "BAMidFarVisibleThreePNG": BAMidFarVisibleThreePNG,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SeedreamBatch2K": "Seedream 5.0 Pro · 批量高清 2048",
+    "SeedreamBatch2K": "Seedream 5.0 Pro · 批量高清 1024",
     "AutoGridSplit": "自动网格切图",
     "GridAssetSplitter": "方格切图 · 高级设置",
     "BAMidFarPlanPrompt": "MidFar Scene Prompt / 通用分层提示",

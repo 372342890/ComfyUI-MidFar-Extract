@@ -349,15 +349,35 @@ single front reference. This is not independent multiview AI texture painting;
 side/back detail may be less faithful than the front view. Geometry is generated
 by the real 3D model, not an extrusion or a textured plane.
 
-## Seedream 5.0 Pro batch enhancement to 2048×2048
+## Automatic grid cutting with different columns per row
+
+`AutoGridSplit` detects horizontal rows first and measures each row's vertical
+separators independently. A sheet with 4 / 4 / 5 cells produces 13 individual
+crops rather than merging adjacent assets. Empty cells are filtered; separate
+parts belonging to the same grid cell remain together. Cropping preserves source
+pixels; the IMAGE batch is padded to a common size without resizing.
+
+`GridAssetSplitter` additionally provides explicit row/column overrides and a
+report with `row_columns` and `row_x_boundaries`. Uniform grids retain the shared
+`x_boundaries` field; it is `null` when rows use different partitions. `columns`
+then reports the maximum column count. Explicit manual settings remain
+authoritative. Clear separators or blank gutters are needed for automatic
+detection; it does not infer semantic object boundaries inside a cell.
+
+## Seedream 5.0 Pro batch enhancement to 1024×1024
 
 `AutoGridSplit.images → SeedreamBatch2K.images → SaveImage`
 
-Display name: **Seedream 5.0 Pro · 批量高清 2048**. One IMAGE batch input and one
+Display name: **Seedream 5.0 Pro · 批量高清 1024**. One IMAGE batch input and one
 IMAGE batch output. It calls the workbench's installed `BALLMImage` carrier with
 the actual `Doubao-Seedream-5.0-pro` model, one current reference PNG per request,
-in source order. Every returned image must be exactly 2048×2048 RGB.
+in source order. Every returned image must be exactly 1024×1024 RGB.
 No local resizing is substituted when generation fails.
+
+The legacy class identifier `SeedreamBatch2K` and socket name `images_2048`
+are retained to preserve saved workflow connections; the request and actual
+output are now 1024×1024. Old 2048×2048 dimensions in saved enhancement prompts
+are automatically migrated while the remaining instruction is preserved.
 
 The default instruction preserves the subject, current view, orientation,
 proportions, palette and background while improving clarity. Non-square subjects
@@ -372,7 +392,7 @@ not guaranteed. Review the first outputs before running the entire batch.
 - `instruction`: editable enhancement prompt.
 
 Each uncached image is a separate model request and incurs the provider's usual
-cost. Completed files are retained under `output/seedream-batch-2k/`, including
+cost. Completed files are retained under `output/seedream-batch-1k/`, including
 when a later image fails or the batch is cancelled. Errors include the source
 index; failed calls are not automatically repeated. Rerun to resume from
 completed results. To deliberately regenerate, disable `reuse_completed`.
@@ -382,10 +402,11 @@ The output is RGB; this node does not restore transparency.
 The existing ByteArtist runtime, account authorization and native image carrier
 are required. No new API key is bundled in this plugin. Update this Git URL in
 the room's Manager, restart the workbench, then add `SeedreamBatch2K`.
-The output batch uses about 48 MiB per image in CPU memory (16 images ≈768 MiB).
+Old 2K cache files are not reused for the new size. The output batch uses about
+12 MiB per image in CPU memory (16 images ≈192 MiB).
 
 ```sh
-python -m unittest test_seedream_batch_2k test_compact_native test_image_handoff -v
+python -m unittest test_grid_core test_seedream_batch_2k test_compact_native test_image_handoff -v
 ```
 
 These tests exercise real PNG handoff and completed-file reuse with a simulated

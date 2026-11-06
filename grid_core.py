@@ -139,35 +139,42 @@ def split_sheet(image, rows=0, columns=0, asset_count=0,
     if min(height, width) < 8:
         raise ValueError("Image is too small to split")
     background = _background(rgb)
-    x_lines = _axis_lines(rgb, background, axis=0)
-    y_lines = _axis_lines(rgb, background, axis=1)
-    x_gaps = y_gaps = None
     hinted_rows, hinted_columns = grid_for_count(asset_count) if asset_count else (0, 0)
 
-    def bounds(size, explicit, detected, hint, axis):
-        nonlocal x_gaps, y_gaps
+    def bounds(view, size, explicit, hint, axis):
         if explicit:
             return [int(round(k * size / explicit)) for k in range(explicit + 1)], "manual"
+        detected = _axis_lines(view, background, axis)
         if detected:
             return detected, "lines"
         if hint:
             return [int(round(k * size / hint)) for k in range(hint + 1)], "asset_list"
-        gaps = _axis_gaps(rgb, background, axis, background_tolerance)
-        if axis == 0:
-            x_gaps = gaps
-        else:
-            y_gaps = gaps
+        gaps = _axis_gaps(view, background, axis, background_tolerance)
         return (gaps, "gaps") if gaps else ([0, size], "single")
 
-    xb, xm = bounds(width, columns, x_lines, hinted_columns, 0)
-    yb, ym = bounds(height, rows, y_lines, hinted_rows, 1)
-    actual_rows, actual_columns = len(yb) - 1, len(xb) - 1
-    if actual_rows * actual_columns > 100:
+    # Rows need not share vertical separators. Measure each row independently
+    # so shorter column strokes cannot disappear in a full-sheet projection.
+    yb, ym = bounds(rgb, height, rows, hinted_rows, 1)
+    actual_rows = len(yb) - 1
+    row_bounds, row_methods = [], []
+    for row in range(actual_rows):
+        y0, y1 = yb[row:row + 2]
+        if ym == "lines":
+            y0 += 2 if row else 0
+            y1 -= 2 if row < actual_rows - 1 else 0
+        xb, xm = bounds(rgb[y0:y1], width, columns, hinted_columns, 0)
+        row_bounds.append(xb)
+        row_methods.append(xm)
+    row_columns = [len(xb) - 1 for xb in row_bounds]
+    if sum(row_columns) > 100:
         raise ValueError("Too many cells; verify the grid")
     tiles, records, kept, skipped = [], [], [], []
+    index = 0
     for row in range(actual_rows):
+        xb, xm = row_bounds[row], row_methods[row]
+        actual_columns = row_columns[row]
         for col in range(actual_columns):
-            index = row * actual_columns + col + 1
+            index += 1
             x0, x1, y0, y1 = xb[col], xb[col + 1], yb[row], yb[row + 1]
             # Remove only the separator strokes, not surrounding whitespace.
             if trim_grid_lines and xm == "lines":
@@ -199,13 +206,17 @@ def split_sheet(image, rows=0, columns=0, asset_count=0,
                 "foreground_ratio": float(foreground.mean()),
             })
     warnings = []
-    if "gaps" in (xm, ym):
+    uniform = all(xb == row_bounds[0] for xb in row_bounds)
+    xm = row_methods[0] if len(set(row_methods)) == 1 else "row_local"
+    if "gaps" in row_methods or ym == "gaps":
         warnings.append("Grid inferred from blank strips; connect asset_list for extra certainty")
     if not rows and not columns and xm == ym == "single" and not asset_count:
         warnings.append("No separators detected; treated as a single image")
     return tiles, {
-        "rows": actual_rows, "columns": actual_columns,
-        "x_boundaries": xb, "y_boundaries": yb,
+        "rows": actual_rows, "columns": max(row_columns),
+        "x_boundaries": row_bounds[0] if uniform else None, "y_boundaries": yb,
+        "row_columns": row_columns, "row_x_boundaries": row_bounds,
+        "row_x_detection": row_methods,
         "detection": {"x": xm, "y": ym},
         "background_rgb": background.astype(int).tolist(),
         "kept_count": len(kept), "skipped_count": len(skipped),

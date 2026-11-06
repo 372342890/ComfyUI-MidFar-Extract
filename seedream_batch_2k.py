@@ -1,8 +1,9 @@
-"""Independent native Seedream 5.0 Pro requests with durable 2048px results."""
+"""Independent native Seedream 5.0 Pro requests with durable 1024px results."""
 import hashlib
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -19,13 +20,13 @@ except ImportError:
 
 
 DEFAULT_INSTRUCTION = (
-    "将唯一参考图增强为一张2048×2048的高清素材图。只以本次参考图为依据，"
+    "将唯一参考图增强为一张1024×1024的高清素材图。只以本次参考图为依据，"
     "保持同一个主体、当前视角、朝向、轮廓、比例、构图、颜色、背景和原有美术风格。"
     "提升清晰度、边缘质量与合理的材质细节；保持主体完整。"
     "不要旋转主体，不要添加其他物体，不要拼图，不要生成多视图，不要文字或水印。"
     "非方形参考图保持比例，以原有背景补齐方形画布，不要拉伸或裁掉主体。"
 )
-SIZE = 2048
+SIZE = 1024
 MAX_SEED = 0x7fffffff
 LOGGER = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ def _settings(instruction, seed):
         raise ValueError("The installed template must select Seedream 5.0 Pro.")
     # Use only the model descriptor; never reuse extraction prompts or credentials.
     return {"model": model, "user_prompt": instruction, "extra_inputs": {
-        "size": "2048x2048", "output_format": "png", "watermark": False,
+        "size": "1024x1024", "output_format": "png", "watermark": False,
         "layer_decomposition": False, "seed": seed,
     }}
 
@@ -50,7 +51,7 @@ def _rgb_tensor(value, exact_size=False):
             or min(value.shape[:3]) < 1):
         raise ValueError("Expected non-empty IMAGE [batch,height,width,3 or 4].")
     if exact_size and tuple(value.shape[:3]) != (1, SIZE, SIZE):
-        raise ValueError("Seedream must return exactly one 2048x2048 image.")
+        raise ValueError("Seedream must return exactly one 1024x1024 image.")
     value = value.detach().to(device="cpu", dtype=torch.float32)
     if not torch.isfinite(value).all() or value.min() < 0 or value.max() > 1:
         raise ValueError("IMAGE pixels must be finite and in the range 0..1.")
@@ -75,7 +76,7 @@ def _load_cache(path):
     try:
         with Image.open(path) as image:
             if image.size != (SIZE, SIZE) or image.mode != "RGB":
-                raise ValueError("Completed image must be 2048x2048 RGB.")
+                raise ValueError("Completed image must be 1024x1024 RGB.")
             pixels = np.asarray(image).astype(np.float32) / 255
         return torch.from_numpy(pixels)
     except Exception as error:
@@ -109,13 +110,14 @@ def enhance_batch(images, mappings, node_info, unique_id, prompt,
         raise ValueError("max_images must be 0 (all) or a positive integer.")
     if not isinstance(instruction, str) or not instruction.strip():
         raise ValueError("Enhancement instruction must not be empty.")
-    instruction = instruction.strip()
+    # Saved workflows retain their old widget text when a plugin is updated.
+    instruction = re.sub(r"2048\s*[xX×*]\s*2048", "1024×1024", instruction.strip())
     count = min(source.shape[0], max_images) if max_images else source.shape[0]
     input_directory = Path(input_directory).resolve()
     output_directory = Path(output_directory).resolve()
-    cache_directory = output_directory / "seedream-batch-2k"
+    cache_directory = output_directory / "seedream-batch-1k"
     cache_directory.mkdir(parents=True, exist_ok=True)
-    # A 16-image batch is ~768 MiB; do not hold a second concatenation copy.
+    # A 16-image batch is ~192 MiB; do not hold a second concatenation copy.
     output = torch.empty((count, SIZE, SIZE, 3), dtype=torch.float32, device="cpu")
     records = []
     for index in range(count):
@@ -126,12 +128,12 @@ def enhance_batch(images, mappings, node_info, unique_id, prompt,
             reference = input_directory / native_image_file(
                 source[index:index + 1].numpy(), input_directory)
             key = hashlib.sha256(
-                b"seedream-batch-2k-v1\0" + reference.read_bytes()
+                b"seedream-batch-1k-v1\0" + reference.read_bytes()
                 + json.dumps(settings, sort_keys=True, ensure_ascii=False).encode("utf8")
             ).hexdigest()
             destination = cache_directory / (key + ".png")
             cached = reuse_completed and destination.is_file()
-            LOGGER.info("Seedream 5.0 Pro 2K: image %s/%s (%s)",
+            LOGGER.info("Seedream 5.0 Pro 1K: image %s/%s (%s)",
                         index + 1, count, "completed cache" if cached else "native request")
             if cached:
                 pixels = _load_cache(destination)
@@ -170,12 +172,13 @@ class SeedreamBatch2K:
         }, "hidden": {"unique_id": "UNIQUE_ID", "prompt": "PROMPT"}}
 
     RETURN_TYPES = ("IMAGE",)
+    # Keep the saved class and socket identifiers; actual pixels are now 1024.
     RETURN_NAMES = ("images_2048",)
     FUNCTION = "run"
     CATEGORY = "image/asset_sheet"
     OUTPUT_NODE = True
     DESCRIPTION = (
-        "多张小图逐张调用真实Seedream 5.0 Pro，输出2048×2048高清图像批次。"
+        "多张小图逐张调用真实Seedream 5.0 Pro，输出1024×1024高清图像批次。"
         "每次仅使用当前一张参考图；成功图片缓存，失败显示序号。")
 
     def run(self, images, seed=20261105, max_images=0, reuse_completed=True,
